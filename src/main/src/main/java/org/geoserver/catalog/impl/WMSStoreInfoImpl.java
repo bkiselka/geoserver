@@ -1,15 +1,15 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 package org.geoserver.catalog.impl;
 
 import java.io.IOException;
-
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogVisitor;
 import org.geoserver.catalog.WMSStoreInfo;
-import org.geotools.data.wms.WebMapServer;
+import org.geotools.ows.wms.WebMapServer;
 import org.opengis.util.ProgressListener;
 
 @SuppressWarnings("serial")
@@ -28,9 +28,8 @@ public class WMSStoreInfoImpl extends StoreInfoImpl implements WMSStoreInfo {
     private int readTimeout;
     private int connectTimeout;
 
-    protected WMSStoreInfoImpl() {
-    }
-    
+    protected WMSStoreInfoImpl() {}
+
     public WMSStoreInfoImpl(Catalog catalog) {
         super(catalog);
     }
@@ -70,7 +69,7 @@ public class WMSStoreInfoImpl extends StoreInfoImpl implements WMSStoreInfo {
 
     @Override
     public void setMaxConnections(int maxConcurrentConnections) {
-        this.maxConnections = maxConcurrentConnections;        
+        this.maxConnections = maxConcurrentConnections;
     }
 
     @Override

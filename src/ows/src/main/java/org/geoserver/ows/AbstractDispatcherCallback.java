@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -11,9 +12,8 @@ import org.geoserver.platform.ServiceException;
 /**
  * An empty callback implementation, can be used as a convenient base class when there is a need to
  * implement only a few callback methods
- * 
+ *
  * @author Andrea Aime - OpenGeo
- * 
  */
 public class AbstractDispatcherCallback implements DispatcherCallback {
 
@@ -33,13 +33,12 @@ public class AbstractDispatcherCallback implements DispatcherCallback {
         return result;
     }
 
-    public Response responseDispatched(Request request, Operation operation, Object result,
-            Response response) {
+    public Response responseDispatched(
+            Request request, Operation operation, Object result, Response response) {
         return response;
     }
 
     public Service serviceDispatched(Request request, Service service) throws ServiceException {
         return service;
     }
-
 }

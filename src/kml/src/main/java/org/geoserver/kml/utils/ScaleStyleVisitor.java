@@ -1,4 +1,5 @@
-/* Copyright (c) 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -6,7 +7,6 @@ package org.geoserver.kml.utils;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.geotools.feature.FeatureTypes;
 import org.geotools.styling.FeatureTypeStyle;
 import org.geotools.styling.FeatureTypeStyleImpl;
@@ -17,15 +17,12 @@ import org.opengis.feature.simple.SimpleFeatureType;
 
 /**
  * Returns a shallow copy of a style with only the active rules at the specified scale denominator
- * 
+ *
  * @author Andrea Aime - GeoSolutions
- * 
  */
 public class ScaleStyleVisitor extends DuplicatingStyleVisitor {
 
-    /**
-     * Tolerance used to compare doubles for equality
-     */
+    /** Tolerance used to compare doubles for equality */
     static final double TOLERANCE = 1e-6;
 
     double scaleDenominator;
@@ -45,11 +42,10 @@ public class ScaleStyleVisitor extends DuplicatingStyleVisitor {
         List<FeatureTypeStyle> filtered = new ArrayList<FeatureTypeStyle>();
         for (FeatureTypeStyle fts : copy.featureTypeStyles()) {
             // do the same filtering as streaming renderer
-            String ftName = fts.getFeatureTypeName();
             if (fts.featureTypeNames().isEmpty()
-                    || ((schema.getName().getLocalPart() != null) && (schema.getName()
-                            .getLocalPart().equalsIgnoreCase(ftName) || FeatureTypes
-                            .isDecendedFrom(schema, null, ftName)))) {
+                    || fts.featureTypeNames()
+                            .stream()
+                            .anyMatch(tn -> FeatureTypes.matches(schema, tn))) {
                 filtered.add(fts);
             }
         }
@@ -68,7 +64,6 @@ public class ScaleStyleVisitor extends DuplicatingStyleVisitor {
                     && ((r.getMaxScaleDenominator() + TOLERANCE) > scaleDenominator)) {
                 rulesCopy.add(r);
             }
-
         }
         copy.rules().clear();
         copy.rules().addAll(rulesCopy);

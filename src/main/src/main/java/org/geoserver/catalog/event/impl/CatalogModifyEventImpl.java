@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -6,11 +7,9 @@ package org.geoserver.catalog.event.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.geoserver.catalog.event.CatalogModifyEvent;
 
-public class CatalogModifyEventImpl extends CatalogEventImpl implements
-        CatalogModifyEvent {
+public class CatalogModifyEventImpl extends CatalogEventImpl implements CatalogModifyEvent {
 
     List propertyNames = new ArrayList();
     List oldValues = new ArrayList();
@@ -39,5 +38,4 @@ public class CatalogModifyEventImpl extends CatalogEventImpl implements
     public void setOldValues(List oldValues) {
         this.oldValues = oldValues;
     }
-
 }

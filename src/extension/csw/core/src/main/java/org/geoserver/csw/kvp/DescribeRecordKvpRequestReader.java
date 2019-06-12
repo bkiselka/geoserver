@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -7,17 +8,14 @@ package org.geoserver.csw.kvp;
 
 import java.util.List;
 import java.util.Map;
-
 import javax.xml.namespace.QName;
-
 import net.opengis.cat.csw20.DescribeRecordType;
-
 import org.geoserver.csw.records.CSWRecordDescriptor;
 import org.xml.sax.helpers.NamespaceSupport;
 
 /**
  * DescribeRecord KVP request reader
- * 
+ *
  * @author Andrea Aime, GeoSolutions
  */
 public class DescribeRecordKvpRequestReader extends CSWKvpRequestReader {
@@ -33,13 +31,13 @@ public class DescribeRecordKvpRequestReader extends CSWKvpRequestReader {
         // at this point the namespace and type names are separated, we need to merge them and build
         // QNames
         String typename = (String) rawKvp.get("typename");
-        if(typename != null) {
+        if (typename != null) {
             NamespaceSupport namespaces = (NamespaceSupport) kvp.get("namespace");
-            if(namespaces == null) {
+            if (namespaces == null) {
                 // when null the default is the CSW one
                 namespaces = CSWRecordDescriptor.NAMESPACES;
             }
-        
+
             List<QName> qnames = resolver.parseQNames(typename, namespaces);
             kvp.put("typename", qnames);
         }
@@ -47,5 +45,4 @@ public class DescribeRecordKvpRequestReader extends CSWKvpRequestReader {
         // proceed with the normal reflective setup
         return super.read(request, kvp, rawKvp);
     }
-
 }

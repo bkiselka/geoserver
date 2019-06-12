@@ -59,7 +59,7 @@ Controls a particular coverage store in a given workspace.
      - 200
      - HTML, XML, JSON
      - HTML
-     -
+     - :ref:`quietOnNotFound <rest_api_coveragestores_quietOnNotFound>`
    * - POST
      - 
      - 405
@@ -119,6 +119,12 @@ It can take one of the three values:
 * ``metadata``-Delete only auxiliary files and metadata. It's recommended when data files (such as granules) should not be deleted from disk.
 * ``all``-Purge everything related to that store (metadata and granules).
 
+.. _rest_api_coveragestores_quietOnNotFound:
+
+``quietOnNotFound``
+^^^^^^^^^^^^^^^^^^^^
+
+The ``quietOnNotFound`` parameter avoids to log an Exception when the coverage store is not present. Note that 404 status code will be returned anyway.
 
 ``/workspaces/<ws>/coveragestores/<cs>/file[.<extension>]``
 -----------------------------------------------------------
@@ -142,15 +148,15 @@ This end point allows a file containing spatial data to be added (via a POST or 
      - 
    * - POST
      - If the coverage store is a simple one (e.g. GeoTiff) it will return a 405, if the coverage store is a structured one (e.g., mosaic) it will harvest the specified files into it, which in turn will integrate the files into the store. Harvest meaning is store dependent, for mosaic the new files will be added as new granules of the mosaic, and existing files will get their attribute updated, other stores might have a different behavior.
-     - 405 if the coverage store is a simple one, 200 if structured and the harvest operation succeded
+     - 405 if the coverage store is a simple one, 200 if structured and the harvest operation succeeded
      - 
      - 
-     - :ref:`recalculate <rest_api_coveragestores_recalculate>`
+     - :ref:`recalculate <rest_api_coveragestores_recalculate>`, :ref:`filename <rest_api_coveragestores_filename>`
    * - PUT
      - Creates or overwrites the files for coverage store ``cs``
      - 200
      - :ref:`See note below <rest_api_coveragestores_file_put>`
-     - :set spell spelllang=en_us
+     - 
      - :ref:`configure <rest_api_coveragestores_configure>`, :ref:`coverageName <rest_api_coveragestores_coveragename>`
    * - DELETE
      -
@@ -232,3 +238,12 @@ The ``recalculate`` parameter specifies whether to recalculate any bounding boxe
 * ``recalculate=nativebbox``—Recalculate the native bounding box, but do not recalculate the lat/long bounding box.
 * ``recalculate=nativebbox,latlonbbox``—Recalculate both the native bounding box and the lat/long bounding box.
 
+.. _rest_api_coveragestores_filename:
+
+``filename``
+^^^^^^^^^^^^^^^
+
+The ``filename`` parameter specifies the target file name for a file that needs to harvested as part of a mosaic. This is important to avoid clashes and to make sure the
+right dimension values are available in the name for multidimensional mosaics to work.
+
+* ``filename=`NCOM_wattemp_000_20081102T0000000_12.tiff` Set the uploaded file name to ``NCOM_wattemp_000_20081102T0000000_12.tiff`` 

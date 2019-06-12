@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -11,10 +12,11 @@ import org.geoserver.security.filter.GeoServerBasicAuthenticationFilter;
 
 /**
  * Configuration panel for {@link GeoServerBasicAuthenticationFilter}.
- * 
+ *
  * @author Justin Deoliveira, OpenGeo
  */
-public class BasicAuthFilterPanel extends AuthenticationFilterPanel<BasicAuthenticationFilterConfig>{
+public class BasicAuthFilterPanel
+        extends AuthenticationFilterPanel<BasicAuthenticationFilterConfig> {
 
     /** serialVersionUID */
     private static final long serialVersionUID = 1L;
@@ -24,5 +26,4 @@ public class BasicAuthFilterPanel extends AuthenticationFilterPanel<BasicAuthent
 
         add(new CheckBox("useRememberMe"));
     }
-
 }

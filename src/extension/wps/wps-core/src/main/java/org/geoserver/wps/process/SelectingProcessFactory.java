@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -8,7 +9,6 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
-
 import org.geotools.data.Parameter;
 import org.geotools.process.Process;
 import org.geotools.process.ProcessFactory;
@@ -17,7 +17,7 @@ import org.opengis.util.InternationalString;
 
 /**
  * A process factory wrapper that applies the choices of a given {@link ProcessSelector}
- * 
+ *
  * @author Andrea Aime - GeoSolutions
  */
 public class SelectingProcessFactory extends DelegatingProcessFactory {
@@ -33,7 +33,7 @@ public class SelectingProcessFactory extends DelegatingProcessFactory {
     public Set<Name> getNames() {
         // filter out the processes we want to hide
         Set<Name> names = new LinkedHashSet<Name>(super.getNames());
-        for (Iterator<Name> it = names.iterator(); it.hasNext();) {
+        for (Iterator<Name> it = names.iterator(); it.hasNext(); ) {
             Name name = (Name) it.next();
             if (!selector.allowProcess(name)) {
                 it.remove();
@@ -99,5 +99,4 @@ public class SelectingProcessFactory extends DelegatingProcessFactory {
             return false;
         }
     }
-
 }

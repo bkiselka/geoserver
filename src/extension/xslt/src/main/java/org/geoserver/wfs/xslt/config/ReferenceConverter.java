@@ -1,24 +1,24 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 package org.geoserver.wfs.xslt.config;
-
-import org.geoserver.catalog.Catalog;
-import org.geoserver.catalog.FeatureTypeInfo;
-import org.geoserver.catalog.impl.CatalogImpl;
-import org.geoserver.config.util.XStreamPersister;
-import org.geoserver.ows.util.OwsUtils;
 
 import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.catalog.impl.CatalogImpl;
+import org.geoserver.config.util.XStreamPersister;
+import org.geoserver.ows.util.OwsUtils;
 
 /**
- * Transforms CatalogInfo into id references. Derived and heavily simplified from
- * {@link XStreamPersister}
+ * Transforms CatalogInfo into id references. Derived and heavily simplified from {@link
+ * XStreamPersister}
  */
 class ReferenceConverter implements Converter {
     Class clazz;
@@ -35,7 +35,8 @@ class ReferenceConverter implements Converter {
         return clazz.isAssignableFrom(type);
     }
 
-    public void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context) {
+    public void marshal(
+            Object source, HierarchicalStreamWriter writer, MarshallingContext context) {
         // could be a proxy, unwrap it
         source = CatalogImpl.unwrap(source);
 
@@ -59,10 +60,10 @@ class ReferenceConverter implements Converter {
         }
 
         FeatureTypeInfo result = catalog.getFeatureType(ref);
-        if(result == null) {
+        if (result == null) {
             result = catalog.getFeatureTypeByName(ref);
         }
-        
+
         return result;
     }
 }

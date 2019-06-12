@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -7,6 +8,8 @@ package org.geoserver.gwc.layer;
 import java.util.Set;
 
 public interface TileLayerCatalog {
+
+    public void addListener(TileLayerCatalogListener listener);
 
     public Set<String> getLayerIds();
 
@@ -27,7 +30,9 @@ public interface TileLayerCatalog {
     public boolean exists(String layerId);
 
     public void initialize();
-    
+
     public void reset();
 
+    /** Used as a status/debugging aid. */
+    public String getPersistenceLocation();
 }

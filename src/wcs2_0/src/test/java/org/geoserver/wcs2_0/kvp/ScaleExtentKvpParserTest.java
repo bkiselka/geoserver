@@ -1,19 +1,20 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 package org.geoserver.wcs2_0.kvp;
 
 import static org.junit.Assert.*;
+
 import net.opengis.wcs20.ScaleToExtentType;
 import net.opengis.wcs20.TargetAxisExtentType;
-
 import org.geoserver.platform.OWS20Exception;
 import org.junit.Test;
 
 /**
  * Parses the scaleExtent WCS 2.0 kvp key
- * 
+ *
  * @author Andrea Aime - GeoSolutions
  */
 public class ScaleExtentKvpParserTest {

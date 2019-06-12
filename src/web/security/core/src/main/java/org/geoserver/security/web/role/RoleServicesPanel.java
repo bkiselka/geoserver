@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -12,7 +13,7 @@ import org.geoserver.security.web.SecurityNamedServicesPanel;
 
 /**
  * Panel for providing list of role service configurations.
- * 
+ *
  * @author Justin Deoliveira, OpenGeo
  */
 public class RoleServicesPanel extends SecurityNamedServicesPanel<SecurityRoleServiceConfig> {
@@ -29,13 +30,13 @@ public class RoleServicesPanel extends SecurityNamedServicesPanel<SecurityRoleSe
     @Override
     protected void validateRemoveConfig(SecurityRoleServiceConfig config)
             throws SecurityConfigException {
-        SecurityConfigValidator.getConfigurationValiator(GeoServerRoleService.class, 
-            config.getClassName()).validateRemoveRoleService(config);
+        SecurityConfigValidator.getConfigurationValiator(
+                        GeoServerRoleService.class, config.getClassName())
+                .validateRemoveRoleService(config);
     }
 
     @Override
     protected void removeConfig(SecurityRoleServiceConfig config) throws Exception {
         getSecurityManager().removeRoleService(config);
     }
-
 }

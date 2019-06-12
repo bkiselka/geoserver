@@ -1,17 +1,17 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 package org.geoserver.csw.feature.sort;
 
 import java.util.Comparator;
-
 import org.opengis.feature.Attribute;
 import org.opengis.filter.expression.PropertyName;
 
 /**
  * Compares two feature based on an attribute value
- * 
+ *
  * @author Andrea Aime - GeoSolutions
  */
 class PropertyComparator<T> implements Comparator<T> {
@@ -22,9 +22,9 @@ class PropertyComparator<T> implements Comparator<T> {
 
     /**
      * Builds a new comparator
-     * 
+     *
      * @param propertyName The property name to be used
-     * @param inverse If true the comparator will force an ascending order (descending otherwise)
+     * @param ascending If true the comparator will force an ascending order (descending otherwise)
      */
     public PropertyComparator(PropertyName propertyName, boolean ascending) {
         this.propertyName = propertyName;
@@ -41,20 +41,20 @@ class PropertyComparator<T> implements Comparator<T> {
     }
 
     private int compareAscending(T f1, T f2) {
-    	Object a1 = propertyName.evaluate(f1);  
-    	Comparable o1, o2;
-    	if (a1 instanceof Attribute) {
-    		o1 = (Comparable) ((Attribute)a1).getValue();
-    	} else {
-    		o1 = a1 != null ? (Comparable) a1 : null;
-    	}
+        Object a1 = propertyName.evaluate(f1);
+        Comparable o1, o2;
+        if (a1 instanceof Attribute) {
+            o1 = (Comparable) ((Attribute) a1).getValue();
+        } else {
+            o1 = a1 != null ? (Comparable) a1 : null;
+        }
 
-    	Object a2 = propertyName.evaluate(f2); 
-    	if (a2 instanceof Attribute) {
-    		o2 = (Comparable) ((Attribute)a2).getValue();
-    	} else {
-    		o2 = a2 != null ? (Comparable) a2 : null;
-    	}
+        Object a2 = propertyName.evaluate(f2);
+        if (a2 instanceof Attribute) {
+            o2 = (Comparable) ((Attribute) a2).getValue();
+        } else {
+            o2 = a2 != null ? (Comparable) a2 : null;
+        }
 
         if (o1 == null) {
             if (o2 == null) {
@@ -68,5 +68,4 @@ class PropertyComparator<T> implements Comparator<T> {
             return o1.compareTo(o2);
         }
     }
-
 }

@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -10,7 +11,7 @@ import org.geoserver.security.config.SecurityNamedServiceConfig;
 
 /**
  * Security provider for basic auth
- * 
+ *
  * @author mcr
  */
 public class GeoServerBasicAuthenticationProvider extends AbstractFilterProvider {
@@ -30,5 +31,4 @@ public class GeoServerBasicAuthenticationProvider extends AbstractFilterProvider
     public GeoServerSecurityFilter createFilter(SecurityNamedServiceConfig config) {
         return new GeoServerBasicAuthenticationFilter();
     }
-
 }

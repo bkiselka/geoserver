@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -6,7 +7,6 @@ package org.geoserver.script.js.engine;
 
 import java.io.Reader;
 import java.io.StringReader;
-
 import javax.script.AbstractScriptEngine;
 import javax.script.Bindings;
 import javax.script.Invocable;
@@ -15,7 +15,6 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineFactory;
 import javax.script.ScriptException;
 import javax.script.SimpleBindings;
-
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.EcmaError;
 import org.mozilla.javascript.Function;
@@ -26,29 +25,28 @@ import org.mozilla.javascript.tools.shell.Global;
 public class CommonJSEngine extends AbstractScriptEngine implements Invocable {
 
     private CommonJSEngineFactory factory;
-    
+
     public CommonJSEngine() {
         this(new CommonJSEngineFactory(null));
     }
 
     public CommonJSEngine(CommonJSEngineFactory factory) {
         this.factory = factory;
-    
     }
-    
+
     @Override
     public Bindings createBindings() {
         return new SimpleBindings();
     }
-    
+
     @Override
     public Object eval(String script, ScriptContext context) throws ScriptException {
         if (script == null) {
             throw new NullPointerException("Null script");
         }
-        return eval(new StringReader(script) , context);
+        return eval(new StringReader(script), context);
     }
-    
+
     @Override
     public Object eval(Reader reader, ScriptContext context) throws ScriptException {
         String filename = (String) get(ScriptEngine.FILENAME);
@@ -65,7 +63,8 @@ public class CommonJSEngine extends AbstractScriptEngine implements Invocable {
             scope.put("exports", scope, cx.newObject(global));
             result = cx.evaluateReader(scope, reader, filename, 1, null);
         } catch (EcmaError e) {
-            throw new ScriptException(e.getMessage(), e.sourceName(), e.lineNumber(), e.columnNumber());
+            throw new ScriptException(
+                    e.getMessage(), e.sourceName(), e.lineNumber(), e.columnNumber());
         } catch (Exception e) {
             throw new ScriptException(e);
         } finally {
@@ -73,12 +72,12 @@ public class CommonJSEngine extends AbstractScriptEngine implements Invocable {
         }
         return result;
     }
-    
+
     @Override
     public ScriptEngineFactory getFactory() {
         return factory;
     }
-    
+
     private Global getGlobal() {
         return factory.getGlobal();
     }
@@ -130,10 +129,11 @@ public class CommonJSEngine extends AbstractScriptEngine implements Invocable {
         }
         return result;
     }
-    
+
     /**
-     * Associate a context with the current thread.  This calls Context.enter()
-     * and sets the language version to 1.8.
+     * Associate a context with the current thread. This calls Context.enter() and sets the language
+     * version to 1.8.
+     *
      * @return a Context associated with the thread
      */
     public static Context enterContext() {
@@ -141,6 +141,4 @@ public class CommonJSEngine extends AbstractScriptEngine implements Invocable {
         cx.setLanguageVersion(Context.VERSION_1_8);
         return cx;
     }
-
-
 }

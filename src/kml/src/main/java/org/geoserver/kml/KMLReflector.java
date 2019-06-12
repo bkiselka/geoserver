@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -7,8 +8,6 @@ package org.geoserver.kml;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
-
 import org.geoserver.ows.util.KvpUtils;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.DefaultWebMapService;
@@ -20,25 +19,19 @@ import org.geoserver.wms.WebMapService;
 
 /**
  * KML reflecting service.
- * <p>
- * This
- * </p>
- * 
+ *
+ * <p>This
+ *
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
- * 
  */
 public class KMLReflector {
-    private static Logger LOGGER = org.geotools.util.logging.Logging
-            .getLogger("org.vfny.geoserver.wms.responses.map.kml");
 
     /** default 'format' value */
     public static final String FORMAT = KMLMapOutputFormat.MIME_TYPE;
 
     private static Map<String, Map<String, Object>> MODES;
-    
-    /**
-     * Default ground overlay size
-     */
+
+    /** Default ground overlay size */
     private static int DEFAULT_OVERLAY_SIZE;
 
     static {
@@ -49,7 +42,7 @@ public class KMLReflector {
         options.put("superoverlay", true);
         options.put("mode", "superoverlay");
         temp.put("superoverlay", options);
-        
+
         options = new HashMap<String, Object>();
         options.put("superoverlay", false);
         options.put("kmscore", 100); // download -> really download vectors
@@ -62,18 +55,14 @@ public class KMLReflector {
         temp.put("refresh", options);
 
         MODES = temp;
-        
+
         DEFAULT_OVERLAY_SIZE = Integer.getInteger("org.geoserver.kml.defaultOverlaySize", 2048);
     }
 
-    /**
-     * web map service
-     */
+    /** web map service */
     WebMapService wms;
 
-    /**
-     * The WMS configuration
-     */
+    /** The WMS configuration */
     WMS wmsConfiguration;
 
     public KMLReflector(WebMapService wms, WMS wmsConfiguration) {
@@ -85,8 +74,8 @@ public class KMLReflector {
     // doWms(request, response, wms, wmsConfiguration);
     // }
 
-    public static org.geoserver.wms.WebMap doWms(GetMapRequest request, WebMapService wms,
-            WMS wmsConfiguration) throws Exception {
+    public static org.geoserver.wms.WebMap doWms(
+            GetMapRequest request, WebMapService wms, WMS wmsConfiguration) throws Exception {
         // set the content disposition
         StringBuffer filename = new StringBuffer();
         boolean containsRasterData = false;
@@ -95,17 +84,22 @@ public class KMLReflector {
             MapLayerInfo layer = request.getLayers().get(i);
             String name = layer.getName();
 
-            containsRasterData = containsRasterData
-                    || (layer.getType() == MapLayerInfo.TYPE_RASTER);
+            containsRasterData =
+                    containsRasterData || (layer.getType() == MapLayerInfo.TYPE_RASTER);
 
             if (layer.getType() == MapLayerInfo.TYPE_VECTOR) {
-                isRegionatingFriendly = isRegionatingFriendly
-                        && layer.getFeature().getFeatureSource(null, null).getQueryCapabilities()
-                                .isReliableFIDSupported();
+                isRegionatingFriendly =
+                        isRegionatingFriendly
+                                && layer.getFeature()
+                                        .getFeatureSource(null, null)
+                                        .getQueryCapabilities()
+                                        .isReliableFIDSupported();
             } else if (layer.getType() == MapLayerInfo.TYPE_REMOTE_VECTOR) {
-                isRegionatingFriendly = isRegionatingFriendly
-                        && layer.getRemoteFeatureSource().getQueryCapabilities()
-                                .isReliableFIDSupported();
+                isRegionatingFriendly =
+                        isRegionatingFriendly
+                                && layer.getRemoteFeatureSource()
+                                        .getQueryCapabilities()
+                                        .isReliableFIDSupported();
             }
 
             // strip off prefix
@@ -119,8 +113,9 @@ public class KMLReflector {
 
         // setup the default mode
         Map<String, String> rawKvp = request.getRawKvp();
-        String mode = KvpUtils.caseInsensitiveParam(rawKvp, "mode",
-                wmsConfiguration.getKmlReflectorMode());
+        String mode =
+                KvpUtils.caseInsensitiveParam(
+                        rawKvp, "mode", wmsConfiguration.getKmlReflectorMode());
 
         if (!MODES.containsKey(mode)) {
             throw new ServiceException("Unknown KML mode: " + mode);
@@ -129,8 +124,11 @@ public class KMLReflector {
         Map modeOptions = new HashMap(MODES.get(mode));
 
         if ("superoverlay".equals(mode)) {
-            String submode = KvpUtils.caseInsensitiveParam(request.getRawKvp(),
-                    "superoverlay_mode", wmsConfiguration.getKmlSuperoverlayMode());
+            String submode =
+                    KvpUtils.caseInsensitiveParam(
+                            request.getRawKvp(),
+                            "superoverlay_mode",
+                            wmsConfiguration.getKmlSuperoverlayMode());
 
             if ("raster".equalsIgnoreCase(submode)) {
                 modeOptions.put("overlaymode", "raster");
@@ -191,7 +189,8 @@ public class KMLReflector {
         }
         if (superoverlay || refreshMode || containsRasterData) {
             request.setFormat(NetworkLinkMapOutputFormat.KML_MIME_TYPE);
-        } else if (!Arrays.asList(KMZMapOutputFormat.OUTPUT_FORMATS).contains(request.getFormat())) {
+        } else if (!Arrays.asList(KMZMapOutputFormat.OUTPUT_FORMATS)
+                .contains(request.getFormat())) {
             request.setFormat(KMLMapOutputFormat.MIME_TYPE);
         }
 
@@ -212,22 +211,22 @@ public class KMLReflector {
     /**
      * Copy all the format_options parameters from the kvp map and put them into the formatOptions
      * map. If a parameter is already present in formatOption map it will be preserved.
-     * 
+     *
      * @param kvp
      * @param formatOptions
-     * @throws Exception
      */
-    public static void organizeFormatOptionsParams(Map<String, String> kvp,
-            Map<String, Object> formatOptions) throws Exception {
+    public static void organizeFormatOptionsParams(
+            Map<String, String> kvp, Map<String, Object> formatOptions) throws Exception {
         WMSRequests.mergeEntry(kvp, formatOptions, "legend");
         WMSRequests.mergeEntry(kvp, formatOptions, "kmscore");
         WMSRequests.mergeEntry(kvp, formatOptions, "kmattr");
         WMSRequests.mergeEntry(kvp, formatOptions, "kmltitle");
+        WMSRequests.mergeEntry(kvp, formatOptions, "kmlrefresh");
+        WMSRequests.mergeEntry(kvp, formatOptions, "kmlvisible");
         WMSRequests.mergeEntry(kvp, formatOptions, "extendeddata");
         WMSRequests.mergeEntry(kvp, formatOptions, "extrude");
         WMSRequests.mergeEntry(kvp, formatOptions, "kmplacemark");
         WMSRequests.mergeEntry(kvp, formatOptions, "superoverlay_mode");
         WMSRequests.mergeEntry(kvp, formatOptions, "overlay_mode");
     }
-
 }

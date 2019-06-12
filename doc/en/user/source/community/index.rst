@@ -1,11 +1,11 @@
 .. _community:
 
-Community
-=========
+Community modules
+=================
 
 This section is devoted to GeoServer community modules. Community modules are considered "pending" in that they are not
 officially part of the GeoServer releases. They are however built along with the
-`nightly builds <http://ares.boundlessgeo.com/geoserver/>`_, so you can download and play with them.
+`nightly builds <https://build.geoserver.org/geoserver/>`_, so you can download and play with them.
 
 .. warning::
 
@@ -16,15 +16,41 @@ officially part of the GeoServer releases. They are however built along with the
    :maxdepth: 1
 
    authkey/index
+   oauth2/index
+   keycloak/index
    dds/index
-   netcdf/netcdf
-   printing/index
-   python/index
    scripting/index
    spatialite/index
-   netcdf-out/index
    colormap/index
    jdbcconfig/index
-   importer/index
    mbtiles/index
    geopkg/index
+   pgraster/pgraster
+   wps-download/index
+   jms-cluster/index
+   solr/index
+   geomesa/index
+   gwc-distributed/index
+   gdal/index
+   gwc-s3/index
+   gwc-sqlite/index
+   params-extractor/index
+   remote-wps/index
+   jdbcstore/index
+   ncwms/index
+   backuprestore/index
+   onelogin/index
+   wmts-multidimensional/index
+   notification/index
+   opensearch-eo/index
+   s3-geotiff/index
+   status-monitoring/index
+   nsg-profile/index
+   netcdf-ghrsst/index
+   monitor-hibernate/index
+   taskmanager/index
+   qose-module/index
+   ogr-store/index
+   mapml/index
+
+   

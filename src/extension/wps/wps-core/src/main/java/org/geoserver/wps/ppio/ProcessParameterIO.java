@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 - 2017 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -9,34 +10,45 @@ import java.math.BigInteger;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-
 import org.geoserver.platform.GeoServerExtensions;
 import org.geotools.data.Parameter;
 import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.locationtech.jts.geom.Envelope;
 import org.springframework.context.ApplicationContext;
-
-import com.vividsolutions.jts.geom.Envelope;
 
 /**
  * Represents the input / output of a parameter in a process.
- * <p>
- * Instances of this interface are registered in a spring context to handle additional types of
- * </p>
- * 
+ *
+ * <p>Instances of this interface are registered in a spring context to handle additional types of
+ *
  * @author Lucas Reed, Refractions Research Inc
  * @author Justin Deoliveira, OpenGEO
- * 
  */
 public abstract class ProcessParameterIO {
 
     /**
-     * list of default ppios supported out of the box
+     * PPIO possible direction:
+     *
+     * <ul>
+     *   <li>encoding : PPIO suitable only for outputs
+     *   <li>decoding : PPIO suitable only for inputs
+     *   <li>both : PPIO suitable both for inputs and outputs
+     * </ul>
      */
+    public enum PPIODirection {
+        /** Only encoding supported, PPIO suitable only for outputs */
+        ENCODING,
+        /** Only decoding supported, PPIO suitable only for inputs */
+        DECODING,
+        /** Both encoding and decoding supported */
+        BOTH
+    };
+
+    /** list of default ppios supported out of the box */
     static List<ProcessParameterIO> defaults;
+
     static {
         defaults = new ArrayList<ProcessParameterIO>();
 
@@ -72,13 +84,14 @@ public abstract class ProcessParameterIO {
         defaults.add(new GMLPPIO.GML3.Geometry());
         defaults.add(new GMLPPIO.GML2.Geometry());
         defaults.add(new WKTPPIO());
+        defaults.add(new GeoJSONPPIO.Geometries());
         defaults.add(new GMLPPIO.GML3.GeometryAlternate());
         defaults.add(new GMLPPIO.GML2.GeometryAlternate());
 
         // features
         defaults.add(new WFSPPIO.WFS10());
         defaults.add(new WFSPPIO.WFS11());
-        defaults.add(new GeoJSONPPIO());
+        defaults.add(new GeoJSONPPIO.FeatureCollections());
         defaults.add(new WFSPPIO.WFS10Alternate());
         defaults.add(new WFSPPIO.WFS11Alternate());
 
@@ -88,15 +101,17 @@ public abstract class ProcessParameterIO {
         // grids
         defaults.add(new GeoTiffPPIO());
         defaults.add(new ArcGridPPIO());
-        
+        defaults.add(new CoveragePPIO.PNGPPIO());
+        defaults.add(new CoveragePPIO.JPEGPPIO());
+
         defaults.add(new ImagePPIO.PNGPPIO());
         defaults.add(new ImagePPIO.JPEGPPIO());
 
         // envelopes
-        defaults.add(new BoundingBoxPPIO(Envelope.class));
         defaults.add(new BoundingBoxPPIO(ReferencedEnvelope.class));
         defaults.add(new BoundingBoxPPIO(org.opengis.geometry.Envelope.class));
-        
+        defaults.add(new BoundingBoxPPIO(Envelope.class));
+
         // filters
         defaults.add(new FilterPPIO.Filter10());
         defaults.add(new FilterPPIO.Filter11());
@@ -106,7 +121,7 @@ public abstract class ProcessParameterIO {
     public static ProcessParameterIO find(Parameter<?> p, ApplicationContext context, String mime) {
         // enum special treatment
         if (p.type.isEnum()) {
-            return new LiteralPPIO(p.type);
+            return new EnumPPIO(p.type);
         }
 
         // TODO: come up with some way to flag one as "default"
@@ -117,31 +132,11 @@ public abstract class ProcessParameterIO {
 
         if (mime != null) {
             for (ProcessParameterIO ppio : all) {
-                if (ppio instanceof ComplexPPIO && ((ComplexPPIO) ppio).getMimeType().equals(mime)) {
+                if (ppio instanceof ComplexPPIO
+                        && ((ComplexPPIO) ppio).getMimeType().equals(mime)) {
                     return ppio;
                 }
             }
-        }
-
-        // if more than one sort by class hierarchy, pushing the most specific classes to the
-        // beginning
-        if (all.size() > 0) {
-            Collections.sort(all, new Comparator<ProcessParameterIO>() {
-                public int compare(ProcessParameterIO o1, ProcessParameterIO o2) {
-                    Class c1 = o1.getType();
-                    Class c2 = o2.getType();
-
-                    if (c1.equals(c2)) {
-                        return 0;
-                    }
-
-                    if (c1.isAssignableFrom(c2)) {
-                        return 1;
-                    }
-
-                    return -1;
-                }
-            });
         }
 
         // fall back on the first found
@@ -152,7 +147,7 @@ public abstract class ProcessParameterIO {
         // enum special treatment
         if (p.type.isEnum()) {
             List<ProcessParameterIO> result = new ArrayList<ProcessParameterIO>();
-            result.add(new LiteralPPIO(p.type));
+            result.add(new EnumPPIO(p.type));
             return result;
         }
 
@@ -164,12 +159,24 @@ public abstract class ProcessParameterIO {
             l.addAll(GeoServerExtensions.extensions(ProcessParameterIO.class));
         }
 
+        // load by factory
+        List<PPIOFactory> ppioFactories;
+        if (context != null) {
+            ppioFactories = GeoServerExtensions.extensions(PPIOFactory.class, context);
+        } else {
+            ppioFactories = GeoServerExtensions.extensions(PPIOFactory.class);
+        }
+        for (PPIOFactory factory : ppioFactories) {
+            l.addAll(factory.getProcessParameterIO());
+        }
+
         // find parameters that match
         List<ProcessParameterIO> matches = new ArrayList<ProcessParameterIO>();
 
         // do a two phase search, first try to match the identifier
         for (ProcessParameterIO ppio : l) {
-            if (ppio.getIdentifer() != null && ppio.getIdentifer().equals(p.key)
+            if (ppio.getIdentifer() != null
+                    && ppio.getIdentifer().equals(p.key)
                     && ppio.getType().isAssignableFrom(p.type)) {
                 matches.add(ppio);
             }
@@ -187,19 +194,57 @@ public abstract class ProcessParameterIO {
         return matches;
     }
 
-    /**
-     * java class of parameter when reading and writing i/o.
+    /*
+     * Look for PPIO matching the parameter type and suitable for direction handling
      */
-    final protected Class externalType;
+    private static List<ProcessParameterIO> findByDirection(
+            Parameter<?> p, ApplicationContext context, PPIODirection direction) {
+        List<ProcessParameterIO> ppios = new ArrayList<ProcessParameterIO>();
+        List<ProcessParameterIO> matches = findAll(p, context);
+        for (ProcessParameterIO ppio : matches) {
+            if (ppio.getDirection() == PPIODirection.BOTH || ppio.getDirection() == direction) {
+                ppios.add(ppio);
+            }
+        }
+        return ppios;
+    }
+
+    /*
+     * Look for PPIO matching the parameter type and suitable for output handling
+     */
+    public static List<ProcessParameterIO> findEncoder(Parameter<?> p, ApplicationContext context) {
+        return findByDirection(p, context, PPIODirection.ENCODING);
+    }
+
+    /*
+     * Look for PPIO matching the parameter type and suitable for input handling
+     */
+    public static List<ProcessParameterIO> findDecoder(Parameter<?> p, ApplicationContext context) {
+        return findByDirection(p, context, PPIODirection.DECODING);
+    }
 
     /**
-     * java class of parameter when running internal process.
+     * Returns true if the specified parameter is a complex one
+     *
+     * @param param
+     * @param applicationContext
      */
-    final protected Class internalType;
+    public static boolean isComplex(Parameter<?> param, ApplicationContext applicationContext) {
+        List<ProcessParameterIO> ppios = findAll(param, applicationContext);
+        if (ppios.isEmpty()) {
+            return false;
+        } else {
+            return ppios.get(0) instanceof ComplexPPIO;
+        }
+    }
 
-    /**
-     * identifier for the parameter
-     */
+    /** java class of parameter when reading and writing i/o. */
+    protected final Class externalType;
+
+    /** java class of parameter when running internal process. */
+    protected final Class internalType;
+
+    /** identifier for the parameter */
     protected String identifer;
 
     protected ProcessParameterIO(Class externalType, Class internalType) {
@@ -214,9 +259,8 @@ public abstract class ProcessParameterIO {
 
     /**
      * The type of the parameter with regard to doing I/O.
-     * <p>
-     * The external type is used when reading and writing the parameter from an external source.
-     * </p>
+     *
+     * <p>The external type is used when reading and writing the parameter from an external source.
      */
     public final Class getExternalType() {
         return externalType;
@@ -224,18 +268,23 @@ public abstract class ProcessParameterIO {
 
     /**
      * The type of the parameter corresponding to {@link Parameter#type}.
-     * <p>
-     * The internal type is used when going to and from the internal process engine.
-     * </p>
+     *
+     * <p>The internal type is used when going to and from the internal process engine.
      */
     public final Class getType() {
         return internalType;
     }
 
-    /**
-     * The identifier for the parameter, this value may be null.
-     */
+    /** The identifier for the parameter, this value may be null. */
     public final String getIdentifer() {
         return identifer;
+    }
+
+    /**
+     * Used to advertise if the PPIO can support encoding, decoding, or both. By default BOTH is
+     * returned, subclass can override with their specific abilities
+     */
+    public PPIODirection getDirection() {
+        return PPIODirection.BOTH;
     }
 }

@@ -1,10 +1,11 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 package org.geoserver.flow.controller;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.geoserver.flow.controller.FlowControllerTestingThread.ThreadState;
 import org.geoserver.ows.Request;
@@ -12,17 +13,15 @@ import org.junit.Test;
 
 public class SingleIpFlowControllerTest extends IpFlowControllerTest {
 
-    private static final long MAX_WAIT = 10000;
-
     @Override
     @Test
     public void testConcurrentRequestsSingleIPAddress() {
         // an ip based flow controller that will allow just one request at a time
         SingleIpFlowController controller = new SingleIpFlowController(1, "127.0.0.1");
         String ipAddress = "127.0.0.1";
-        Request firstRequest = buildRequest(ipAddress, "");
-        FlowControllerTestingThread tSample = new FlowControllerTestingThread(firstRequest,
-                0, 0, controller);
+        Request firstRequest = buildIpRequest(ipAddress, "");
+        FlowControllerTestingThread tSample =
+                new FlowControllerTestingThread(firstRequest, 0, 0, controller);
         tSample.start();
         waitTerminated(tSample, MAX_WAIT);
 
@@ -30,12 +29,15 @@ public class SingleIpFlowControllerTest extends IpFlowControllerTest {
 
         String ip = firstRequest.getHttpRequest().getRemoteAddr();
 
-        // make three testing threads that will "process" forever, and will use the ip to identify themselves
+        // make three testing threads that will "process" forever, and will use the ip to identify
+        // themselves
         // as the same client, until we interrupt them
-        FlowControllerTestingThread t1 = new FlowControllerTestingThread(buildRequest(
-                ip, ""), 0, Long.MAX_VALUE, controller);
-        FlowControllerTestingThread t2 = new FlowControllerTestingThread(buildRequest(
-                ip, ""), 0, Long.MAX_VALUE, controller);
+        FlowControllerTestingThread t1 =
+                new FlowControllerTestingThread(
+                        buildIpRequest(ip, ""), 0, Long.MAX_VALUE, controller);
+        FlowControllerTestingThread t2 =
+                new FlowControllerTestingThread(
+                        buildIpRequest(ip, ""), 0, Long.MAX_VALUE, controller);
 
         try {
             // start threads making sure every one of them managed to block somewhere before
@@ -53,11 +55,11 @@ public class SingleIpFlowControllerTest extends IpFlowControllerTest {
             waitTerminated(t1, MAX_WAIT);
 
             assertEquals(ThreadState.COMPLETE, t1.state);
-            assertEquals(ThreadState.PROCESSING, t2.state);
+            waitState(ThreadState.PROCESSING, t2, MAX_WAIT);
 
             t2.interrupt();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            // System.out.println(e.getMessage());
         } finally {
             waitAndKill(t1, MAX_WAIT);
             waitAndKill(t2, MAX_WAIT);
@@ -68,9 +70,9 @@ public class SingleIpFlowControllerTest extends IpFlowControllerTest {
     public void testConcurrentRequestsDifferentIPAddress() {
         SingleIpFlowController controller = new SingleIpFlowController(1, "192.168.1.8");
         String ipAddress = "127.0.0.1";
-        Request firstRequest = buildRequest(ipAddress, "");
-        FlowControllerTestingThread tSample = new FlowControllerTestingThread(firstRequest,
-                0, 0, controller);
+        Request firstRequest = buildIpRequest(ipAddress, "");
+        FlowControllerTestingThread tSample =
+                new FlowControllerTestingThread(firstRequest, 0, 0, controller);
         tSample.start();
         waitTerminated(tSample, MAX_WAIT);
 
@@ -78,10 +80,12 @@ public class SingleIpFlowControllerTest extends IpFlowControllerTest {
 
         String ip = firstRequest.getHttpRequest().getRemoteAddr();
 
-        FlowControllerTestingThread t1 = new FlowControllerTestingThread(buildRequest(
-                ip, ""), 0, Long.MAX_VALUE, controller);
-        FlowControllerTestingThread t2 = new FlowControllerTestingThread(buildRequest(
-                ip, ""), 0, Long.MAX_VALUE, controller);
+        FlowControllerTestingThread t1 =
+                new FlowControllerTestingThread(
+                        buildIpRequest(ip, ""), 0, Long.MAX_VALUE, controller);
+        FlowControllerTestingThread t2 =
+                new FlowControllerTestingThread(
+                        buildIpRequest(ip, ""), 0, Long.MAX_VALUE, controller);
 
         try {
             // start threads making sure every one of them managed to block somewhere before
@@ -101,16 +105,14 @@ public class SingleIpFlowControllerTest extends IpFlowControllerTest {
             waitTerminated(t1, MAX_WAIT);
 
             assertEquals(ThreadState.COMPLETE, t1.state);
-            assertEquals(ThreadState.PROCESSING, t2.state);
+            waitState(ThreadState.PROCESSING, t2, MAX_WAIT);
 
             t2.interrupt();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            // System.out.println(e.getMessage());
         } finally {
             waitAndKill(t1, MAX_WAIT);
             waitAndKill(t2, MAX_WAIT);
         }
-
     }
-
 }

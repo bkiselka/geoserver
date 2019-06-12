@@ -1,4 +1,4 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2017 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -8,11 +8,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- * A wrapper for a Dispatcher destination output stream that signals
- * {@link IOException}s thrown while writing to the underlying destination as
- * ignorable for OWS exception reporting, by throwing a
- * {@link ClientStreamAbortedException}.
- * 
+ * A wrapper for a Dispatcher destination output stream that signals {@link IOException}s thrown
+ * while writing to the underlying destination as ignorable for OWS exception reporting, by throwing
+ * a {@link ClientStreamAbortedException}.
+ *
  * @author Gabriel Roldan (TOPP)
  * @version $Id$
  * @since 1.6.x
@@ -24,9 +23,7 @@ public final class DispatcherOutputStream extends OutputStream {
         this.real = real;
     }
 
-    /**
-     * @see OutputStream#flush()
-     */
+    /** @see OutputStream#flush() */
     public void flush() throws ClientStreamAbortedException {
         try {
             real.flush();
@@ -35,9 +32,7 @@ public final class DispatcherOutputStream extends OutputStream {
         }
     }
 
-    /**
-     * @see OutputStream#write(byte[], int, int)
-     */
+    /** @see OutputStream#write(byte[], int, int) */
     public void write(byte b[], int off, int len) throws ClientStreamAbortedException {
         try {
             real.write(b, off, len);
@@ -46,9 +41,7 @@ public final class DispatcherOutputStream extends OutputStream {
         }
     }
 
-    /**
-     * @see OutputStream#write(int)
-     */
+    /** @see OutputStream#write(int) */
     public void write(int b) throws ClientStreamAbortedException {
         try {
             real.write(b);
@@ -57,9 +50,7 @@ public final class DispatcherOutputStream extends OutputStream {
         }
     }
 
-    /**
-     * @see OutputStream#close()
-     */
+    /** @see OutputStream#close() */
     public void close() throws ClientStreamAbortedException {
         try {
             real.close();
@@ -67,5 +58,4 @@ public final class DispatcherOutputStream extends OutputStream {
             throw new ClientStreamAbortedException(e);
         }
     }
-
 }

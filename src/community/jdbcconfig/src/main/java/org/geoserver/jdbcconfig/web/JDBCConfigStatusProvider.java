@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -12,16 +13,11 @@ import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.security.GeoServerSecurityManager;
 import org.geoserver.web.GeoServerHomePageContentProvider;
 
-/**
- * 
- * @author Kevin Smith, OpenGeo
- *
- */
-public class JDBCConfigStatusProvider implements
-        GeoServerHomePageContentProvider {
-    
+/** @author Kevin Smith, OpenGeo */
+public class JDBCConfigStatusProvider implements GeoServerHomePageContentProvider {
+
     JDBCConfigProperties config;
-    
+
     public JDBCConfigStatusProvider(JDBCConfigProperties config) {
         super();
         this.config = config;
@@ -30,9 +26,9 @@ public class JDBCConfigStatusProvider implements
     @Override
     public Component getPageBodyComponent(String id) {
         GeoServerSecurityManager secMgr = GeoServerExtensions.bean(GeoServerSecurityManager.class);
-        if (secMgr.checkAuthenticationForAdminRole() && config.isEnabled()) { 
+        if (secMgr.checkAuthenticationForAdminRole() && config.isEnabled()) {
             return new JDBCConfigStatusPanel(id, config);
         }
-        return new WebMarkupContainer(id);  // Placeholder
+        return new WebMarkupContainer(id); // Placeholder
     }
 }

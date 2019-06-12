@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -8,18 +9,16 @@ import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import junit.framework.TestCase;
-
 import org.geoserver.catalog.AuthorityURLInfo;
 import org.geoserver.catalog.impl.AuthorityURL;
 import org.junit.Test;
 
 public class AuthorityURLInfoInfoListConverterTest {
 
-    @Test 
+    @Test
     public void testFromString() {
-        final String serialized = "[{\"name\":\"auth1\",\"href\":\"http://geoserver.org/auth1?\"},{\"name\":\"auth2\",\"href\":\"http://geoserver.org/auth2;someparam=somevalue&\"}]";
+        final String serialized =
+                "[{\"name\":\"auth1\",\"href\":\"http://geoserver.org/auth1?\"},{\"name\":\"auth2\",\"href\":\"http://geoserver.org/auth2;someparam=somevalue&\"}]";
         List<AuthorityURLInfo> expected = new ArrayList<AuthorityURLInfo>();
 
         AuthorityURLInfo auth1 = new AuthorityURL();
@@ -65,7 +64,8 @@ public class AuthorityURLInfoInfoListConverterTest {
         list.add(auth2);
 
         String actual = AuthorityURLInfoInfoListConverter.toString(list);
-        String expected = "[{\"name\":\"auth1\",\"href\":\"http://geoserver.org/auth1?\"},{\"name\":\"auth2\",\"href\":\"http://geoserver.org/auth2;someparam=somevalue&\"}]";
+        String expected =
+                "[{\"name\":\"auth1\",\"href\":\"http://geoserver.org/auth1?\"},{\"name\":\"auth2\",\"href\":\"http://geoserver.org/auth2;someparam=somevalue&\"}]";
         assertEquals(expected, actual);
     }
 
@@ -93,7 +93,6 @@ public class AuthorityURLInfoInfoListConverterTest {
         list.add(null);
 
         assertNull(AuthorityURLInfoInfoListConverter.toString(list));
-
     }
 
     @Test

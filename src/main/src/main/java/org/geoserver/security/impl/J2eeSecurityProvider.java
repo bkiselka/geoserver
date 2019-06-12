@@ -1,11 +1,11 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 package org.geoserver.security.impl;
 
 import java.io.IOException;
-
 import org.geoserver.config.util.XStreamPersister;
 import org.geoserver.security.GeoServerRoleService;
 import org.geoserver.security.GeoServerSecurityManager;
@@ -16,7 +16,7 @@ import org.geoserver.security.validation.SecurityConfigValidator;
 
 /**
  * Security provider for J2EE security implementations.
- * 
+ *
  * @author christian
  */
 public class J2eeSecurityProvider extends GeoServerSecurityProvider {
@@ -26,8 +26,6 @@ public class J2eeSecurityProvider extends GeoServerSecurityProvider {
         super.configure(xp);
         xp.getXStream().alias("j2eeRoleService", J2eeRoleServiceConfig.class);
     }
-
-
 
     @Override
     public Class<? extends GeoServerRoleService> getRoleServiceClass() {
@@ -40,11 +38,9 @@ public class J2eeSecurityProvider extends GeoServerSecurityProvider {
         return new GeoServerJ2eeRoleService();
     }
 
-
-
     @Override
-    public SecurityConfigValidator createConfigurationValidator(GeoServerSecurityManager securityManager) {
-        return new SecurityConfigValidator(securityManager); 
-     }
-
+    public SecurityConfigValidator createConfigurationValidator(
+            GeoServerSecurityManager securityManager) {
+        return new SecurityConfigValidator(securityManager);
+    }
 }

@@ -1,4 +1,5 @@
-/* Copyright (c) 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -6,12 +7,9 @@ package org.geoserver.wcs2_0.response;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.TreeSet;
 import java.util.logging.Logger;
-
 import org.geoserver.catalog.DimensionInfo;
 import org.geoserver.catalog.DimensionPresentation;
 import org.geoserver.catalog.util.ReaderDimensionsAccessor;
@@ -22,25 +20,27 @@ import org.vfny.geoserver.wcs.WcsException;
 
 /**
  * Provides support to build the coverage description for time based data
- * 
+ *
  * @author Andrea Aime - GeoSolutions
  */
 class TimeDimensionHelper {
 
     static final Logger LOGGER = Logging.getLogger(TimeDimensionHelper.class);
 
-    /**
-     * Duration in ms of well know time periods
-     */
-    static final BigDecimal[] DURATIONS = new BigDecimal[] { new BigDecimal(31536000000L),
-            new BigDecimal(2628000000L), new BigDecimal(86400000L), new BigDecimal(3600000L),
-            new BigDecimal(60000), new BigDecimal(1000L) };
+    /** Duration in ms of well know time periods */
+    static final BigDecimal[] DURATIONS =
+            new BigDecimal[] {
+                new BigDecimal(31536000000L),
+                new BigDecimal(2628000000L),
+                new BigDecimal(86400000L),
+                new BigDecimal(3600000L),
+                new BigDecimal(60000),
+                new BigDecimal(1000L)
+            };
 
-    /**
-     * Labels for teh above time periods
-     */
-    static final String[] DURATION_UNITS = new String[] { "year", "month", "day", "hour", "minute",
-            "second" };
+    /** Labels for teh above time periods */
+    static final String[] DURATION_UNITS =
+            new String[] {"year", "month", "day", "hour", "minute", "second"};
 
     DimensionInfo timeDimension;
 
@@ -54,7 +54,9 @@ class TimeDimensionHelper {
 
     String coverageId;
 
-    public TimeDimensionHelper(DimensionInfo timeDimension, GridCoverage2DReader reader, String coverageId) throws IOException {
+    public TimeDimensionHelper(
+            DimensionInfo timeDimension, GridCoverage2DReader reader, String coverageId)
+            throws IOException {
         this.timeDimension = timeDimension;
         this.accessor = new ReaderDimensionsAccessor(reader);
         this.coverageId = coverageId;
@@ -82,14 +84,15 @@ class TimeDimensionHelper {
     public DimensionInfo getTimeDimension() {
         return timeDimension;
     }
-    
+
     public TreeSet<Object> getTimeDomain() throws IOException {
         return accessor.getTimeDomain();
     }
 
     /**
      * Returns the minimum time, formatted according to ISO8601
-     * @throws IOException 
+     *
+     * @throws IOException
      */
     public String getBeginPosition() throws IOException {
         Date minTime = accessor.getMinTime();
@@ -98,7 +101,8 @@ class TimeDimensionHelper {
 
     /**
      * Returns the maximum time, formatted according to ISO8601
-     * @throws IOException 
+     *
+     * @throws IOException
      */
     public String getEndPosition() throws IOException {
         Date maxTime = accessor.getMaxTime();
@@ -106,9 +110,9 @@ class TimeDimensionHelper {
     }
 
     /**
-     * Formats a Date into ISO86011 
+     * Formats a Date into ISO86011
+     *
      * @param time
-     * @return
      */
     public String format(Date time) {
         if (time != null) {
@@ -118,11 +122,7 @@ class TimeDimensionHelper {
         }
     }
 
-    /**
-     * Returns the type of presentation for the time dimension
-     * 
-     * @return
-     */
+    /** Returns the type of presentation for the time dimension */
     public DimensionPresentation getPresentation() {
         return timeDimension.getPresentation();
     }
@@ -130,28 +130,18 @@ class TimeDimensionHelper {
     /**
      * Returns the resolution unit, choosing among "year", "month", "day", "hour", "minute",
      * "second"
-     * 
-     * @return
      */
     public String getResolutionUnit() {
         return resolutionUnit;
     }
 
-    /**
-     * The resolution value, expressed in the unit returned by {@link #getResolutionUnit()}
-     * 
-     * @return
-     */
+    /** The resolution value, expressed in the unit returned by {@link #getResolutionUnit()} */
     public long getResolutionValue() {
         return resolutionValue;
     }
 
-    /**
-     * The coverage identifier
-     * @return
-     */
+    /** The coverage identifier */
     public String getCoverageId() {
         return coverageId;
     }
-
 }

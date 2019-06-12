@@ -1,4 +1,5 @@
-/* Copyright (c) 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 - 2015 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -8,30 +9,29 @@ import java.io.Serializable;
 
 /**
  * A INSPIRE download service spatial dataset identifier
- * 
+ *
  * @author Andrea Aime - GeoSolutions
  */
 public class UniqueResourceIdentifier implements Serializable {
     private static final long serialVersionUID = 3277074136449520282L;
 
-    String code;
+    private String code;
 
-    String namespace;
+    private String namespace;
 
     private String metadataURL;
 
-    public UniqueResourceIdentifier() {
-    }
+    public UniqueResourceIdentifier() {}
 
     public UniqueResourceIdentifier(String code) {
         this.code = code;
-   }
-    
+    }
+
     public UniqueResourceIdentifier(String code, String namespace) {
         this.code = code;
         this.namespace = namespace;
     }
-    
+
     public UniqueResourceIdentifier(String code, String namespace, String metadataURL) {
         this.code = code;
         this.namespace = namespace;
@@ -54,16 +54,13 @@ public class UniqueResourceIdentifier implements Serializable {
         this.namespace = namespace;
     }
 
-
     public String getMetadataURL() {
         return metadataURL;
     }
 
-
     public void setMetadataURL(String metadataURL) {
         this.metadataURL = metadataURL;
     }
-
 
     @Override
     public int hashCode() {
@@ -75,41 +72,32 @@ public class UniqueResourceIdentifier implements Serializable {
         return result;
     }
 
-
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
         UniqueResourceIdentifier other = (UniqueResourceIdentifier) obj;
         if (code == null) {
-            if (other.code != null)
-                return false;
-        } else if (!code.equals(other.code))
-            return false;
+            if (other.code != null) return false;
+        } else if (!code.equals(other.code)) return false;
         if (metadataURL == null) {
-            if (other.metadataURL != null)
-                return false;
-        } else if (!metadataURL.equals(other.metadataURL))
-            return false;
+            if (other.metadataURL != null) return false;
+        } else if (!metadataURL.equals(other.metadataURL)) return false;
         if (namespace == null) {
-            if (other.namespace != null)
-                return false;
-        } else if (!namespace.equals(other.namespace))
-            return false;
+            if (other.namespace != null) return false;
+        } else if (!namespace.equals(other.namespace)) return false;
         return true;
     }
 
-
     @Override
     public String toString() {
-        return "SpatialDataUniqueResourceIdentifier [code=" + code + ", namespace=" + namespace
-                + ", metadataURL=" + metadataURL + "]";
+        return "SpatialDataUniqueResourceIdentifier [code="
+                + code
+                + ", namespace="
+                + namespace
+                + ", metadataURL="
+                + metadataURL
+                + "]";
     }
-
-    
-
 }

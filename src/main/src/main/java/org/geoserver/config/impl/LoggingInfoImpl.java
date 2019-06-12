@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -6,14 +7,15 @@ package org.geoserver.config.impl;
 
 import org.geoserver.config.LoggingInfo;
 
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 public class LoggingInfoImpl implements LoggingInfo {
 
     String id;
-    
+
     String level;
 
     String location;
@@ -23,11 +25,11 @@ public class LoggingInfoImpl implements LoggingInfo {
     public String getId() {
         return id;
     }
-    
+
     public void setId(String id) {
         this.id = id;
     }
-    
+
     public String getLevel() {
         return level;
     }
@@ -64,26 +66,19 @@ public class LoggingInfoImpl implements LoggingInfo {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (!(obj instanceof LoggingInfo)) {
             return false;
-        if (getClass() != obj.getClass())
-            return false;
-        LoggingInfoImpl other = (LoggingInfoImpl) obj;
+        }
+        LoggingInfo other = (LoggingInfo) obj;
         if (level == null) {
-            if (other.level != null)
-                return false;
-        } else if (!level.equals(other.level))
-            return false;
+            if (other.getLevel() != null) return false;
+        } else if (!level.equals(other.getLevel())) return false;
         if (location == null) {
-            if (other.location != null)
-                return false;
-        } else if (!location.equals(other.location))
-            return false;
-        if (stdOutLogging != other.stdOutLogging)
-            return false;
+            if (other.getLocation() != null) return false;
+        } else if (!location.equals(other.getLocation())) return false;
+        if (stdOutLogging != other.isStdOutLogging()) return false;
         return true;
     }
-    
 }

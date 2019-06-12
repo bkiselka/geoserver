@@ -1,28 +1,26 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 package org.geoserver.wfs.xml.v1_1_0;
 
 import java.math.BigInteger;
-
 import javax.xml.namespace.QName;
-
 import net.opengis.wfs.AllSomeType;
 import net.opengis.wfs.LockFeatureType;
 import net.opengis.wfs.LockType;
 import net.opengis.wfs.WfsFactory;
-
-import org.geotools.xml.AbstractComplexBinding;
-import org.geotools.xml.ElementInstance;
-import org.geotools.xml.Node;
-
+import org.geotools.xsd.AbstractComplexBinding;
+import org.geotools.xsd.ElementInstance;
+import org.geotools.xsd.Node;
 
 /**
  * Binding object for the type http://www.opengis.net/wfs:LockFeatureType.
  *
  * <p>
- *        <pre>
+ *
+ * <pre>
  *         <code>
  *  &lt;xsd:complexType name="LockFeatureType"&gt;
  *      &lt;xsd:annotation&gt;
@@ -89,7 +87,6 @@ import org.geotools.xml.Node;
  *
  *          </code>
  *         </pre>
- * </p>
  *
  * @generated
  */
@@ -100,9 +97,7 @@ public class LockFeatureTypeBinding extends AbstractComplexBinding {
         this.wfsfactory = wfsfactory;
     }
 
-    /**
-     * @generated
-     */
+    /** @generated */
     public QName getTarget() {
         return WFS.LOCKFEATURETYPE;
     }
@@ -112,6 +107,7 @@ public class LockFeatureTypeBinding extends AbstractComplexBinding {
     }
 
     /**
+     *
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      *
@@ -122,26 +118,27 @@ public class LockFeatureTypeBinding extends AbstractComplexBinding {
     }
 
     /**
+     *
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      *
      * @generated modifiable
      */
-    public Object parse(ElementInstance instance, Node node, Object value)
-        throws Exception {
+    public Object parse(ElementInstance instance, Node node, Object value) throws Exception {
         LockFeatureType lockFeature = wfsfactory.createLockFeatureType();
 
-        //&lt;xsd:element maxOccurs="unbounded" name="Lock" type="wfs:LockType"&gt;
+        // &lt;xsd:element maxOccurs="unbounded" name="Lock" type="wfs:LockType"&gt;
         lockFeature.getLock().addAll(node.getChildValues(LockType.class));
 
-        //&lt;xsd:attribute default="5" name="expiry"  type="xsd:positiveInteger" use="optional"&gt;
+        // &lt;xsd:attribute default="5" name="expiry"  type="xsd:positiveInteger"
+        // use="optional"&gt;
         if (node.hasAttribute("expiry")) {
             lockFeature.setExpiry((BigInteger) node.getAttributeValue("expiry"));
         } else {
             lockFeature.setExpiry(BigInteger.valueOf(5));
         }
 
-        //&lt;xsd:attribute default="ALL" name="lockAction"
+        // &lt;xsd:attribute default="ALL" name="lockAction"
         if (node.hasAttribute("lockAction")) {
             lockFeature.setLockAction((AllSomeType) node.getAttributeValue("lockAction"));
         } else {

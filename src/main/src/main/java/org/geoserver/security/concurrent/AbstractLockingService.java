@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -7,15 +8,13 @@ package org.geoserver.security.concurrent;
 
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-
 import org.geoserver.security.GeoServerSecurityManager;
 import org.geoserver.security.GeoServerSecurityService;
 
 /**
  * Abstract base class for locking support.
- * 
- * @author christian
  *
+ * @author christian
  */
 public abstract class AbstractLockingService implements GeoServerSecurityService {
 
@@ -29,16 +28,14 @@ public abstract class AbstractLockingService implements GeoServerSecurityService
         this.service = service;
     }
 
-    /**
-     * @return the wrapped service
-     */
+    /** @return the wrapped service */
     public GeoServerSecurityService getService() {
         return service;
     }
 
-    
     /**
      * NO_LOCK
+     *
      * @see org.geoserver.security.GeoServerRoleService#getName()
      */
     public String getName() {
@@ -65,54 +62,40 @@ public abstract class AbstractLockingService implements GeoServerSecurityService
         }
     }
 
-    /**
-     * NO_LOCK
-     */
+    /** NO_LOCK */
     @Override
     public GeoServerSecurityManager getSecurityManager() {
         return getService().getSecurityManager();
     }
 
-    /**
-     * NO_LOCK
-     */
+    /** NO_LOCK */
     @Override
     public boolean canCreateStore() {
         return getService().canCreateStore();
     }
 
-   @Override
+    @Override
     public String toString() {
-        return "Locking "+ getName();
+        return "Locking " + getName();
     }
 
-    /**
-     *  get a read lock
-     */
-    protected void  readLock() {
+    /** get a read lock */
+    protected void readLock() {
         readLock.lock();
     }
 
-    /**
-     *  free read lock
-     */
-    protected void  readUnLock() {
+    /** free read lock */
+    protected void readUnLock() {
         readLock.unlock();
     }
 
-    /**
-     *  get a write lock
-     */
-    protected void  writeLock() {
+    /** get a write lock */
+    protected void writeLock() {
         writeLock.lock();
     }
 
-    /**
-     *  free write lock
-     */
-    protected void  writeUnLock() {
+    /** free write lock */
+    protected void writeUnLock() {
         writeLock.unlock();
     }
-
-    
 }

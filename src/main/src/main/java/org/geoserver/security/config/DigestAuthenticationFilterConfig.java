@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -8,26 +9,24 @@ import org.geoserver.security.filter.GeoServerDigestAuthenticationFilter;
 
 /**
  * {@link GeoServerDigestAuthenticationFilter} configuration object.
- * 
- * <p>
- * The user group service must have a plain text or an encrypting password encoder.
- * </p>
- * <p>
- * The default value for {@link #nonceValiditySeconds} is 300 
- * </p>
- * @author mcr
  *
+ * <p>The user group service must have a plain text or an encrypting password encoder.
+ *
+ * <p>The default value for {@link #nonceValiditySeconds} is 300
+ *
+ * @author mcr
  */
-public class DigestAuthenticationFilterConfig extends SecurityFilterConfig 
-    implements SecurityAuthFilterConfig{
+public class DigestAuthenticationFilterConfig extends SecurityFilterConfig
+        implements SecurityAuthFilterConfig {
 
     private static final long serialVersionUID = 1L;
     private String userGroupServiceName;
-    private int nonceValiditySeconds =300;
+    private int nonceValiditySeconds = 300;
 
     public int getNonceValiditySeconds() {
         return nonceValiditySeconds;
     }
+
     public void setNonceValiditySeconds(int nonceValiditySeconds) {
         this.nonceValiditySeconds = nonceValiditySeconds;
     }
@@ -35,6 +34,7 @@ public class DigestAuthenticationFilterConfig extends SecurityFilterConfig
     public String getUserGroupServiceName() {
         return userGroupServiceName;
     }
+
     public void setUserGroupServiceName(String userGroupServiceName) {
         this.userGroupServiceName = userGroupServiceName;
     }
@@ -43,5 +43,4 @@ public class DigestAuthenticationFilterConfig extends SecurityFilterConfig
     public boolean providesAuthenticationEntryPoint() {
         return true;
     }
-
 }

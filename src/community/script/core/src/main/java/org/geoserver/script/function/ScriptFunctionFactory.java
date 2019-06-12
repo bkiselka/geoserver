@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -7,14 +8,12 @@ package org.geoserver.script.function;
 import static org.apache.commons.io.FilenameUtils.getBaseName;
 import static org.apache.commons.io.FilenameUtils.getExtension;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
+import org.geoserver.platform.resource.Resource;
+import org.geoserver.platform.resource.Resources;
 import org.geoserver.script.ScriptFactory;
 import org.geoserver.script.ScriptManager;
 import org.geoserver.script.wps.ScriptProcessFactory;
@@ -30,14 +29,12 @@ import org.opengis.filter.expression.Expression;
 import org.opengis.filter.expression.Function;
 import org.opengis.filter.expression.Literal;
 
-/**
- * Function factory that creates processes from scripts located in the data directory.
- */
+/** Function factory that creates processes from scripts located in the data directory. */
 public class ScriptFunctionFactory extends ScriptFactory implements FunctionFactory {
 
     /** logger */
     static Logger LOGGER = Logging.getLogger(ScriptProcessFactory.class);
-    
+
     /** script manager */
     ScriptManager scriptMgr;
 
@@ -61,22 +58,22 @@ public class ScriptFunctionFactory extends ScriptFactory implements FunctionFact
         List<FunctionName> names = new ArrayList<FunctionName>();
 
         try {
-            File filterRoot = scriptMgr.getFunctionRoot();
-            for (String file : filterRoot.list()) {
-                File f = new File(filterRoot, file);
+            Resource filterRoot = scriptMgr.function();
+            for (Resource file : filterRoot.list()) {
 
-                FunctionHook hook = scriptMgr.lookupFilterHook(f);
-                if (hook == null) {
-                    LOGGER.fine("Skipping " + f.getName() + ", no hook found");
+                FunctionHook hook = scriptMgr.lookupFilterHook(file);
+                if (!Resources.exists(file)) {
+                    LOGGER.fine("Skipping " + file.name() + ", no hook found");
                 }
 
-                //TODO: support multiple functions in one file
-                //TODO: support the function defining its namespace
-                names.add(ff.functionName(
-                    new NameImpl(getExtension(f.getName()), getBaseName(f.getName())), -1));
+                // TODO: support multiple functions in one file
+                // TODO: support the function defining its namespace
+                names.add(
+                        ff.functionName(
+                                new NameImpl(getExtension(file.name()), getBaseName(file.name())),
+                                -1));
             }
-        }
-        catch (IOException e) {
+        } catch (IllegalStateException e) {
             LOGGER.log(Level.WARNING, "Error looking up filters", e);
         }
         return names;
@@ -96,48 +93,39 @@ public class ScriptFunctionFactory extends ScriptFactory implements FunctionFact
     ScriptFunction function(Name name) {
         ScriptFunction function = functions.get(name);
         if (function == null) {
-            synchronized(this) {
+            synchronized (this) {
                 function = functions.get(name);
                 if (function == null) {
-                    try {
-                        ScriptManager scriptMgr = scriptMgr();
+                    ScriptManager scriptMgr = scriptMgr();
 
-                        File filterRoot = scriptMgr.getFunctionRoot();
-                        File f = null;
-                        if (name.getNamespaceURI() != null) {
-                            f = new File(filterRoot, name.getLocalPart()+"."+name.getNamespaceURI());
-                        }
-                        else {
-                            //look for a file based on basename
-                            for (String filename : filterRoot.list()) {
-                                if (name.getLocalPart().equals(getBaseName(filename))) {
-                                    f = new File(filterRoot, filename);
-                                    break;
-                                }
+                    Resource filterRoot = scriptMgr.function();
+                    Resource f = null;
+                    if (name.getNamespaceURI() != null) {
+                        f = filterRoot.get(name.getLocalPart() + "." + name.getNamespaceURI());
+                    } else {
+                        // look for a file based on basename
+                        for (Resource file : filterRoot.list()) {
+                            if (name.getLocalPart().equals(getBaseName(file.name()))) {
+                                f = file;
+                                break;
                             }
                         }
-
-                        if (f == null) {
-                            return null;
-                        }
-                        
-                        if (!f.exists()) {
-                            //throw new FileNotFoundException(f.getPath());
-                            LOGGER.log(Level.WARNING, "File not found : " + f.getPath());
-                            return null;
-                        }
-
-                        function = new ScriptFunction(f, scriptMgr);
-                    } 
-                    catch (IOException e) {
-                        throw new RuntimeException(e);
                     }
 
+                    if (f == null) {
+                        return null;
+                    }
+
+                    if (!Resources.exists(f)) {
+                        LOGGER.log(Level.WARNING, "File not found : " + f.path());
+                        return null;
+                    }
+
+                    function = new ScriptFunction(f, scriptMgr);
                     functions.put(name, function);
                 }
             }
         }
         return function;
     }
-
 }

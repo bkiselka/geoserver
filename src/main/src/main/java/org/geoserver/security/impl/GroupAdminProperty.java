@@ -1,17 +1,17 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 package org.geoserver.security.impl;
 
 import java.util.Properties;
-
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * User property that stores list of groups that a user has {@link GeoServerRole#GROUP_ADMIN_ROLE}
  * privileges for.
- * 
+ *
  * @author Justin Deoliveira, OpenGeo
  */
 public class GroupAdminProperty extends UserProperty<String[]> {

@@ -1,4 +1,5 @@
-/* Copyright (c) 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -10,9 +11,8 @@ import java.util.Map;
  * Implementors of this interface allow to transfer thread locals from the current thread to another
  * one. They are used to make sure important thread local values are transferred into thread
  * pools/scheduled tasks/delayed actions executing portions of the GeoServer work
- * 
+ *
  * @author Andrea Aime - GeoSolutions
- * 
  */
 public interface ThreadLocalTransfer {
 
@@ -24,13 +24,9 @@ public interface ThreadLocalTransfer {
      */
     void collect(Map<String, Object> storage);
 
-    /**
-     * Set the thread local values in the current thread
-     */
+    /** Set the thread local values in the current thread */
     void apply(Map<String, Object> storage);
 
-    /**
-     * Clean up the thread locals in the current thread
-     */
+    /** Clean up the thread locals in the current thread */
     void cleanup();
 }

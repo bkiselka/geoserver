@@ -1,16 +1,15 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 package org.vfny.geoserver.util.requests;
 
 import java.util.logging.Logger;
-
 import org.geotools.filter.FilterHandler;
 import org.opengis.filter.Filter;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.helpers.XMLFilterImpl;
-
 
 /**
  * Minimal class to implement the FilterHandler interface.
@@ -20,14 +19,13 @@ import org.xml.sax.helpers.XMLFilterImpl;
  */
 public class FilterHandlerImpl extends XMLFilterImpl implements ContentHandler, FilterHandler {
     /** Class logger */
-    private static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.requests");
+    private static Logger LOGGER =
+            org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.requests");
 
     /** Tracks current filter */
     private Filter currentFilter = null;
 
-    /**
-     * Empty constructor.
-     */
+    /** Empty constructor. */
     public FilterHandlerImpl() {
         super();
     }

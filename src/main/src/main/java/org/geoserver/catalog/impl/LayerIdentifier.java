@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -8,12 +9,10 @@ import org.geoserver.catalog.LayerIdentifierInfo;
 import org.geotools.util.Utilities;
 
 /**
- * Realization of {@link LayerIdentifierInfo}; being a "data type" there's no
- * {@code createAuthorityURL()} method in {@code CatalogFactory}, instead directly instantiate this
- * class.
- * 
+ * Realization of {@link LayerIdentifierInfo}; being a "data type" there's no {@code
+ * createAuthorityURL()} method in {@code CatalogFactory}, instead directly instantiate this class.
+ *
  * @author groldan
- * 
  */
 public class LayerIdentifier implements LayerIdentifierInfo {
 
@@ -60,8 +59,12 @@ public class LayerIdentifier implements LayerIdentifierInfo {
 
     @Override
     public String toString() {
-        return new StringBuilder(getClass().getSimpleName()).append("[ authority: '")
-                .append(authority).append("', identifier: '").append(identifier).append("']")
+        return new StringBuilder(getClass().getSimpleName())
+                .append("[ authority: '")
+                .append(authority)
+                .append("', identifier: '")
+                .append(identifier)
+                .append("']")
                 .toString();
     }
 }

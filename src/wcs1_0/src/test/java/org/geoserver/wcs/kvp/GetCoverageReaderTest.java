@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -10,10 +11,7 @@ import static org.vfny.geoserver.wcs.WcsException.WcsExceptionCode.InvalidParame
 
 import java.util.HashMap;
 import java.util.Map;
-
 import net.opengis.wcs10.GetCoverageType;
-
-import org.geoserver.catalog.Catalog;
 import org.geoserver.wcs.test.WCSTestSupport;
 import org.junit.Before;
 import org.junit.Test;
@@ -67,7 +65,6 @@ public class GetCoverageReaderTest extends WCSTestSupport {
             fail("This time all mandatory params where provided?");
             assertEquals("MissingParameterValue", e.getCode());
         }
-
     }
 
     private Map<String, Object> baseMap() {
@@ -107,13 +104,13 @@ public class GetCoverageReaderTest extends WCSTestSupport {
         raw.put("width", "150");
         raw.put("height", "150");
 
-        GetCoverageType getCoverage = (GetCoverageType) reader.read(reader.createRequest(),
-                parseKvp(raw), raw);
+        GetCoverageType getCoverage =
+                (GetCoverageType) reader.read(reader.createRequest(), parseKvp(raw), raw);
         assertEquals(layerId, getCoverage.getSourceCoverage());
         assertEquals("image/tiff", getCoverage.getOutput().getFormat().getValue());
         assertEquals("EPSG:4326", getCoverage.getOutput().getCrs().getValue());
     }
-    
+
     @Test
     public void testInterpolation() throws Exception {
         Map<String, Object> raw = baseMap();
@@ -125,14 +122,15 @@ public class GetCoverageReaderTest extends WCSTestSupport {
         raw.put("CRS", "EPSG:4326");
         raw.put("width", "150");
         raw.put("height", "150");
-        raw.put("interpolationMethod", "nearest neighbor");
+        raw.put("interpolation", "nearest neighbor");
 
-        GetCoverageType getCoverage = (GetCoverageType) reader.read(reader.createRequest(),parseKvp(raw), raw);
+        GetCoverageType getCoverage =
+                (GetCoverageType) reader.read(reader.createRequest(), parseKvp(raw), raw);
         assertEquals(layerId, getCoverage.getSourceCoverage());
         assertEquals("image/tiff", getCoverage.getOutput().getFormat().getValue());
         assertEquals("nearest neighbor", getCoverage.getInterpolationMethod().toString());
 
-        //bilinear
+        // bilinear
         raw = baseMap();
         raw.put("SourceCoverage", layerId);
         raw.put("version", "1.0.0");
@@ -141,14 +139,14 @@ public class GetCoverageReaderTest extends WCSTestSupport {
         raw.put("CRS", "EPSG:4326");
         raw.put("width", "150");
         raw.put("height", "150");
-        raw.put("interpolationMethod", "bilinear");
+        raw.put("interpolation", "bilinear");
 
-        getCoverage = (GetCoverageType) reader.read(reader.createRequest(),parseKvp(raw), raw);
+        getCoverage = (GetCoverageType) reader.read(reader.createRequest(), parseKvp(raw), raw);
         assertEquals(layerId, getCoverage.getSourceCoverage());
         assertEquals("image/tiff", getCoverage.getOutput().getFormat().getValue());
         assertEquals("bilinear", getCoverage.getInterpolationMethod().toString());
-        
-        //nearest
+
+        // nearest
         raw = baseMap();
         raw.put("SourceCoverage", layerId);
         raw.put("version", "1.0.0");
@@ -157,15 +155,14 @@ public class GetCoverageReaderTest extends WCSTestSupport {
         raw.put("CRS", "EPSG:4326");
         raw.put("width", "150");
         raw.put("height", "150");
-        raw.put("interpolationMethod", "nearest");
+        raw.put("interpolation", "nearest");
 
-        getCoverage = (GetCoverageType) reader.read(reader.createRequest(),parseKvp(raw), raw);
+        getCoverage = (GetCoverageType) reader.read(reader.createRequest(), parseKvp(raw), raw);
         assertEquals(layerId, getCoverage.getSourceCoverage());
         assertEquals("image/tiff", getCoverage.getOutput().getFormat().getValue());
         assertEquals("nearest neighbor", getCoverage.getInterpolationMethod().toString());
 
-        
-        //bicubic
+        // bicubic
         raw = baseMap();
         raw.put("SourceCoverage", layerId);
         raw.put("version", "1.0.0");
@@ -174,11 +171,12 @@ public class GetCoverageReaderTest extends WCSTestSupport {
         raw.put("CRS", "EPSG:4326");
         raw.put("width", "150");
         raw.put("height", "150");
-        raw.put("interpolationMethod", "bicubic");
+        raw.put("interpolation", "bicubic");
 
-        getCoverage = (GetCoverageType) reader.read(reader.createRequest(),parseKvp(raw), raw);
+        getCoverage = (GetCoverageType) reader.read(reader.createRequest(), parseKvp(raw), raw);
         assertEquals(layerId, getCoverage.getSourceCoverage());
         assertEquals("image/tiff", getCoverage.getOutput().getFormat().getValue());
+        assertEquals("bicubic", getCoverage.getInterpolationMethod().toString());
     }
 
     @Test
@@ -200,5 +198,4 @@ public class GetCoverageReaderTest extends WCSTestSupport {
             assertEquals("InvalidParameterValue", e.getCode());
         }
     }
-
 }

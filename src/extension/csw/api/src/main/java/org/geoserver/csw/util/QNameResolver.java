@@ -1,28 +1,25 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 package org.geoserver.csw.util;
 
 import javax.xml.namespace.QName;
-
 import org.xml.sax.helpers.NamespaceSupport;
 
 /**
  * Helper class turning a qualified names as a string and namespaces into a QName object
- * 
+ *
  * @author Andrea Aime - GeoSolutions
  */
 public class QNameResolver {
 
     /**
      * Parses the string into a list of {@link QName}
-     * 
+     *
      * @param qualifiedString a string in the form prefix:localName
-     * 
      * @param namespaces Binds prefixes with namespace URIs
-     * @return
-     * @throws Exception
      */
     public QName parseQName(String qualifiedString, NamespaceSupport namespaces) {
         int idx = qualifiedString.indexOf(":");

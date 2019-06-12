@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 - 2016 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -10,9 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import javax.xml.transform.TransformerException;
-
 import org.apache.wicket.Page;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
@@ -31,6 +30,7 @@ import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.web.GeoServerApplication;
+import org.geoserver.web.wicket.Select2DropDownChoice;
 import org.geoserver.wps.web.InputParameterValues.ParameterType;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.util.logging.Logging;
@@ -38,7 +38,7 @@ import org.geotools.util.logging.Logging;
 /**
  * Allows the user to edit a complex input parameter providing a variety of different editors
  * depending on the parameter type
- * 
+ *
  * @author Andrea Aime - OpenGeo
  */
 @SuppressWarnings("serial")
@@ -62,33 +62,36 @@ public class ComplexInputPanel extends Panel {
 
         List<ParameterType> ptypes = pv.getSupportedTypes();
         ptypes.remove(ParameterType.LITERAL);
-        typeChoice = new DropDownChoice("type", new PropertyModel(getDefaultModelObject(), "type"),
-                ptypes);
+        typeChoice =
+                new DropDownChoice(
+                        "type", new PropertyModel(getDefaultModelObject(), "type"), ptypes);
         add(typeChoice);
 
         subprocesswindow = new ModalWindow("subprocessPopupWindow");
         subprocesswindow.setInitialWidth(700);
         subprocesswindow.setInitialHeight(500);
         add(subprocesswindow);
-        subprocesswindow.setPageCreator(new ModalWindow.PageCreator() {
+        subprocesswindow.setPageCreator(
+                new ModalWindow.PageCreator() {
 
-            public Page createPage() {
-                return new SubProcessBuilder((ExecuteRequest) subprocesswindow
-                        .getDefaultModelObject(), subprocesswindow);
-            }
-        });
+                    public Page createPage() {
+                        return new SubProcessBuilder(
+                                (ExecuteRequest) subprocesswindow.getDefaultModelObject(),
+                                subprocesswindow);
+                    }
+                });
 
         updateEditor();
 
-        typeChoice.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+        typeChoice.add(
+                new AjaxFormComponentUpdatingBehavior("change") {
 
-            @Override
-            protected void onUpdate(AjaxRequestTarget target) {
-                updateEditor();
-                target.addComponent(ComplexInputPanel.this);
-            }
-
-        });
+                    @Override
+                    protected void onUpdate(AjaxRequestTarget target) {
+                        updateEditor();
+                        target.add(ComplexInputPanel.this);
+                    }
+                });
     }
 
     void updateEditor() {
@@ -106,8 +109,9 @@ public class ComplexInputPanel extends Panel {
 
             // data as plain text
             Fragment f = new Fragment("editor", "text", this);
-            DropDownChoice mimeChoice = new DropDownChoice("mime", new PropertyModel(
-                    getDefaultModel(), "mime"), mimeTypes);
+            DropDownChoice mimeChoice =
+                    new DropDownChoice(
+                            "mime", new PropertyModel(getDefaultModel(), "mime"), mimeTypes);
             f.add(mimeChoice);
 
             f.add(new TextArea("textarea", valueModel));
@@ -120,8 +124,11 @@ public class ComplexInputPanel extends Panel {
 
             new PropertyModel(getDefaultModel(), "mime").setObject("text/xml");
             Fragment f = new Fragment("editor", "vectorLayer", this);
-            DropDownChoice layer = new DropDownChoice("layer", new PropertyModel(valueModel,
-                    "layerName"), getVectorLayerNames());
+            DropDownChoice layer =
+                    new Select2DropDownChoice(
+                            "layer",
+                            new PropertyModel(valueModel, "layerName"),
+                            getVectorLayerNames());
             f.add(layer);
             add(f);
         } else if (pt == ParameterType.RASTER_LAYER) {
@@ -131,24 +138,30 @@ public class ComplexInputPanel extends Panel {
             }
 
             Fragment f = new Fragment("editor", "rasterLayer", this);
-            final DropDownChoice layer = new DropDownChoice("layer", new PropertyModel(valueModel,
-                    "layerName"), getRasterLayerNames());
+            final DropDownChoice layer =
+                    new Select2DropDownChoice(
+                            "layer",
+                            new PropertyModel(valueModel, "layerName"),
+                            getRasterLayerNames());
             f.add(layer);
             add(f);
 
             // we need to update the raster own bounding box as wcs requests
             // mandate a spatial extent (why oh why???)
-            layer.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+            layer.add(
+                    new AjaxFormComponentUpdatingBehavior("change") {
 
-                @Override
-                protected void onUpdate(AjaxRequestTarget target) {
-                    String name = layer.getDefaultModelObjectAsString();
-                    LayerInfo li = GeoServerApplication.get().getCatalog().getLayerByName(name);
-                    ReferencedEnvelope spatialDomain = li.getResource().getNativeBoundingBox();
-                    ((RasterLayerConfiguration) valueModel.getObject())
-                            .setSpatialDomain(spatialDomain);
-                }
-            });
+                        @Override
+                        protected void onUpdate(AjaxRequestTarget target) {
+                            String name = layer.getDefaultModelObjectAsString();
+                            LayerInfo li =
+                                    GeoServerApplication.get().getCatalog().getLayerByName(name);
+                            ReferencedEnvelope spatialDomain =
+                                    li.getResource().getNativeBoundingBox();
+                            ((RasterLayerConfiguration) valueModel.getObject())
+                                    .setSpatialDomain(spatialDomain);
+                        }
+                    });
         } else if (pt == ParameterType.REFERENCE) {
             // an external reference
             if (!(valueModel.getObject() instanceof ReferenceConfiguration)) {
@@ -156,13 +169,17 @@ public class ComplexInputPanel extends Panel {
             }
 
             Fragment f = new Fragment("editor", "reference", this);
-            final DropDownChoice method = new DropDownChoice("method", new PropertyModel(
-                    valueModel, "method"), Arrays.asList(ReferenceConfiguration.Method.GET,
-                    ReferenceConfiguration.Method.POST));
+            final DropDownChoice method =
+                    new DropDownChoice(
+                            "method",
+                            new PropertyModel(valueModel, "method"),
+                            Arrays.asList(
+                                    ReferenceConfiguration.Method.GET,
+                                    ReferenceConfiguration.Method.POST));
             f.add(method);
 
-            DropDownChoice mimeChoice = new DropDownChoice("mime", new PropertyModel(valueModel,
-                    "mime"), mimeTypes);
+            DropDownChoice mimeChoice =
+                    new DropDownChoice("mime", new PropertyModel(valueModel, "mime"), mimeTypes);
             f.add(mimeChoice);
 
             f.add(new TextField("url", new PropertyModel(valueModel, "url")).setRequired(true));
@@ -175,16 +192,18 @@ public class ComplexInputPanel extends Panel {
             bodyContainer.add(body);
             bodyContainer.setVisible(false);
 
-            method.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+            method.add(
+                    new AjaxFormComponentUpdatingBehavior("change") {
 
-                @Override
-                protected void onUpdate(AjaxRequestTarget target) {
-                    boolean post = method.getModelObject() == ReferenceConfiguration.Method.POST;
-                    bodyContainer.setVisible(post);
-                    body.setRequired(post);
-                    target.addComponent(ComplexInputPanel.this);
-                }
-            });
+                        @Override
+                        protected void onUpdate(AjaxRequestTarget target) {
+                            boolean post =
+                                    method.getModelObject() == ReferenceConfiguration.Method.POST;
+                            bodyContainer.setVisible(post);
+                            body.setRequired(post);
+                            target.add(ComplexInputPanel.this);
+                        }
+                    });
 
             add(f);
         } else if (pt == ParameterType.SUBPROCESS) {
@@ -193,14 +212,15 @@ public class ComplexInputPanel extends Panel {
             }
 
             Fragment f = new Fragment("editor", "subprocess", this);
-            f.add(new AjaxLink("edit") {
+            f.add(
+                    new AjaxLink("edit") {
 
-                @Override
-                public void onClick(AjaxRequestTarget target) {
-                    subprocesswindow.setDefaultModel(valueModel);
-                    subprocesswindow.show(target);
-                }
-            });
+                        @Override
+                        public void onClick(AjaxRequestTarget target) {
+                            subprocesswindow.setDefaultModel(valueModel);
+                            subprocesswindow.show(target);
+                        }
+                    });
 
             final TextArea xml = new TextArea("xml");
             if (((ExecuteRequest) valueModel.getObject()).processName != null) {
@@ -215,16 +235,16 @@ public class ComplexInputPanel extends Panel {
             xml.setOutputMarkupId(true);
             f.add(xml);
 
-            subprocesswindow.setWindowClosedCallback(new ModalWindow.WindowClosedCallback() {
+            subprocesswindow.setWindowClosedCallback(
+                    new ModalWindow.WindowClosedCallback() {
 
-                public void onClose(AjaxRequestTarget target) {
-                    // turn the GUI request into an actual WPS request
-                    xml.setModelObject(getExecuteXML());
+                        public void onClose(AjaxRequestTarget target) {
+                            // turn the GUI request into an actual WPS request
+                            xml.setModelObject(getExecuteXML());
 
-                    target.addComponent(xml);
-                }
-
-            });
+                            target.add(xml);
+                        }
+                    });
 
             add(f);
         } else {
@@ -234,6 +254,8 @@ public class ComplexInputPanel extends Panel {
 
     String getExecuteXML() {
         WPSExecuteTransformer tx = new WPSExecuteTransformer();
+        tx.setEntityResolver(
+                GeoServerApplication.get().getCatalog().getResourcePool().getEntityResolver());
         tx.setIndentation(2);
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
@@ -253,7 +275,7 @@ public class ComplexInputPanel extends Panel {
         List<String> result = new ArrayList<String>();
         for (LayerInfo li : catalog.getLayers()) {
             if (li.getResource() instanceof FeatureTypeInfo) {
-                result.add(li.getResource().getPrefixedName());
+                result.add(li.getResource().prefixedName());
             }
         }
         return result;
@@ -265,7 +287,7 @@ public class ComplexInputPanel extends Panel {
         List<String> result = new ArrayList<String>();
         for (LayerInfo li : catalog.getLayers()) {
             if (li.getResource() instanceof CoverageInfo) {
-                result.add(li.getResource().getPrefixedName());
+                result.add(li.getResource().prefixedName());
             }
         }
         return result;

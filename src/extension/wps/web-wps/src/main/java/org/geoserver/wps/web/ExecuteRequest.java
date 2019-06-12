@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -20,8 +21,8 @@ class ExecuteRequest implements Serializable {
 
     List<OutputParameter> outputs;
 
-    public ExecuteRequest(String processName, List<InputParameterValues> inputs,
-            List<OutputParameter> outputs) {
+    public ExecuteRequest(
+            String processName, List<InputParameterValues> inputs, List<OutputParameter> outputs) {
         this.processName = processName;
         this.inputs = inputs;
         this.outputs = outputs;
@@ -32,5 +33,4 @@ class ExecuteRequest implements Serializable {
         this.inputs = new ArrayList<InputParameterValues>();
         this.outputs = new ArrayList<OutputParameter>();
     }
-
 }

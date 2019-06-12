@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 - 2015 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -19,32 +20,32 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Logger;
-
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
-
 import org.geotools.util.Converters;
 
-public class BufferedRequestWrapper extends HttpServletRequestWrapper{
+public class BufferedRequestWrapper extends HttpServletRequestWrapper {
     protected HttpServletRequest myWrappedRequest;
-    protected String myBuffer;
+
+    protected byte[] myBuffer;
+
+    protected String charset;
     protected ServletInputStream myStream = null;
     protected BufferedReader myReader = null;
-	protected Map myParameterMap;
-    protected Logger logger = 
-        org.geotools.util.logging.Logging.getLogger("org.geoserver.filters");
+    protected Map myParameterMap;
+    protected Logger logger = org.geotools.util.logging.Logging.getLogger("org.geoserver.filters");
 
-    public BufferedRequestWrapper(HttpServletRequest req, String buff){
+    public BufferedRequestWrapper(HttpServletRequest req, String charset, byte[] buff) {
         super(req);
-        myWrappedRequest = req;
-        myBuffer = buff;
-		logger.fine("Created BufferedRequestWrapper with String: \"" + buff + "\" as buffer");
+        this.myWrappedRequest = req;
+        this.myBuffer = buff;
+        this.charset = charset;
     }
 
-    public ServletInputStream getInputStream() throws IOException{
-        if (myStream == null){
-            if (myReader == null){
+    public ServletInputStream getInputStream() throws IOException {
+        if (myStream == null) {
+            if (myReader == null) {
                 myStream = new BufferedRequestStream(myBuffer);
             } else {
                 throw new IOException("Requesting a stream after a reader is already in use!!");
@@ -54,131 +55,133 @@ public class BufferedRequestWrapper extends HttpServletRequestWrapper{
         return myStream;
     }
 
-    public BufferedReader getReader() throws IOException{
-        if (myReader == null){
-            if (myStream == null){
-
-                myReader = new BufferedReader(
-                        new InputStreamReader(
-                            new BufferedRequestStream(myBuffer) 
-                            )
-                        );
+    public BufferedReader getReader() throws IOException {
+        if (myReader == null) {
+            if (myStream == null) {
+                myReader =
+                        new BufferedReader(
+                                new InputStreamReader(
+                                        new BufferedRequestStream(myBuffer), charset));
             } else {
                 throw new IOException("Requesting a reader after a stream is already in use!!");
             }
-        } 
+        }
 
         return myReader;
     }
 
-	public String getParameter(String name){
-		parseParameters();
-		List allValues = (List)myParameterMap.get(name);
-		if (allValues != null && allValues.size() > 0){
-			return (String) allValues.get(0);
-		} else return null;
-	}
-    
-	public Map getParameterMap(){
-		parseParameters();
-		Map toArrays = new TreeMap();
-		Iterator it = myParameterMap.entrySet().iterator();
+    public String getParameter(String name) {
+        parseParameters();
+        List allValues = (List) myParameterMap.get(name);
+        if (allValues != null && allValues.size() > 0) {
+            return (String) allValues.get(0);
+        } else return null;
+    }
 
-		while (it.hasNext()){
-			Map.Entry entry = (Map.Entry)it.next();
-			toArrays.put(entry.getKey(), 
-			  (String[])((List)entry.getValue()).toArray(new String[0]));
-		}
+    public Map getParameterMap() {
+        parseParameters();
+        Map toArrays = new TreeMap();
+        Iterator it = myParameterMap.entrySet().iterator();
 
-		return Collections.unmodifiableMap(toArrays);
-	}
+        while (it.hasNext()) {
+            Map.Entry entry = (Map.Entry) it.next();
+            toArrays.put(entry.getKey(), ((List) entry.getValue()).toArray(new String[0]));
+        }
 
-	public Enumeration getParameterNames(){
-		parseParameters();
-		return new IteratorAsEnumeration(myParameterMap.keySet().iterator());
-	}
+        return Collections.unmodifiableMap(toArrays);
+    }
 
-	public String[] getParameterValues(String name){
-		parseParameters();
-		List allValues = (List)myParameterMap.get(name);
-		if (allValues != null && allValues.size() > 0){
-			return (String[])allValues.toArray(new String[0]);
-		} else return null;
-	}
+    public Enumeration getParameterNames() {
+        parseParameters();
+        return new IteratorAsEnumeration(myParameterMap.keySet().iterator());
+    }
 
-	protected void parseParameters(){
-		if (myParameterMap != null) return;
-		if (myWrappedRequest.getMethod().equals("POST") &&
-			myWrappedRequest.getContentType().startsWith("application/x-www-form-urlencoded")) {
-			parseFormBody();
-		} else {
-			myParameterMap = new HashMap(super.getParameterMap());
-			
+    public String[] getParameterValues(String name) {
+        parseParameters();
+        List allValues = (List) myParameterMap.get(name);
+        if (allValues != null && allValues.size() > 0) {
+            return (String[]) allValues.toArray(new String[0]);
+        } else return null;
+    }
+
+    protected void parseParameters() {
+        if (myParameterMap != null) return;
+        String contentType = myWrappedRequest.getContentType();
+        if (myWrappedRequest.getMethod().equals("POST")
+                && contentType != null
+                && contentType.startsWith("application/x-www-form-urlencoded")) {
+            parseFormBody();
+        } else {
+            myParameterMap = new HashMap(super.getParameterMap());
+
             for (Object key : myParameterMap.keySet()) {
                 Object value = myParameterMap.get(key);
-                if (value instanceof List) {
-                    // ok, nothing to do
-                } else if (value instanceof String[]) {
+                if (value instanceof String[]) {
                     myParameterMap.put(key, Arrays.asList(((String[]) value)));
-                } else {
+                } else if (!(value instanceof List)) {
                     myParameterMap.put(key, Converters.convert(value, List.class));
                 }
             }
-		}
-	}
+        }
+    }
 
-	protected void parseFormBody(){
-		myParameterMap = new TreeMap();
-		
-		// parse the body
-		String[] pairs = myBuffer.split("\\&");
-		
-		for (int i = 0; i < pairs.length; i++){
-			parsePair(pairs[i]);
-		}
-		
-		// we should also parse parameters that came into the request thought
-		if(myWrappedRequest.getQueryString() != null) {
-		    pairs = myWrappedRequest.getQueryString().split("\\&");
-	        
-	        for (int i = 0; i < pairs.length; i++){
-	            parsePair(pairs[i]);
-	        }
-		}
-	}
+    protected void parseFormBody() {
+        myParameterMap = new TreeMap();
 
-	protected void parsePair(String pair){
-		int index = 0;
-		String[] split = pair.split("=", 2);
-		try{
-			String key = URLDecoder.decode(split[0], "UTF-8");
-			String value = (split.length > 1 ? URLDecoder.decode(split[1], "UTF-8") : "");
+        // parse the body
+        String[] pairs;
+        try {
+            pairs = new String(myBuffer, charset).split("\\&");
+        } catch (UnsupportedEncodingException e) {
+            // should not happen
+            throw new RuntimeException(e);
+        }
 
-			if (!myParameterMap.containsKey(key)){
-				myParameterMap.put(key, new ArrayList());
-			}
+        for (int i = 0; i < pairs.length; i++) {
+            parsePair(pairs[i]);
+        }
 
-			((List)myParameterMap.get(key)).add(value);
+        // we should also parse parameters that came into the request thought
+        if (myWrappedRequest.getQueryString() != null) {
+            pairs = myWrappedRequest.getQueryString().split("\\&");
 
-		} catch (UnsupportedEncodingException e){
-			logger.severe("Failed to decode form values in LoggingFilter");
-			// we have the encoding hard-coded for now so no exceptions should be thrown...
-		}
-	}
+            for (int i = 0; i < pairs.length; i++) {
+                parsePair(pairs[i]);
+            }
+        }
+    }
 
-	private class IteratorAsEnumeration implements Enumeration{
-		Iterator it;
+    protected void parsePair(String pair) {
+        String[] split = pair.split("=", 2);
+        try {
+            String key = URLDecoder.decode(split[0], "UTF-8");
+            String value = (split.length > 1 ? URLDecoder.decode(split[1], "UTF-8") : "");
 
-		public IteratorAsEnumeration(Iterator it){
-			this.it = it;
-		}
+            if (!myParameterMap.containsKey(key)) {
+                myParameterMap.put(key, new ArrayList());
+            }
 
-		public boolean hasMoreElements(){
-			return it.hasNext();
-		}
+            ((List) myParameterMap.get(key)).add(value);
 
-		public Object nextElement(){
-			return it.next();
-		}
-	}
+        } catch (UnsupportedEncodingException e) {
+            logger.severe("Failed to decode form values in LoggingFilter");
+            // we have the encoding hard-coded for now so no exceptions should be thrown...
+        }
+    }
+
+    private class IteratorAsEnumeration implements Enumeration {
+        Iterator it;
+
+        public IteratorAsEnumeration(Iterator it) {
+            this.it = it;
+        }
+
+        public boolean hasMoreElements() {
+            return it.hasNext();
+        }
+
+        public Object nextElement() {
+            return it.next();
+        }
+    }
 }

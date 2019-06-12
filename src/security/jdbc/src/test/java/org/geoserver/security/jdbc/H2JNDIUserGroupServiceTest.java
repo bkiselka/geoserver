@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -16,15 +17,12 @@ public class H2JNDIUserGroupServiceTest extends JDBCUserGroupServiceTest {
     }
 
     @Override
-
     protected JDBCUserGroupServiceConfig createConfigObject(String serviceName) {
         return JDBCTestSupport.createConfigObjectH2Jndi(serviceName, getSecurityManager());
     }
 
-
-    
-    public GeoServerUserGroupService createUserGroupService(String serviceName) throws Exception {        
-        return JDBCTestSupport.createH2UserGroupServiceFromJNDI(getFixtureId(), getSecurityManager());
+    public GeoServerUserGroupService createUserGroupService(String serviceName) throws Exception {
+        return JDBCTestSupport.createH2UserGroupServiceFromJNDI(
+                getFixtureId(), getSecurityManager());
     }
-
 }

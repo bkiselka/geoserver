@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -14,7 +15,6 @@ import static org.geotools.jdbc.JDBCDataStoreFactory.USER;
 import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map;
-
 import org.apache.wicket.Component;
 import org.geotools.data.DataStoreFactorySpi;
 import org.geotools.data.postgis.PostgisNGDataStoreFactory;
@@ -23,7 +23,7 @@ import org.geotools.jdbc.JDBCDataStoreFactory;
 
 /**
  * Configuration panel for PostGIS.
- * 
+ *
  * @author Andrea Aime - OpenGeo
  */
 public class PostGISPanel extends AbstractDbPanel {
@@ -42,7 +42,7 @@ public class PostGISPanel extends AbstractDbPanel {
         int port = 5432;
         String db = System.getProperty("user.name");
         String user = db;
-        
+
         // basic panel
         basicParamPanel = new BasicDbParamPanel("01", "localhost", port, db, "public", user, true);
         result.put(CONNECTION_DEFAULT, basicParamPanel);
@@ -50,19 +50,19 @@ public class PostGISPanel extends AbstractDbPanel {
         // jndi panel
         jndiParamPanel = new JNDIDbParamPanel("02", "java:comp/env/jdbc/mydatabase");
         result.put(CONNECTION_JNDI, jndiParamPanel);
-        
+
         return result;
     }
-    
+
     @Override
     protected DataStoreFactorySpi fillStoreParams(Map<String, Serializable> params) {
         DataStoreFactorySpi factory;
-        params.put(JDBCDataStoreFactory.DBTYPE.key, (String) PostgisNGDataStoreFactory.DBTYPE.sample);
+        params.put(
+                JDBCDataStoreFactory.DBTYPE.key, (String) PostgisNGDataStoreFactory.DBTYPE.sample);
         if (CONNECTION_JNDI.equals(connectionType)) {
             factory = new PostgisNGJNDIDataStoreFactory();
             fillInJndiParams(params, jndiParamPanel);
-        } 
-        else {
+        } else {
             factory = new PostgisNGDataStoreFactory();
 
             // basic params
@@ -77,17 +77,16 @@ public class PostGISPanel extends AbstractDbPanel {
             fillInConnPoolParams(params, basicParamPanel);
         }
 
-        //advanced
-        //params.put(NAMESPACE.key, new URI(namespace.getURI()).toString());
+        // advanced
+        // params.put(NAMESPACE.key, new URI(namespace.getURI()).toString());
         params.put(LOOSEBBOX.key, advancedParamPanel.looseBBox);
         params.put(PK_METADATA_TABLE.key, advancedParamPanel.pkMetadata);
-        
+
         return factory;
     }
-    
+
     @Override
     protected AdvancedDbParamPanel buildAdvancedPanel(String id) {
         return new AdvancedDbParamPanel(id, true);
     }
-
 }

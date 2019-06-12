@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -9,8 +10,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-
-import org.apache.commons.io.IOUtils;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.config.GeoServer;
@@ -19,43 +18,40 @@ import org.geoserver.ows.Request;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wfs.WFSDescribeFeatureTypeOutputFormat;
+import org.locationtech.jts.geom.Geometry;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
 
-import com.vividsolutions.jts.geom.Geometry;
-
 /**
  * A DescribeFeatureType output format that generates a JSON schema instead of a XML one
- * 
+ *
  * @author Andrea Aime - GeoSolutions
  * @author Carlo Cancellieri - GeoSolutions
- * 
  */
 public class JSONDescribeFeatureTypeResponse extends WFSDescribeFeatureTypeOutputFormat {
 
-    // private final static Logger LOGGER = Logging.getLogger(JSONDescribeFeatureTypeResponse.class);
+    // private final static Logger LOGGER =
+    // Logging.getLogger(JSONDescribeFeatureTypeResponse.class);
 
     public JSONDescribeFeatureTypeResponse(GeoServer gs, final String mime) {
         super(gs, mime);
     }
 
     @Override
-    protected void write(FeatureTypeInfo[] featureTypeInfos, OutputStream output,
-            Operation describeFeatureType) throws IOException {
+    protected void write(
+            FeatureTypeInfo[] featureTypeInfos, OutputStream output, Operation describeFeatureType)
+            throws IOException {
 
         if (featureTypeInfos.length == 0) {
             throw new IOException("Unable to write an empty feature info array.");
         }
         // prepare to write out
-        OutputStreamWriter osw = null;
-        Writer outWriter = null;
-        try {
-            osw = new OutputStreamWriter(output, gs.getSettings().getCharset());
-            outWriter = new BufferedWriter(osw);
-
+        try (OutputStreamWriter osw =
+                        new OutputStreamWriter(output, gs.getSettings().getCharset());
+                Writer outWriter = new BufferedWriter(osw)) {
             // jsonp?
-            final boolean jsonp = JSONType.useJsonp(getMimeType(featureTypeInfos,
-                    describeFeatureType));
+            final boolean jsonp =
+                    JSONType.useJsonp(getMimeType(featureTypeInfos, describeFeatureType));
             if (jsonp) {
                 outWriter.write(getCallbackFunction() + "(");
             }
@@ -87,7 +83,6 @@ public class JSONDescribeFeatureTypeResponse extends WFSDescribeFeatureTypeOutpu
                     } else {
                         describeProperty(ad.getLocalName(), ad, jw, false);
                     }
-
                 }
                 jw.endArray();
                 jw.endObject(); // end of the feature type schema
@@ -100,9 +95,6 @@ public class JSONDescribeFeatureTypeResponse extends WFSDescribeFeatureTypeOutpu
                 outWriter.write(")");
             }
             outWriter.flush();
-        } finally {
-            IOUtils.closeQuietly(osw);
-            IOUtils.closeQuietly(outWriter);
         }
     }
 
@@ -114,8 +106,8 @@ public class JSONDescribeFeatureTypeResponse extends WFSDescribeFeatureTypeOutpu
         return JSONType.getCallbackFunction(request.getKvp());
     }
 
-    private static void describeProperty(String name, AttributeDescriptor ad, GeoJSONBuilder jw,
-            boolean isGeometry) {
+    private static void describeProperty(
+            String name, AttributeDescriptor ad, GeoJSONBuilder jw, boolean isGeometry) {
         jw.object();
         jw.key("name").value(name);
         jw.key("maxOccurs").value(ad.getMaxOccurs());
@@ -133,8 +125,10 @@ public class JSONDescribeFeatureTypeResponse extends WFSDescribeFeatureTypeOutpu
     }
 
     private static String mapToJsonType(Class<?> binding) {
-        if (Long.class.isAssignableFrom(binding) || Integer.class.isAssignableFrom(binding)
-                || Short.class.isAssignableFrom(binding) || Byte.class.isAssignableFrom(binding)) {
+        if (Long.class.isAssignableFrom(binding)
+                || Integer.class.isAssignableFrom(binding)
+                || Short.class.isAssignableFrom(binding)
+                || Byte.class.isAssignableFrom(binding)) {
             return "int";
         } else if (Number.class.isAssignableFrom(binding)) {
             return "number";
@@ -155,7 +149,6 @@ public class JSONDescribeFeatureTypeResponse extends WFSDescribeFeatureTypeOutpu
 
     @Override
     public String getMimeType(Object value, Operation operation) throws ServiceException {
-        return getOutputFormat();
+        return getOutputFormats().isEmpty() ? null : getOutputFormats().iterator().next();
     }
-
 }

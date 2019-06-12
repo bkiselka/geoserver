@@ -25,4 +25,9 @@ This section describes the GeoServer REST configuration API.
    reload
    reset
    manifests
-   
+   masterpassword
+   selfadmin
+   accesscontrol
+   userrole
+   resources
+

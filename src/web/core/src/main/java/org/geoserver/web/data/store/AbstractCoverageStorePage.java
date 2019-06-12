@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 - 2016 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -25,7 +26,7 @@ import org.geotools.coverage.grid.io.AbstractGridFormat;
 
 /**
  * Supports coverage store configuration
- * 
+ *
  * @author Andrea Aime
  * @see StoreEditPanel
  */
@@ -40,8 +41,12 @@ abstract class AbstractCoverageStorePage extends GeoServerSecuredPage {
         AbstractGridFormat format = store.getFormat();
         if (format == null) {
             String msg = "Coverage Store factory not found";
-            msg = (String) new ResourceModel("CoverageStoreEditPage.cantGetCoverageStoreFactory",
-                    msg).getObject();
+            msg =
+                    (String)
+                            new ResourceModel(
+                                            "CoverageStoreEditPage.cantGetCoverageStoreFactory",
+                                            msg)
+                                    .getObject();
             throw new IllegalArgumentException(msg);
         }
 
@@ -57,20 +62,35 @@ abstract class AbstractCoverageStorePage extends GeoServerSecuredPage {
 
         // name
         PropertyModel nameModel = new PropertyModel(model, "name");
-        final TextParamPanel namePanel = new TextParamPanel("namePanel", nameModel,
-                new ResourceModel("AbstractCoverageStorePage.dataSrcName", "Data Source Name"), true);
+        final TextParamPanel namePanel =
+                new TextParamPanel(
+                        "namePanel",
+                        nameModel,
+                        new ResourceModel(
+                                "AbstractCoverageStorePage.dataSrcName", "Data Source Name"),
+                        true);
 
         paramsForm.add(namePanel);
 
         // description and enabled
-        paramsForm.add(new TextParamPanel("descriptionPanel", new PropertyModel(model,
-                "description"), new ResourceModel("AbstractCoverageStorePage.description", "Description"), false));
-        paramsForm.add(new CheckBoxParamPanel("enabledPanel", new PropertyModel(model, "enabled"),
-                new ResourceModel("enabled", "Enabled")));
+        paramsForm.add(
+                new TextParamPanel(
+                        "descriptionPanel",
+                        new PropertyModel(model, "description"),
+                        new ResourceModel("AbstractCoverageStorePage.description", "Description"),
+                        false));
+        paramsForm.add(
+                new CheckBoxParamPanel(
+                        "enabledPanel",
+                        new PropertyModel(model, "enabled"),
+                        new ResourceModel("enabled", "Enabled")));
         // a custom converter will turn this into a namespace url
-        workspacePanel = new WorkspacePanel("workspacePanel",
-                new PropertyModel(model, "workspace"), new ResourceModel("workspace", "Workspace"),
-                true);
+        workspacePanel =
+                new WorkspacePanel(
+                        "workspacePanel",
+                        new PropertyModel(model, "workspace"),
+                        new ResourceModel("workspace", "Workspace"),
+                        true);
         paramsForm.add(workspacePanel);
 
         final StoreEditPanel storeEditPanel;
@@ -81,8 +101,9 @@ abstract class AbstractCoverageStorePage extends GeoServerSecuredPage {
              * single "url" input field
              */
             GeoServerApplication app = getGeoServerApplication();
-            storeEditPanel = StoreExtensionPoints.getStoreEditPanel("parametersPanel", paramsForm,
-                    store, app);
+            storeEditPanel =
+                    StoreExtensionPoints.getStoreEditPanel(
+                            "parametersPanel", paramsForm, store, app);
         }
         paramsForm.add(storeEditPanel);
 
@@ -94,8 +115,11 @@ abstract class AbstractCoverageStorePage extends GeoServerSecuredPage {
         // feedback panel for error messages
         paramsForm.add(new FeedbackPanel("feedback"));
 
-        StoreNameValidator storeNameValidator = new StoreNameValidator(workspacePanel
-                .getFormComponent(), namePanel.getFormComponent(), store.getId());
+        StoreNameValidator storeNameValidator =
+                new StoreNameValidator(
+                        workspacePanel.getFormComponent(),
+                        namePanel.getFormComponent(),
+                        store.getId());
         paramsForm.add(storeNameValidator);
     }
 
@@ -105,7 +129,7 @@ abstract class AbstractCoverageStorePage extends GeoServerSecuredPage {
             @Override
             protected void onError(AjaxRequestTarget target, Form form) {
                 super.onError(target, form);
-                target.addComponent(paramsForm);
+                target.add(paramsForm);
             }
 
             @Override
@@ -115,7 +139,7 @@ abstract class AbstractCoverageStorePage extends GeoServerSecuredPage {
                     onSave(info, target);
                 } catch (IllegalArgumentException e) {
                     paramsForm.error(e.getMessage());
-                    target.addComponent(paramsForm);
+                    target.add(paramsForm);
                 }
             }
         };
@@ -124,24 +148,13 @@ abstract class AbstractCoverageStorePage extends GeoServerSecuredPage {
     /**
      * Template method for subclasses to take the appropriate action when the coverage store page
      * "save" button is pressed.
-     * 
-     * @param info
-     *            the StoreInfo to save
-     * @throws IllegalArgumentException
-     *             with an appropriate error message if the save action can't be successfully
-     *             performed
+     *
+     * @param info the StoreInfo to save
+     * @throws IllegalArgumentException with an appropriate error message if the save action can't
+     *     be successfully performed
      */
     protected abstract void onSave(CoverageStoreInfo info, AjaxRequestTarget target)
             throws IllegalArgumentException;
-
-    protected void clone(final CoverageStoreInfo source, CoverageStoreInfo target) {
-        target.setDescription(source.getDescription());
-        target.setEnabled(source.isEnabled());
-        target.setName(source.getName());
-        target.setType(source.getType());
-        target.setURL(source.getURL());
-        target.setWorkspace(source.getWorkspace());
-    }
 
     @Override
     protected ComponentAuthorizer getPageAuthorizer() {

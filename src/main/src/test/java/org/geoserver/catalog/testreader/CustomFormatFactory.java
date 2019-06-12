@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -10,24 +11,25 @@ import java.util.Map;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.geotools.coverage.grid.io.GridFormatFactorySpi;
 
-
 /**
  * Coverage format SPI for custom dimensions tests.
- * 
+ *
  * @author Mike Benowitz
  */
 public final class CustomFormatFactory implements GridFormatFactorySpi {
-    
-    @Override public AbstractGridFormat createFormat() {
+
+    @Override
+    public AbstractGridFormat createFormat() {
         return new CustomFormat();
     }
 
-    @Override public boolean isAvailable() {
+    @Override
+    public boolean isAvailable() {
         return true;
     }
 
-    @Override public Map<Key, ?> getImplementationHints() {
+    @Override
+    public Map<Key, ?> getImplementationHints() {
         return Collections.emptyMap();
     }
-
 }

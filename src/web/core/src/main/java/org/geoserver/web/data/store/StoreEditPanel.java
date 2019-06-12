@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 - 2016 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -8,7 +9,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.net.URL;
 import java.util.Map;
-
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.geoserver.catalog.Catalog;
@@ -17,11 +17,10 @@ import org.geoserver.catalog.StoreInfo;
 import org.geoserver.web.GeoServerApplication;
 import org.geotools.data.DataAccessFactory;
 import org.geotools.data.DataAccessFactory.Param;
-import org.geotools.data.Repository;
 
 /**
  * Base class for panels containing the form edit components for {@link StoreInfo} objects
- * 
+ *
  * @author Gabriel Roldan
  * @see DefaultCoverageStoreEditPanel
  */
@@ -44,6 +43,7 @@ public abstract class StoreEditPanel extends Panel {
 
     /**
      * Initializes all store parameters to their default value
+     *
      * @param info
      */
     protected void applyDataStoreParamsDefaults(StoreInfo info) {
@@ -84,13 +84,9 @@ public abstract class StoreEditPanel extends Panel {
         GeoServerApplication application = (GeoServerApplication) getApplication();
         return application.getCatalog();
     }
-    
-    /**
-     * Gives an option to store panels to raise an opinion before saving
-     * @return
-     */
+
+    /** Gives an option to store panels to raise an opinion before saving */
     public boolean onSave() {
         return true;
     }
-
 }

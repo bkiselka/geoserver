@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -10,14 +11,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import javax.media.jai.PlanarImage;
-
 import org.geoserver.ows.AbstractDispatcherCallback;
 import org.geoserver.ows.Request;
 import org.geoserver.platform.Operation;
 import org.geotools.coverage.grid.GridCoverage2D;
-import org.geotools.resources.image.ImageUtilities;
+import org.geotools.image.util.ImageUtilities;
 import org.geotools.util.logging.Logging;
 import org.opengis.coverage.grid.GridCoverage;
 
@@ -42,23 +41,14 @@ public class CoverageCleanerCallback extends AbstractDispatcherCallback {
 
     @Override
     public void finished(Request request) {
-        try {
-            List<GridCoverage> coverages = COVERAGES.get();
-            if (coverages != null) {
-                for (GridCoverage coverage : coverages) {
-                    try {
-                        disposeCoverage(coverage);
-                    } catch (Exception e) {
-                        LOGGER.log(Level.WARNING, "Failed to fully dispose coverage: " + coverage,
-                                e);
-                    }
-                }
-            }
-        } finally {
-            COVERAGES.remove();
-        }
+        clean();
     }
 
+    /**
+     * Mark coverage for cleaning.
+     *
+     * @param coverages
+     */
     public static void addCoverages(GridCoverage... coverages) {
         List<GridCoverage> list = COVERAGES.get();
         if (list == null) {
@@ -70,7 +60,7 @@ public class CoverageCleanerCallback extends AbstractDispatcherCallback {
 
     /**
      * Cleans up a coverage and its internal rendered image
-     * 
+     *
      * @param coverage
      */
     public static void disposeCoverage(GridCoverage coverage) {
@@ -80,6 +70,25 @@ public class CoverageCleanerCallback extends AbstractDispatcherCallback {
         }
         if (ri instanceof PlanarImage) {
             ImageUtilities.disposePlanarImageChain((PlanarImage) ri);
+        }
+    }
+
+    /** Clean up any coverages collected by {@link #addCoverages(GridCoverage...)} */
+    public void clean() {
+        try {
+            List<GridCoverage> coverages = COVERAGES.get();
+            if (coverages != null) {
+                for (GridCoverage coverage : coverages) {
+                    try {
+                        disposeCoverage(coverage);
+                    } catch (Exception e) {
+                        LOGGER.log(
+                                Level.WARNING, "Failed to fully dispose coverage: " + coverage, e);
+                    }
+                }
+            }
+        } finally {
+            COVERAGES.remove();
         }
     }
 }

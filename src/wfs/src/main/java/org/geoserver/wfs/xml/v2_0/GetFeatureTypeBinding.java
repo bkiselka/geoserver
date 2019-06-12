@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -8,14 +9,12 @@ import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 import net.opengis.wfs20.Wfs20Factory;
 import org.geoserver.wfs.xml.SqlViewParamsExtractor;
-import org.geotools.xml.ElementInstance;
-import org.geotools.xml.Node;
 import org.geotools.wfs.v2_0.WFS;
-import org.geotools.xml.ComplexEMFBinding;
+import org.geotools.xsd.ComplexEMFBinding;
+import org.geotools.xsd.ElementInstance;
+import org.geotools.xsd.Node;
 
-/**
- * Custom binding class to support viewParams attribute in GetFeatureType requests
- */
+/** Custom binding class to support viewParams attribute in GetFeatureType requests */
 public class GetFeatureTypeBinding extends ComplexEMFBinding {
 
     NamespaceContext namespaceContext;

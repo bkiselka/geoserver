@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -9,13 +10,14 @@ import org.geoserver.web.GeoServerApplication;
 
 /**
  * A detachable model for the {@link PreviewLayer}
+ *
  * @author Andrea Aime - OpenGeo
  */
 @SuppressWarnings("serial")
 class PreviewLayerModel extends LoadableDetachableModel {
     String id;
     boolean group;
-    
+
     public PreviewLayerModel(PreviewLayer pl) {
         super(pl);
         id = pl.layerInfo != null ? pl.layerInfo.getId() : pl.groupInfo.getId();
@@ -24,7 +26,7 @@ class PreviewLayerModel extends LoadableDetachableModel {
 
     @Override
     protected Object load() {
-        if(group) {
+        if (group) {
             return new PreviewLayer(GeoServerApplication.get().getCatalog().getLayerGroup(id));
         } else {
             return new PreviewLayer(GeoServerApplication.get().getCatalog().getLayer(id));

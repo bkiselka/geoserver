@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -8,7 +9,7 @@ import org.geoserver.security.config.BaseSecurityNamedServiceConfig;
 
 /**
  * Configuration object for remember me services.
- * 
+ *
  * @author Justin Deoliveira, OpenGeo
  */
 public class RememberMeServicesConfig extends BaseSecurityNamedServiceConfig {
@@ -19,8 +20,7 @@ public class RememberMeServicesConfig extends BaseSecurityNamedServiceConfig {
 
     String key = DEFAULT_KEY;
 
-    public RememberMeServicesConfig() {
-    }
+    public RememberMeServicesConfig() {}
 
     public RememberMeServicesConfig(RememberMeServicesConfig other) {
         super(other);
@@ -34,5 +34,4 @@ public class RememberMeServicesConfig extends BaseSecurityNamedServiceConfig {
     public void setKey(String key) {
         this.key = key;
     }
-
 }

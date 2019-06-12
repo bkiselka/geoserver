@@ -1,4 +1,5 @@
-/* Copyright (c) 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -6,7 +7,6 @@ package org.geoserver.wms.eo.web;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.wicket.model.IModel;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.CoverageStoreInfo;
@@ -15,9 +15,9 @@ import org.geoserver.catalog.PublishedInfo;
 import org.geotools.gce.imagemosaic.ImageMosaicFormat;
 
 /**
- * A model that returns the layer group entries backed by an image mosaic, suitable for creating
- * a vector outline layer
- * 
+ * A model that returns the layer group entries backed by an image mosaic, suitable for creating a
+ * vector outline layer
+ *
  * @author Andrea Aime - GeoSolutions
  */
 public class OutlineSourceModel implements IModel<List<? extends EoLayerGroupEntry>> {
@@ -63,5 +63,4 @@ public class OutlineSourceModel implements IModel<List<? extends EoLayerGroupEnt
         throw new UnsupportedOperationException(
                 "The list of image mosaic entries cannot be modified");
     }
-
 }

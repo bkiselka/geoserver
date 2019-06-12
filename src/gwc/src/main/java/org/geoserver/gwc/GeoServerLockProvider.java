@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -10,10 +11,10 @@ import org.geowebcache.GeoWebCacheException;
 
 /**
  * Adapter allowing GeoWebCache to make use of {@link org.geoserver.platform.resource.LockProvider}.
- * 
- * This implementation is provided to allow GeoWebCache to make use of the global lock provider
+ *
+ * <p>This implementation is provided to allow GeoWebCache to make use of the global lock provider
  * used for ResourceStore.
- * 
+ *
  * @author Jody Garnett (Boundless)
  */
 public class GeoServerLockProvider implements org.geowebcache.locks.LockProvider {
@@ -34,6 +35,7 @@ public class GeoServerLockProvider implements org.geowebcache.locks.LockProvider
                     throw new GeoWebCacheException(trouble);
                 }
             }
+
             @Override
             public String toString() {
                 return lock.toString();
@@ -48,5 +50,4 @@ public class GeoServerLockProvider implements org.geowebcache.locks.LockProvider
     public void setDelegate(LockProvider delegate) {
         this.delegate = delegate;
     }
-
 }

@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -13,7 +14,6 @@ public class JDBCRoleServiceConfig extends JDBCSecurityServiceConfig
 
     protected String adminRoleName;
     protected String groupAdminRoleName;
-
 
     public JDBCRoleServiceConfig() {
         super();
@@ -32,7 +32,7 @@ public class JDBCRoleServiceConfig extends JDBCSecurityServiceConfig
 
     @Override
     public void setAdminRoleName(String name) {
-        adminRoleName=name;
+        adminRoleName = name;
     }
 
     @Override
@@ -62,5 +62,4 @@ public class JDBCRoleServiceConfig extends JDBCSecurityServiceConfig
     public void setGroupAdminRoleName(String groupAdminRoleName) {
         this.groupAdminRoleName = groupAdminRoleName;
     }
-
 }

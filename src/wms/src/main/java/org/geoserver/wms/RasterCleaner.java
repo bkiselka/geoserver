@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -8,23 +9,22 @@ import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.media.jai.PlanarImage;
 import javax.media.jai.RenderedImageList;
-
 import org.geoserver.ows.AbstractDispatcherCallback;
 import org.geoserver.ows.Request;
 import org.geotools.coverage.grid.GridCoverage2D;
-import org.geotools.resources.image.ImageUtilities;
+import org.geotools.image.util.ImageUtilities;
 
 public class RasterCleaner extends AbstractDispatcherCallback {
     static final ThreadLocal<List<RenderedImage>> images = new ThreadLocal<List<RenderedImage>>();
 
-    static final ThreadLocal<List<GridCoverage2D>> coverages = new ThreadLocal<List<GridCoverage2D>>();
+    static final ThreadLocal<List<GridCoverage2D>> coverages =
+            new ThreadLocal<List<GridCoverage2D>>();
 
     /**
      * Schedules a RenderedImage for cleanup at the end of the request
-     * 
+     *
      * @param schema
      */
     public static void addImage(RenderedImage image) {
@@ -42,7 +42,7 @@ public class RasterCleaner extends AbstractDispatcherCallback {
 
     /**
      * Schedules a RenderedImage for cleanup at the end of the request
-     * 
+     *
      * @param schema
      */
     public static void addCoverage(GridCoverage2D coverage) {
@@ -88,7 +88,7 @@ public class RasterCleaner extends AbstractDispatcherCallback {
         } else if (image instanceof BufferedImage) {
             BufferedImage bi = (BufferedImage) image;
             bi.flush();
-        } 
+        }
     }
 
     private void disposeCoverages() {
@@ -102,4 +102,11 @@ public class RasterCleaner extends AbstractDispatcherCallback {
         }
     }
 
+    public List<RenderedImage> getImages() {
+        return images.get();
+    }
+
+    public List<GridCoverage2D> getCoverages() {
+        return coverages.get();
+    }
 }

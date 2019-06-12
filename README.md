@@ -1,6 +1,8 @@
-# GeoServer
+<img src="/doc/en/themes/geoserver/static/GeoServer_500.png" width="353">
 
-[GeoServer](http://geoserver.org) GeoServer is an open source software server written in Java that 
+[![Gitter](https://badges.gitter.im/geoserver/geoserver.svg)](https://gitter.im/geoserver/geoserver?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
+[GeoServer](http://geoserver.org) is an open source software server written in Java that 
 allows users to share and edit geospatial data. Designed for interoperability, it publishes data from 
 any major spatial data source using open standards.
 
@@ -15,11 +17,11 @@ GeoServer forms a core component of the Geospatial Web.
 
 ## License
 
-GeoServer licensed under the [GPL](http://www.gnu.org/licenses/old-licenses/gpl-2.0.html).
+GeoServer licensed under the [GPL](http://docs.geoserver.org/latest/en/user/introduction/license.html).
 
 ## Using
 
-Please refer to the [user guide](http://docs.geoserver.org/stable/en/user/) for information
+Please refer to the [user guide](http://docs.geoserver.org/latest/en/user/) for information
 on how to install and use GeoServer.
 
 ## Building
@@ -27,20 +29,24 @@ on how to install and use GeoServer.
 GeoServer uses [Apache Maven](http://maven.apache.org/) for a build system. To 
 build the application run maven from the ```src``` directory.
 
-    % mvn clean install
+    mvn clean install
 
-See the [developer guide](http://docs.geoserver.org/stable/en/developer/) 
+See the [developer guide](http://docs.geoserver.org/latest/en/developer/) 
 for more details.
 
 ## Bugs
 
-GeoServer uses [JIRA](http://jira.codehaus.org/browse/GEOS), hosted by 
-[CodeHaus](http://www.codehaus.org/), for issue tracking.
+GeoServer uses [JIRA](https://osgeo-org.atlassian.net/projects/GEOS), hosted by 
+[Atlassian](https://www.atlassian.com/), for issue tracking.
 
 ## Mailing Lists
 
-The [mailing list page](http://geoserver.org/display/GEOS/Mailing+Lists) on the GeoServer web site provides
-access to the various mailing list, as well as some indication of the [code of conduct](http://geoserver.org/display/GEOS/GeoServer+user+list+posting+guidelines) when posting to the lists
+The [mailing list page](http://geoserver.org/comm/) on the GeoServer web site provides
+access to the various mailing list, as well as some indication of the [code of conduct](http://geoserver.org/comm/userlist-guidelines.html) when posting to the lists
+
+## Contributing
+
+Please read [the contribution guidelines](https://github.com/geoserver/geoserver/blob/master/CONTRIBUTING.md) before contributing pull requests to the GeoServer project.
 
 ## More Information
 

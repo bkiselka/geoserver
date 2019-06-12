@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -13,12 +14,12 @@ import org.apache.wicket.model.PropertyModel;
  * Shows the text in a <pre> section
  */
 public class PlainCodePage extends WebPage {
-	String code;
+    String code;
 
-	public PlainCodePage(final ModalWindow container, final ModalWindow responseWindow, String initialXml) {
-		this.code = initialXml;
-		
-		add(new Label("code", new PropertyModel(this, "code")));
-	}
-	
+    public PlainCodePage(
+            final ModalWindow container, final ModalWindow responseWindow, String initialXml) {
+        this.code = initialXml;
+
+        add(new Label("code", new PropertyModel(this, "code")));
+    }
 }

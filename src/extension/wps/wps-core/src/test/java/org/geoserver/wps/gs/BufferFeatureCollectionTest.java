@@ -1,11 +1,12 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 package org.geoserver.wps.gs;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.geoserver.wps.WPSTestSupport;
 import org.geotools.data.simple.SimpleFeatureCollection;
@@ -16,14 +17,13 @@ import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.process.vector.BufferFeatureCollection;
 import org.junit.Test;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.LinearRing;
+import org.locationtech.jts.geom.impl.CoordinateArraySequence;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.filter.FilterFactory;
-
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.LinearRing;
-import com.vividsolutions.jts.geom.PrecisionModel;
 
 public class BufferFeatureCollectionTest extends WPSTestSupport {
 
@@ -45,7 +45,7 @@ public class BufferFeatureCollectionTest extends WPSTestSupport {
             b.add(i);
             features.add(b.buildFeature(i + ""));
         }
-        Double distance = new Double(500);
+        Double distance = Double.valueOf(500);
         BufferFeatureCollection process = new BufferFeatureCollection();
         SimpleFeatureCollection output = process.execute(features, distance, null);
         assertEquals(2, output.size());
@@ -80,7 +80,7 @@ public class BufferFeatureCollectionTest extends WPSTestSupport {
             b.add(0);
             features.add(b.buildFeature(numFeatures + ""));
         }
-        Double distance = new Double(500);
+        Double distance = Double.valueOf(500);
         BufferFeatureCollection process = new BufferFeatureCollection();
         SimpleFeatureCollection output = process.execute(features, distance, null);
         assertEquals(5, output.size());
@@ -117,12 +117,13 @@ public class BufferFeatureCollectionTest extends WPSTestSupport {
                 j++;
             }
             array[3] = new Coordinate(numFeatures, numFeatures);
-            LinearRing shell = new LinearRing(array, new PrecisionModel(), 0);
+            LinearRing shell =
+                    new LinearRing(new CoordinateArraySequence(array), new GeometryFactory());
             b.add(gf.createPolygon(shell, null));
             b.add(0);
             features.add(b.buildFeature(numFeatures + ""));
         }
-        Double distance = new Double(500);
+        Double distance = Double.valueOf(500);
         BufferFeatureCollection process = new BufferFeatureCollection();
         SimpleFeatureCollection output = process.execute(features, distance, null);
         assertEquals(5, output.size());
@@ -135,7 +136,8 @@ public class BufferFeatureCollectionTest extends WPSTestSupport {
                 j++;
             }
             array[3] = new Coordinate(numFeatures, numFeatures);
-            LinearRing shell = new LinearRing(array, new PrecisionModel(), 0);
+            LinearRing shell =
+                    new LinearRing(new CoordinateArraySequence(array), new GeometryFactory());
             Geometry expected = gf.createPolygon(shell, null).buffer(distance);
 
             SimpleFeature sf = iterator.next();
@@ -163,7 +165,8 @@ public class BufferFeatureCollectionTest extends WPSTestSupport {
                 j++;
             }
             array[3] = new Coordinate(numFeatures, numFeatures);
-            LinearRing shell = new LinearRing(array, new PrecisionModel(), 0);
+            LinearRing shell =
+                    new LinearRing(new CoordinateArraySequence(array), new GeometryFactory());
             b.add(gf.createPolygon(shell, null));
             b.add(0);
             b.add(500);
@@ -182,7 +185,8 @@ public class BufferFeatureCollectionTest extends WPSTestSupport {
                 j++;
             }
             array[3] = new Coordinate(numFeatures, numFeatures);
-            LinearRing shell = new LinearRing(array, new PrecisionModel(), 0);
+            LinearRing shell =
+                    new LinearRing(new CoordinateArraySequence(array), new GeometryFactory());
             Geometry expected = gf.createPolygon(shell, null).buffer(500);
 
             SimpleFeature sf = iterator.next();

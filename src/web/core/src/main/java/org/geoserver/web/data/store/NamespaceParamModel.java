@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -12,7 +13,6 @@ import org.geoserver.web.util.MapModel;
 /**
  * Model to wrap and unwrap a {@link NamespaceInfo} to and from a String for the Datastore's
  * "namespace" parameter
- * 
  */
 public class NamespaceParamModel extends MapModel {
     public NamespaceParamModel(IModel model, String expression) {
@@ -22,8 +22,8 @@ public class NamespaceParamModel extends MapModel {
     @Override
     public Object getObject() {
         String nsUri = (String) super.getObject();
-        NamespaceInfo namespaceInfo = GeoServerApplication.get().getCatalog()
-                .getNamespaceByURI(nsUri);
+        NamespaceInfo namespaceInfo =
+                GeoServerApplication.get().getCatalog().getNamespaceByURI(nsUri);
         return namespaceInfo;
     }
 

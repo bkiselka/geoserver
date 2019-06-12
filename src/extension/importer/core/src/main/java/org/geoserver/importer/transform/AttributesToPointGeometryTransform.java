@@ -1,22 +1,22 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 - 2015 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 package org.geoserver.importer.transform;
 
+import org.geoserver.importer.ImportTask;
 import org.geotools.data.DataStore;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
-import org.geoserver.importer.ImportTask;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Point;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.GeometryDescriptor;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.Point;
-
-public class AttributesToPointGeometryTransform extends AbstractVectorTransform implements
-        InlineVectorTransform {
+public class AttributesToPointGeometryTransform extends AbstractTransform
+        implements InlineVectorTransform {
 
     /** serialVersionUID */
     private static final long serialVersionUID = 1L;
@@ -35,8 +35,8 @@ public class AttributesToPointGeometryTransform extends AbstractVectorTransform 
         this(latField, lngField, AttributesToPointGeometryTransform.POINT_NAME);
     }
 
-    public AttributesToPointGeometryTransform(String latField, String lngField,
-            String pointFieldName) {
+    public AttributesToPointGeometryTransform(
+            String latField, String lngField, String pointFieldName) {
         this.latField = latField;
         this.lngField = lngField;
         this.pointFieldName = pointFieldName;
@@ -44,17 +44,24 @@ public class AttributesToPointGeometryTransform extends AbstractVectorTransform 
     }
 
     @Override
-    public SimpleFeatureType apply(ImportTask task, DataStore dataStore,
-            SimpleFeatureType featureType) throws Exception {
+    public SimpleFeatureType apply(
+            ImportTask task, DataStore dataStore, SimpleFeatureType featureType) throws Exception {
         SimpleFeatureTypeBuilder builder = new SimpleFeatureTypeBuilder();
         builder.init(featureType);
 
         int latIndex = featureType.indexOf(latField);
         int lngIndex = featureType.indexOf(lngField);
         if (latIndex < 0 || lngIndex < 0) {
-            throw new Exception("FeatureType " + featureType.getName()
-                    + " does not have lat lng fields named '" + latField + "'" + " and " + "'"
-                    + lngField + "'");
+            throw new Exception(
+                    "FeatureType "
+                            + featureType.getName()
+                            + " does not have lat lng fields named '"
+                            + latField
+                            + "'"
+                            + " and "
+                            + "'"
+                            + lngField
+                            + "'");
         }
 
         GeometryDescriptor geometryDescriptor = featureType.getGeometryDescriptor();
@@ -69,8 +76,9 @@ public class AttributesToPointGeometryTransform extends AbstractVectorTransform 
     }
 
     @Override
-    public SimpleFeature apply(ImportTask task, DataStore dataStore, SimpleFeature oldFeature,
-            SimpleFeature feature) throws Exception {
+    public SimpleFeature apply(
+            ImportTask task, DataStore dataStore, SimpleFeature oldFeature, SimpleFeature feature)
+            throws Exception {
         Object latObject = oldFeature.getAttribute(latField);
         Object lngObject = oldFeature.getAttribute(lngField);
         Double lat = asDouble(latObject);
@@ -106,5 +114,4 @@ public class AttributesToPointGeometryTransform extends AbstractVectorTransform 
     public String getLngField() {
         return lngField;
     }
-
 }

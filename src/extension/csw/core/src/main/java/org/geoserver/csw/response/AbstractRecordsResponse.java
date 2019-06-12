@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -6,14 +7,13 @@ package org.geoserver.csw.response;
 
 import java.io.IOException;
 import java.io.OutputStream;
-
+import java.util.Collections;
+import java.util.Set;
 import javax.xml.transform.TransformerException;
-
 import net.opengis.cat.csw20.GetRecordByIdType;
 import net.opengis.cat.csw20.GetRecordsType;
 import net.opengis.cat.csw20.RequestBaseType;
 import net.opengis.cat.csw20.ResultType;
-
 import org.geoserver.config.GeoServer;
 import org.geoserver.csw.CSWInfo;
 import org.geoserver.ows.Response;
@@ -24,7 +24,7 @@ import org.opengis.feature.type.FeatureType;
 
 /**
  * Base class for XML based CSW record responses
- * 
+ *
  * @author Andrea Aime - GeoSolutions
  */
 public abstract class AbstractRecordsResponse extends Response {
@@ -36,7 +36,12 @@ public abstract class AbstractRecordsResponse extends Response {
     FeatureType recordType;
 
     public AbstractRecordsResponse(FeatureType recordType, String schema, GeoServer gs) {
-        super(CSWRecordsResult.class, "application/xml");
+        this(recordType, schema, Collections.singleton("application/xml"), gs);
+    }
+
+    public AbstractRecordsResponse(
+            FeatureType recordType, String schema, Set<String> outputFormats, GeoServer gs) {
+        super(CSWRecordsResult.class, outputFormats);
         this.schema = schema;
         this.gs = gs;
         this.recordType = recordType;
@@ -70,8 +75,8 @@ public abstract class AbstractRecordsResponse extends Response {
     }
 
     @Override
-    public void write(Object value, OutputStream output, Operation operation) throws IOException,
-            ServiceException {
+    public void write(Object value, OutputStream output, Operation operation)
+            throws IOException, ServiceException {
         CSWRecordsResult result = (CSWRecordsResult) value;
         RequestBaseType request = (RequestBaseType) operation.getParameters()[0];
         CSWInfo csw = gs.getService(CSWInfo.class);
@@ -80,8 +85,11 @@ public abstract class AbstractRecordsResponse extends Response {
         if (result.getRecords() != null) {
             FeatureType recordSchema = result.getRecords().getSchema();
             if (recordSchema != null && !recordType.equals(recordSchema)) {
-                throw new IllegalArgumentException("Cannot encode this kind of record "
-                        + recordSchema.getName() + " into schema " + schema);
+                throw new IllegalArgumentException(
+                        "Cannot encode this kind of record "
+                                + recordSchema.getName()
+                                + " into schema "
+                                + schema);
             }
         }
 
@@ -94,16 +102,17 @@ public abstract class AbstractRecordsResponse extends Response {
     }
 
     private ResultType getResultType(RequestBaseType request) {
-        if(request instanceof GetRecordsType) {
+        if (request instanceof GetRecordsType) {
             return ((GetRecordsType) request).getResultType();
         } else {
             return ResultType.RESULTS;
         }
     }
 
-    private void transformAcknowledgement(OutputStream output, RequestBaseType request, CSWInfo csw) {
-        AcknowledgementTransformer transformer = new AcknowledgementTransformer(request,
-                csw.isCanonicalSchemaLocation());
+    private void transformAcknowledgement(
+            OutputStream output, RequestBaseType request, CSWInfo csw) {
+        AcknowledgementTransformer transformer =
+                new AcknowledgementTransformer(request, csw.isCanonicalSchemaLocation());
         transformer.setIndentation(2);
         try {
             transformer.transform(null, output);
@@ -114,12 +123,12 @@ public abstract class AbstractRecordsResponse extends Response {
 
     /**
      * Actually encodes the response into a set of records
-     * 
+     *
      * @param output
      * @param result
      * @param request
      * @param csw
      */
-    protected abstract void transformResponse(OutputStream output, CSWRecordsResult result,
-            RequestBaseType request, CSWInfo csw);
+    protected abstract void transformResponse(
+            OutputStream output, CSWRecordsResult result, RequestBaseType request, CSWInfo csw);
 }

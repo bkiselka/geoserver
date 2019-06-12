@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -14,30 +15,30 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 public class CRSPanelTestPage extends WebPage {
 
     public CRSPanelTestPage() {
-        Form form = new Form("form" );
+        Form form = new Form("form");
         add(form);
-        
-        form.add( new CRSPanel("crs", new Model()) );
+
+        form.add(new CRSPanel("crs", new Model()));
     }
-    
+
     public CRSPanelTestPage(Object o) {
-        Form form = new Form("form", new CompoundPropertyModel( o ) );
+        Form form = new Form("form", new CompoundPropertyModel(o));
         add(form);
-        
-        form.add( new CRSPanel("crs") );
+
+        form.add(new CRSPanel("crs"));
     }
-    
+
     public CRSPanelTestPage(IModel model) {
         Form form = new Form("form");
         add(form);
-        
-        form.add( new CRSPanel("crs", model) );
+
+        form.add(new CRSPanel("crs", model));
     }
-    
+
     public CRSPanelTestPage(CoordinateReferenceSystem crs) {
         Form form = new Form("form");
         add(form);
-        
-        form.add( new CRSPanel( "crs", crs ) );
+
+        form.add(new CRSPanel("crs", crs));
     }
 }

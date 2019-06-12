@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -6,7 +7,7 @@ package org.geoserver.wms;
 
 /**
  * Class to record capabilities for a {@link RasterMapProducer}.
- * 
+ *
  * @author Simone Giannecchini, GeoSolutions SAS
  */
 public class MapProducerCapabilities {
@@ -18,12 +19,15 @@ public class MapProducerCapabilities {
     private final boolean paletteSupported;
 
     private final boolean transparencySupported;
-    
+
     private final String framesMimeType;
 
-    public MapProducerCapabilities(boolean tiledRequestsSupported,
-            boolean multivalueRequestsSupported, boolean paletteSupported,
-            boolean transparencySupported, String framesMimeType) {
+    public MapProducerCapabilities(
+            boolean tiledRequestsSupported,
+            boolean multivalueRequestsSupported,
+            boolean paletteSupported,
+            boolean transparencySupported,
+            String framesMimeType) {
         super();
         this.tiledRequestsSupported = tiledRequestsSupported;
         this.multivalueRequestsSupported = multivalueRequestsSupported;
@@ -32,43 +36,30 @@ public class MapProducerCapabilities {
         this.framesMimeType = framesMimeType;
     }
 
-    /**
-     * If the map producer can be used in a meta-tiling context
-     * @return
-     */
+    /** If the map producer can be used in a meta-tiling context */
     public boolean isTiledRequestsSupported() {
         return tiledRequestsSupported;
     }
 
     /**
-     * Returns true if the map producer can handle list or results (one per time/elevation/dimension value)
-     * instead of a single one 
-     * @return
+     * Returns true if the map producer can handle list or results (one per time/elevation/dimension
+     * value) instead of a single one
      */
     public boolean isMultivalueRequestsSupported() {
         return multivalueRequestsSupported;
     }
 
-    /**
-     * Returns true if paletted images are supported
-     * @return
-     */
+    /** Returns true if paletted images are supported */
     public boolean isPaletteSupported() {
         return paletteSupported;
     }
 
-    /**
-     * Returns true if background transparency is supported
-     * @return
-     */
+    /** Returns true if background transparency is supported */
     public boolean isTransparencySupported() {
         return transparencySupported;
     }
 
-    /**
-     * Returns the MIME TYPE of frames in case of animation is supported by this format
-     * @return
-     */
+    /** Returns the MIME TYPE of frames in case of animation is supported by this format */
     public String getFramesMimeType() {
         return framesMimeType;
     }
@@ -121,9 +112,16 @@ public class MapProducerCapabilities {
 
     @Override
     public String toString() {
-        return "MapProducerCapabilities [framesMimeType=" + framesMimeType
-                + ", multivalueRequestsSupported=" + multivalueRequestsSupported
-                + ", paletteSupported=" + paletteSupported + ", tiledRequestsSupported="
-                + tiledRequestsSupported + ", transparencySupported=" + transparencySupported + "]";
+        return "MapProducerCapabilities [framesMimeType="
+                + framesMimeType
+                + ", multivalueRequestsSupported="
+                + multivalueRequestsSupported
+                + ", paletteSupported="
+                + paletteSupported
+                + ", tiledRequestsSupported="
+                + tiledRequestsSupported
+                + ", transparencySupported="
+                + transparencySupported
+                + "]";
     }
 }

@@ -1,22 +1,18 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 
 package org.geoserver.test;
 
+import org.junit.Test;
 import org.w3c.dom.Document;
 
-import org.junit.Test;
-
 /**
- * 
  * @author Niels Charlier, Curtin University Of Technology
- * 
- *         Tests manual and automatic xlink:href for Geometries
- * 
+ *     <p>Tests manual and automatic xlink:href for Geometries
  */
-
 public class XlinkGeometryTest extends AbstractAppSchemaTestSupport {
 
     @Override
@@ -24,9 +20,7 @@ public class XlinkGeometryTest extends AbstractAppSchemaTestSupport {
         return new XlinkGeometryMockData();
     }
 
-    /**
-     * Tests whether automatic and manual xlink:href is encoded in all Geometry Types
-     */
+    /** Tests whether automatic and manual xlink:href is encoded in all Geometry Types */
     @Test
     public void testGeometry() {
         Document doc = getAsDOM("wfs?request=GetFeature&version=1.1.0&typeName=ex:MyTestFeature");
@@ -129,10 +123,12 @@ public class XlinkGeometryTest extends AbstractAppSchemaTestSupport {
                 0,
                 "wfs:FeatureCollection/gml:featureMember/ex:MyTestFeature[@gml:id='2']/ex:geometry/*",
                 doc);
-        assertXpathCount(0,
+        assertXpathCount(
+                0,
                 "wfs:FeatureCollection/gml:featureMember/ex:MyTestFeature[@gml:id='2']/ex:curve/*",
                 doc);
-        assertXpathCount(0,
+        assertXpathCount(
+                0,
                 "wfs:FeatureCollection/gml:featureMember/ex:MyTestFeature[@gml:id='2']/ex:point/*",
                 doc);
         assertXpathCount(
@@ -212,7 +208,5 @@ public class XlinkGeometryTest extends AbstractAppSchemaTestSupport {
                 0,
                 "wfs:FeatureCollection/gml:featureMember/ex:MyTestFeature[@gml:id='2']/ex:multipolygonref/*",
                 doc);
-
     }
-
 }

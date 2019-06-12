@@ -39,18 +39,18 @@ master_doc = 'index'
 # General substitutions.
 project = u'GeoServer'
 manual = u'Documentation Guide'
-copyright = u'2014, OpenPlans'
+copyright = u'2018, Open Source Geospatial Foundation'
 
 # The default replacements for |version| and |release|, also used in various
 # other places throughout the built documents.
 #
 # The short X.Y version.
-version = '2.6'
+version = '2.16'
 # The full version, including alpha/beta/rc tags.
-release = '2.6-SNAPSHOT'
+release = '2.16-SNAPSHOT'
 # Users don't need to see the "SNAPSHOT" notation when it's there
 if release.find('SNAPSHOT') != -1:
-   release = '2.6.x'
+   release = '2.16.x'
 
 # There are two options for replacing |today|: either, you set today to some
 # non-false value, then it is used:
@@ -110,7 +110,7 @@ html_title = project + " " + release + " " + manual
 # The name of an image file (within the static path) to use as favicon of the
 # docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
 # pixels large.
-#html_favicon = None
+html_favicon = '../../themes/geoserver/static/geoserver.ico'
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,

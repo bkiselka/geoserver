@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -12,9 +13,6 @@ import java.net.URI;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-
-import junit.framework.TestCase;
-
 import org.geoserver.catalog.impl.AuthorityURL;
 import org.geoserver.catalog.impl.CoverageInfoImpl;
 import org.geoserver.catalog.impl.CoverageStoreInfoImpl;
@@ -89,7 +87,7 @@ public class PredicatesTest {
         vectorLayer.setEnabled(true);
         vectorLayer.setName("vectorLayer");
         vectorLayer.setId("vectorLayerId");
-        vectorLayer.setType(LayerInfo.Type.VECTOR);
+        vectorLayer.setType(PublishedType.VECTOR);
 
         defaultStyle = new StyleInfoImpl(null);
         defaultStyle.setName("default");
@@ -125,23 +123,29 @@ public class PredicatesTest {
     }
 
     @Test
+    public void testPropertyNotEqualsSimple() {
+        assertTrue(Predicates.notEqual("id", "somethingElse").evaluate(ws));
+    }
+
+    @Test
     public void testPropertyEqualsCompound() {
         assertTrue(equal("resource.id", featureType.getId()).evaluate(vectorLayer));
-        assertTrue(equal("resource.maxFeatures", featureType.getMaxFeatures())
-                .evaluate(vectorLayer));
+        assertTrue(
+                equal("resource.maxFeatures", featureType.getMaxFeatures()).evaluate(vectorLayer));
         assertTrue(equal("resource.store.type", dataStore.getType()).evaluate(vectorLayer));
 
-        assertTrue(equal("resource.store.connectionParameters.boolParam", true).evaluate(
-                vectorLayer));
-        assertFalse(equal("resource.store.connectionParameters.boolParam", false).evaluate(
-                vectorLayer));
+        assertTrue(
+                equal("resource.store.connectionParameters.boolParam", true).evaluate(vectorLayer));
+        assertFalse(
+                equal("resource.store.connectionParameters.boolParam", false)
+                        .evaluate(vectorLayer));
 
         ws.getMetadata().put("checkMe", new java.util.Date(1000));
 
         assertTrue(equal("metadata.checkMe", new java.util.Date(1000)).evaluate(ws));
 
-        assertFalse(equal("resource.store.someNonExistentProperty", "someValue").evaluate(
-                vectorLayer));
+        assertFalse(
+                equal("resource.store.someNonExistentProperty", "someValue").evaluate(vectorLayer));
     }
 
     @Test
@@ -155,25 +159,27 @@ public class PredicatesTest {
         expected = String.valueOf(featureType.getMaxFeatures());
         assertTrue(equal("resource.maxFeatures", expected).evaluate(vectorLayer));
 
-        expected = new Double(featureType.getMaxFeatures());
+        expected = Double.valueOf(featureType.getMaxFeatures());
         assertTrue(equal("resource.maxFeatures", expected).evaluate(vectorLayer));
 
         expected = "true";
-        assertTrue(equal("resource.store.connectionParameters.boolParam", expected).evaluate(
-                vectorLayer));
+        assertTrue(
+                equal("resource.store.connectionParameters.boolParam", expected)
+                        .evaluate(vectorLayer));
 
         expected = "false";
-        assertFalse(equal("resource.store.connectionParameters.boolParam", false).evaluate(
-                vectorLayer));
+        assertFalse(
+                equal("resource.store.connectionParameters.boolParam", false)
+                        .evaluate(vectorLayer));
 
         ws.getMetadata().put("checkMe", new java.util.Date(1000));
 
         expected = new java.sql.Timestamp(1000);
-        assertTrue(equal("resource.store.workspace.metadata.checkMe", expected).evaluate(
-                vectorLayer));
+        assertTrue(
+                equal("resource.store.workspace.metadata.checkMe", expected).evaluate(vectorLayer));
 
-        assertFalse(equal("resource.store.someNonExistentProperty", "someValue").evaluate(
-                vectorLayer));
+        assertFalse(
+                equal("resource.store.someNonExistentProperty", "someValue").evaluate(vectorLayer));
     }
 
     @Test

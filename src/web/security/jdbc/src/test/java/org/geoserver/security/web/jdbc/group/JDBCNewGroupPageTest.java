@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -15,7 +16,7 @@ public class JDBCNewGroupPageTest extends NewGroupPageTest {
     NewGroupPage page;
 
     @Test
-    public void testFill() throws Exception{
+    public void testFill() throws Exception {
         doTestFill();
     }
 
@@ -27,7 +28,7 @@ public class JDBCNewGroupPageTest extends NewGroupPageTest {
     void initializeForJDBC() throws Exception {
         initialize(new H2UserGroupServiceTest(), new H2RoleServiceTest());
     }
-    
+
     @Override
     public String getRoleServiceName() {
         return "h2";
@@ -37,5 +38,4 @@ public class JDBCNewGroupPageTest extends NewGroupPageTest {
     public String getUserGroupServiceName() {
         return "h2";
     }
-
 }

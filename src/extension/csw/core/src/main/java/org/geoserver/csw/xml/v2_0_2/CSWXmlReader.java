@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 - 2015 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -9,19 +10,18 @@ import java.io.Reader;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
-
 import javax.xml.namespace.QName;
-
 import org.geoserver.ows.XmlRequestReader;
 import org.geoserver.platform.ServiceException;
+import org.geoserver.util.EntityResolverProvider;
 import org.geotools.csw.CSWConfiguration;
 import org.geotools.util.Version;
 import org.geotools.util.logging.Logging;
-import org.geotools.xml.Parser;
+import org.geotools.xsd.Parser;
 
 /**
  * CSW XML parser
- * 
+ *
  * @author Andrea Aime - GeoSolutions
  */
 public class CSWXmlReader extends XmlRequestReader {
@@ -29,9 +29,16 @@ public class CSWXmlReader extends XmlRequestReader {
 
     private CSWConfiguration configuration;
 
-    public CSWXmlReader(String element, String version, CSWConfiguration configuration) {
+    private EntityResolverProvider resolverProvider;
+
+    public CSWXmlReader(
+            String element,
+            String version,
+            CSWConfiguration configuration,
+            EntityResolverProvider resolverProvider) {
         super(new QName(org.geotools.csw.CSW.NAMESPACE, element), new Version("2.0.2"), "csw");
         this.configuration = configuration;
+        this.resolverProvider = resolverProvider;
     }
 
     @SuppressWarnings("unchecked")
@@ -40,6 +47,7 @@ public class CSWXmlReader extends XmlRequestReader {
         parser.setValidating(true);
         parser.setFailOnValidationError(true);
         parser.setStrict(true);
+        parser.setEntityResolver(resolverProvider.getEntityResolver());
 
         Object parsed;
         try {
@@ -49,8 +57,8 @@ public class CSWXmlReader extends XmlRequestReader {
         }
 
         if (!parser.getValidationErrors().isEmpty()) {
-            ServiceException exception = new ServiceException("Invalid request",
-                    "InvalidParameterValue");
+            ServiceException exception =
+                    new ServiceException("Invalid request", "InvalidParameterValue");
 
             for (Exception error : (List<Exception>) parser.getValidationErrors()) {
                 LOGGER.warning(error.getLocalizedMessage());

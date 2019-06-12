@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -11,16 +12,17 @@ import org.geoserver.security.filter.GeoServerUserNamePasswordAuthenticationFilt
 
 /**
  * Configuration panel for {@link GeoServerUserNamePasswordAuthenticationFilter}.
- * 
+ *
  * @author Justin Deoliveira, OpenGeo
  */
-public class FormAuthFilterPanel extends AuthenticationFilterPanel<UsernamePasswordAuthenticationFilterConfig> {
+public class FormAuthFilterPanel
+        extends AuthenticationFilterPanel<UsernamePasswordAuthenticationFilterConfig> {
 
-    public FormAuthFilterPanel(String id, IModel<UsernamePasswordAuthenticationFilterConfig> model) {
+    public FormAuthFilterPanel(
+            String id, IModel<UsernamePasswordAuthenticationFilterConfig> model) {
         super(id, model);
 
         add(new TextField("usernameParameterName"));
         add(new TextField("passwordParameterName"));
     }
-
 }

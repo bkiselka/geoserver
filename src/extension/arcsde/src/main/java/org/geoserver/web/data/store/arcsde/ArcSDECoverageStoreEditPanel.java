@@ -1,15 +1,16 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 - 2016 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 package org.geoserver.web.data.store.arcsde;
 
 import static org.geoserver.web.data.store.arcsde.RasterTableSelectionPanel.TABLE_NAME;
-import static org.geotools.arcsde.ArcSDEDataStoreFactory.INSTANCE_PARAM;
-import static org.geotools.arcsde.ArcSDEDataStoreFactory.PASSWORD_PARAM;
-import static org.geotools.arcsde.ArcSDEDataStoreFactory.PORT_PARAM;
-import static org.geotools.arcsde.ArcSDEDataStoreFactory.SERVER_PARAM;
-import static org.geotools.arcsde.ArcSDEDataStoreFactory.USER_PARAM;
+import static org.geotools.arcsde.data.ArcSDEDataStoreFactory.INSTANCE_PARAM;
+import static org.geotools.arcsde.data.ArcSDEDataStoreFactory.PASSWORD_PARAM;
+import static org.geotools.arcsde.data.ArcSDEDataStoreFactory.PORT_PARAM;
+import static org.geotools.arcsde.data.ArcSDEDataStoreFactory.SERVER_PARAM;
+import static org.geotools.arcsde.data.ArcSDEDataStoreFactory.USER_PARAM;
 import static org.geotools.arcsde.session.ArcSDEConnectionConfig.INSTANCE_NAME_PARAM_NAME;
 import static org.geotools.arcsde.session.ArcSDEConnectionConfig.PASSWORD_PARAM_NAME;
 import static org.geotools.arcsde.session.ArcSDEConnectionConfig.PORT_NUMBER_PARAM_NAME;
@@ -25,15 +26,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
-
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
-import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.FormComponent;
-import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.validation.IFormValidator;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
@@ -48,7 +48,7 @@ import org.geoserver.web.data.store.StoreEditPanel;
 import org.geoserver.web.data.store.panel.PasswordParamPanel;
 import org.geoserver.web.data.store.panel.TextParamPanel;
 import org.geoserver.web.util.MapModel;
-import org.geotools.arcsde.ArcSDEDataStoreFactory;
+import org.geotools.arcsde.data.ArcSDEDataStoreFactory;
 import org.geotools.arcsde.raster.gce.ArcSDERasterFormat;
 import org.geotools.arcsde.session.ArcSDEConnectionConfig;
 import org.geotools.data.DataAccessFactory.Param;
@@ -56,9 +56,8 @@ import org.geotools.util.logging.Logging;
 
 /**
  * Provides the form components for the arcsde coverage edit page
- * 
+ *
  * @author Gabriel Roldan
- * 
  */
 public final class ArcSDECoverageStoreEditPanel extends StoreEditPanel {
 
@@ -66,25 +65,25 @@ public final class ArcSDECoverageStoreEditPanel extends StoreEditPanel {
 
     private static final Logger LOGGER = Logging.getLogger("org.geoserver.web.data.store.arcsde");
 
-    private static final String RESOURCE_KEY_PREFIX = ArcSDECoverageStoreEditPanel.class
-            .getSimpleName();
+    private static final String RESOURCE_KEY_PREFIX =
+            ArcSDECoverageStoreEditPanel.class.getSimpleName();
 
-    final FormComponent server;
+    final FormComponent<String> server;
 
-    final FormComponent port;
+    final FormComponent<String> port;
 
-    final FormComponent instance;
+    final FormComponent<String> instance;
 
-    final FormComponent user;
+    final FormComponent<String> user;
 
-    final FormComponent password;
+    final FormComponent<String> password;
 
-    final FormComponent table;
+    final FormComponent<String> table;
 
-    public ArcSDECoverageStoreEditPanel(final String componentId, final Form storeEditForm) {
+    public ArcSDECoverageStoreEditPanel(final String componentId, final Form<?> storeEditForm) {
         super(componentId, storeEditForm);
 
-        final IModel model = storeEditForm.getModel();
+        final IModel<?> model = storeEditForm.getModel();
         setDefaultModel(model);
         final CoverageStoreInfo storeInfo = (CoverageStoreInfo) storeEditForm.getModelObject();
         {
@@ -93,7 +92,8 @@ public final class ArcSDECoverageStoreEditPanel extends StoreEditPanel {
             connectionParameters.putAll(existingParameters);
         }
 
-        final IModel paramsModel = new PropertyModel(model, "connectionParameters");
+        final IModel<Map<String, Object>> paramsModel =
+                new PropertyModel<Map<String, Object>>(model, "connectionParameters");
 
         addConnectionPrototypePanel(storeInfo);
 
@@ -115,66 +115,77 @@ public final class ArcSDECoverageStoreEditPanel extends StoreEditPanel {
         /*
          * Listen to form submission and update the model's URL
          */
-        storeEditForm.add(new IFormValidator() {
-            private static final long serialVersionUID = 1L;
+        storeEditForm.add(
+                new IFormValidator() {
+                    private static final long serialVersionUID = 1L;
 
-            public FormComponent[] getDependentFormComponents() {
-                return new FormComponent[] { server, port, instance, user, password, table };
-            }
+                    public FormComponent<?>[] getDependentFormComponents() {
+                        return new FormComponent<?>[] {
+                            server, port, instance, user, password, table
+                        };
+                    }
 
-            public void validate(final Form form) {
-                CoverageStoreInfo storeInfo = (CoverageStoreInfo) form.getModelObject();
-                final String serverVal = server.getValue();
-                final String portVal = port.getValue();
-                final String instanceVal = instance.getValue();
-                final String userVal = user.getValue();
-                final String passwordVal = password.getValue();
-                final String tableVal = table.getValue();
+                    public void validate(final Form<?> form) {
+                        CoverageStoreInfo storeInfo = (CoverageStoreInfo) form.getModelObject();
+                        final String serverVal = server.getValue();
+                        final String portVal = port.getValue();
+                        final String instanceVal = instance.getValue();
+                        final String userVal = user.getValue();
+                        final String passwordVal = password.getValue();
+                        final String tableVal = table.getValue();
 
-                StringBuilder urlb = new StringBuilder("sde://");
+                        StringBuilder urlb = new StringBuilder("sde://");
 
-                urlb.append(userVal).append(":").append(passwordVal).append("@");
-                urlb.append(serverVal).append(":").append(portVal).append("/");
-                if (instanceVal != null && instanceVal.trim().length() > 0) {
-                    urlb.append(instanceVal);
-                }
-                urlb.append("#").append(tableVal);
-                String coverageUrl = urlb.toString();
-                LOGGER.info("Coverage URL: '" + coverageUrl + "'");
-                storeInfo.setURL(coverageUrl);
-            }
-
-        });
+                        urlb.append(userVal).append(":").append(passwordVal).append("@");
+                        urlb.append(serverVal).append(":").append(portVal).append("/");
+                        if (instanceVal != null && instanceVal.trim().length() > 0) {
+                            urlb.append(instanceVal);
+                        }
+                        urlb.append("#").append(tableVal);
+                        String coverageUrl = urlb.toString();
+                        LOGGER.info("Coverage URL: '" + coverageUrl + "'");
+                        storeInfo.setURL(coverageUrl);
+                    }
+                });
     }
 
-    private FormComponent addRasterTable(final CoverageStoreInfo storeInfo, final IModel paramsModel) {
+    private FormComponent<String> addRasterTable(
+            final CoverageStoreInfo storeInfo, final IModel<Map<String, Object>> paramsModel) {
 
-        final String resourceKey = RESOURCE_KEY_PREFIX + "." + TABLE_NAME;
+        // final String resourceKey = RESOURCE_KEY_PREFIX + "." + TABLE_NAME;
 
         boolean isNew = storeInfo.getId() == null;
-        FormComponent tableComponent = addTableNameComponent(paramsModel, isNew);
+        FormComponent<String> tableComponent = addTableNameComponent(paramsModel, isNew);
         return tableComponent;
     }
 
     /**
-     * 
      * @param paramsModel
      * @param isNew
      * @return a combobox set up to display the list of available raster tables if the StoreInfo is
-     *         new, or a non editable text box if we're editing an existing StoreInfo
+     *     new, or a non editable text box if we're editing an existing StoreInfo
      */
-    private FormComponent addTableNameComponent(final IModel paramsModel, final boolean isNew) {
+    private FormComponent<String> addTableNameComponent(
+            final IModel<Map<String, Object>> paramsModel, final boolean isNew) {
 
-        final FormComponent tableNameComponent;
+        final FormComponent<String> tableNameComponent;
         final String panelId = "tableNamePanel";
 
         if (isNew) {
             RasterTableSelectionPanel selectionPanel;
-            selectionPanel = new RasterTableSelectionPanel(panelId, paramsModel, storeEditForm,
-                    server, port, instance, user, password);
+            selectionPanel =
+                    new RasterTableSelectionPanel(
+                            panelId,
+                            paramsModel,
+                            storeEditForm,
+                            server,
+                            port,
+                            instance,
+                            user,
+                            password);
             add(selectionPanel);
 
-            DropDownChoice tableDropDown = selectionPanel.getFormComponent();
+            DropDownChoice<String> tableDropDown = selectionPanel.getFormComponent();
             tableNameComponent = tableDropDown;
         } else {
             /*
@@ -182,12 +193,13 @@ public final class ArcSDECoverageStoreEditPanel extends StoreEditPanel {
              * catastrophic for the Catalog/ResourcePool as ability to get to the coverage is really
              * based on the Store's URL and the CoverageInfo is tied to it
              */
-            final IModel paramValue = new MapModel(paramsModel, TABLE_NAME);
+            final IModel<String> paramValue = new MapModel<String>(paramsModel, TABLE_NAME);
             final String resourceKey = RESOURCE_KEY_PREFIX + "." + TABLE_NAME;
-            final IModel paramLabelModel = new ResourceModel(resourceKey, TABLE_NAME);
+            final IModel<String> paramLabelModel = new ResourceModel(resourceKey, TABLE_NAME);
             final boolean required = true;
-            TextParamPanel tableNamePanel;
-            tableNamePanel = new TextParamPanel(panelId, paramValue, paramLabelModel, required);
+            TextParamPanel<String> tableNamePanel;
+            tableNamePanel =
+                    new TextParamPanel<String>(panelId, paramValue, paramLabelModel, required);
             add(tableNamePanel);
 
             tableNameComponent = tableNamePanel.getFormComponent();
@@ -197,19 +209,23 @@ public final class ArcSDECoverageStoreEditPanel extends StoreEditPanel {
             ResourceModel titleModel = new ResourceModel(titleKey);
             String title = String.valueOf(titleModel.getObject());
 
-            tableNamePanel.add(new SimpleAttributeModifier("title", title));
+            tableNamePanel.add(AttributeModifier.replace("title", title));
         }
 
         return tableNameComponent;
     }
 
-    private FormComponent addPasswordPanel(final IModel paramsModel) {
+    private FormComponent<String> addPasswordPanel(final IModel<Map<String, Object>> paramsModel) {
 
         final String paramName = PASSWORD_PARAM.key;
         final String resourceKey = RESOURCE_KEY_PREFIX + "." + paramName;
 
-        final PasswordParamPanel pwdPanel = new PasswordParamPanel(paramName, new MapModel(
-                paramsModel, paramName), new ResourceModel(resourceKey, paramName), true);
+        final PasswordParamPanel pwdPanel =
+                new PasswordParamPanel(
+                        paramName,
+                        new MapModel<String>(paramsModel, paramName),
+                        new ResourceModel(resourceKey, paramName),
+                        true);
         add(pwdPanel);
 
         String defaultTitle = String.valueOf(PASSWORD_PARAM.title);
@@ -217,20 +233,25 @@ public final class ArcSDECoverageStoreEditPanel extends StoreEditPanel {
         ResourceModel titleModel = new ResourceModel(resourceKey + ".title", defaultTitle);
         String title = String.valueOf(titleModel.getObject());
 
-        pwdPanel.add(new SimpleAttributeModifier("title", title));
+        pwdPanel.add(AttributeModifier.replace("title", title));
 
         return pwdPanel.getFormComponent();
     }
 
-    private FormComponent addTextPanel(final IModel paramsModel, final Param param) {
+    private FormComponent<String> addTextPanel(
+            final IModel<Map<String, Object>> paramsModel, final Param param) {
 
         final String paramName = param.key;
         final String resourceKey = getClass().getSimpleName() + "." + paramName;
 
         final boolean required = param.required;
 
-        final TextParamPanel textParamPanel = new TextParamPanel(paramName, new MapModel(
-                paramsModel, paramName), new ResourceModel(resourceKey, paramName), required);
+        final TextParamPanel<String> textParamPanel =
+                new TextParamPanel<String>(
+                        paramName,
+                        new MapModel<String>(paramsModel, paramName),
+                        new ResourceModel(resourceKey, paramName),
+                        required);
         textParamPanel.getFormComponent().setType(param.type);
 
         String defaultTitle = String.valueOf(param.title);
@@ -238,7 +259,7 @@ public final class ArcSDECoverageStoreEditPanel extends StoreEditPanel {
         ResourceModel titleModel = new ResourceModel(resourceKey + ".title", defaultTitle);
         String title = String.valueOf(titleModel.getObject());
 
-        textParamPanel.add(new SimpleAttributeModifier("title", title));
+        textParamPanel.add(AttributeModifier.replace("title", title));
 
         add(textParamPanel);
         return textParamPanel.getFormComponent();
@@ -249,51 +270,57 @@ public final class ArcSDECoverageStoreEditPanel extends StoreEditPanel {
         final String resourceKey = RESOURCE_KEY_PREFIX + ".prototype";
         Label label = new Label("prototypeLabel", new ResourceModel(resourceKey));
         final String title = String.valueOf(new ResourceModel(resourceKey + ".title").getObject());
-        final SimpleAttributeModifier titleSetter = new SimpleAttributeModifier("title", title);
+        final AttributeModifier titleSetter = AttributeModifier.replace("title", title);
         label.add(titleSetter);
         add(label);
 
-        final DropDownChoice existingArcSDECoverages;
-        existingArcSDECoverages = new DropDownChoice("connectionPrototype", new Model(),
-                new ArcSDEStoreListModel(), new ArcSDEStoreListChoiceRenderer());
+        final DropDownChoice<StoreInfo> existingArcSDECoverages;
+        existingArcSDECoverages =
+                new DropDownChoice<>(
+                        "connectionPrototype",
+                        new Model<StoreInfo>(),
+                        new ArcSDEStoreListModel(),
+                        new ArcSDEStoreListChoiceRenderer());
 
         existingArcSDECoverages.add(titleSetter);
         add(existingArcSDECoverages);
 
-        existingArcSDECoverages.add(new OnChangeAjaxBehavior() {
-            private static final long serialVersionUID = 1L;
+        existingArcSDECoverages.add(
+                new OnChangeAjaxBehavior() {
+                    private static final long serialVersionUID = 1L;
 
-            @SuppressWarnings("unchecked")
-            @Override
-            protected void onUpdate(AjaxRequestTarget target) {
-                final String storeId = existingArcSDECoverages.getValue();
-                final List<StoreInfo> choices = existingArcSDECoverages.getChoices();
-                for (StoreInfo store : choices) {
-                    if (store.getId().equals(storeId)) {
-                        Map<String, String> connParams = parseConnectionParameters(store);
-                        server.setModelObject(connParams.get(SERVER_NAME_PARAM_NAME));
-                        port.setModelObject(connParams.get(PORT_NUMBER_PARAM_NAME));
-                        instance.setModelObject(connParams.get(INSTANCE_NAME_PARAM_NAME));
-                        user.setModelObject(connParams.get(USER_NAME_PARAM_NAME));
-                        password.setModelObject(connParams.get(PASSWORD_PARAM_NAME));
+                    @SuppressWarnings("unchecked")
+                    @Override
+                    protected void onUpdate(AjaxRequestTarget target) {
+                        final String storeId = existingArcSDECoverages.getValue();
+                        final List<StoreInfo> choices =
+                                (List<StoreInfo>) existingArcSDECoverages.getChoices();
+                        for (StoreInfo store : choices) {
+                            if (store.getId().equals(storeId)) {
+                                Map<String, String> connParams = parseConnectionParameters(store);
+                                server.setModelObject(connParams.get(SERVER_NAME_PARAM_NAME));
+                                port.setModelObject(connParams.get(PORT_NUMBER_PARAM_NAME));
+                                instance.setModelObject(connParams.get(INSTANCE_NAME_PARAM_NAME));
+                                user.setModelObject(connParams.get(USER_NAME_PARAM_NAME));
+                                password.setModelObject(connParams.get(PASSWORD_PARAM_NAME));
 
-                        target.addComponent(server);
-                        target.addComponent(port);
-                        target.addComponent(instance);
-                        target.addComponent(user);
-                        target.addComponent(password);
-                        break;
+                                target.add(server);
+                                target.add(port);
+                                target.add(instance);
+                                target.add(user);
+                                target.add(password);
+                                break;
+                            }
+                        }
                     }
-                }
-            }
-        });
+                });
     }
 
-    final class ArcSDEStoreListModel extends LoadableDetachableModel {
+    final class ArcSDEStoreListModel extends LoadableDetachableModel<List<StoreInfo>> {
         private static final long serialVersionUID = 1L;
 
         @Override
-        protected Object load() {
+        protected List<StoreInfo> load() {
             final StoreInfo storeInfo = (StoreInfo) getDefaultModelObject();
             final Catalog catalog = storeInfo.getCatalog();
 
@@ -306,7 +333,7 @@ public final class ArcSDECoverageStoreEditPanel extends StoreEditPanel {
 
                 StoreInfo store;
                 String type;
-                for (Iterator<StoreInfo> it = stores.iterator(); it.hasNext();) {
+                for (Iterator<StoreInfo> it = stores.iterator(); it.hasNext(); ) {
                     store = it.next();
                     type = store.getType();
                     if (arcsdeCoverageType.equals(type) || arcsdeVectorType.equals(type)) {
@@ -317,32 +344,35 @@ public final class ArcSDECoverageStoreEditPanel extends StoreEditPanel {
                 }
             }
 
-            Collections.sort(stores, new Comparator<StoreInfo>() {
-                public int compare(StoreInfo o1, StoreInfo o2) {
-                    if (o1.getWorkspace().equals(o2.getWorkspace())) {
-                        return String.CASE_INSENSITIVE_ORDER.compare(o1.getName(), o2.getName());
-                    }
-                    return String.CASE_INSENSITIVE_ORDER.compare(o1.getWorkspace().getName(), o2
-                            .getWorkspace().getName());
-                }
-            });
+            Collections.sort(
+                    stores,
+                    new Comparator<StoreInfo>() {
+                        public int compare(StoreInfo o1, StoreInfo o2) {
+                            if (o1.getWorkspace().equals(o2.getWorkspace())) {
+                                return String.CASE_INSENSITIVE_ORDER.compare(
+                                        o1.getName(), o2.getName());
+                            }
+                            return String.CASE_INSENSITIVE_ORDER.compare(
+                                    o1.getWorkspace().getName(), o2.getWorkspace().getName());
+                        }
+                    });
             return stores;
         }
     }
 
-    static final class ArcSDEStoreListChoiceRenderer implements IChoiceRenderer {
+    static final class ArcSDEStoreListChoiceRenderer extends ChoiceRenderer<Object> {
         private static final long serialVersionUID = 1L;
 
         public Object getDisplayValue(final Object store) {
             StoreInfo info = (StoreInfo) store;
-            return new StringBuilder(info.getWorkspace().getName()).append(':').append(
-                    info.getName());
+            return new StringBuilder(info.getWorkspace().getName())
+                    .append(':')
+                    .append(info.getName());
         }
 
         public String getIdValue(final Object store, final int index) {
             return ((StoreInfo) store).getId();
         }
-
     }
 
     private Map<String, String> parseConnectionParameters(final StoreInfo storeInfo) {
@@ -354,8 +384,8 @@ public final class ArcSDECoverageStoreEditPanel extends StoreEditPanel {
 
             if (null != url && url.startsWith("sde:")) {
                 ArcSDEConnectionConfig connectionConfig;
-                connectionConfig = ArcSDERasterFormat
-                        .sdeURLToConnectionConfig(new StringBuffer(url));
+                connectionConfig =
+                        ArcSDERasterFormat.sdeURLToConnectionConfig(new StringBuffer(url));
                 params.put(SERVER_NAME_PARAM_NAME, connectionConfig.getServerName());
                 params.put(PORT_NUMBER_PARAM_NAME, connectionConfig.getPortNumber().toString());
                 params.put(INSTANCE_NAME_PARAM_NAME, connectionConfig.getDatabaseName());
@@ -372,18 +402,17 @@ public final class ArcSDECoverageStoreEditPanel extends StoreEditPanel {
                 params.put(PORT_NUMBER_PARAM_NAME, "5151");
             }
         } else {
-            Map<String, Serializable> storeParams = ((DataStoreInfo) storeInfo)
-                    .getConnectionParameters();
+            Map<String, Serializable> storeParams =
+                    ((DataStoreInfo) storeInfo).getConnectionParameters();
             params.put(SERVER_NAME_PARAM_NAME, (String) storeParams.get(SERVER_NAME_PARAM_NAME));
-            params.put(PORT_NUMBER_PARAM_NAME, String.valueOf(storeParams
-                    .get(PORT_NUMBER_PARAM_NAME)));
-            params
-                    .put(INSTANCE_NAME_PARAM_NAME, (String) storeParams
-                            .get(INSTANCE_NAME_PARAM_NAME));
+            params.put(
+                    PORT_NUMBER_PARAM_NAME,
+                    String.valueOf(storeParams.get(PORT_NUMBER_PARAM_NAME)));
+            params.put(
+                    INSTANCE_NAME_PARAM_NAME, (String) storeParams.get(INSTANCE_NAME_PARAM_NAME));
             params.put(USER_NAME_PARAM_NAME, (String) storeParams.get(USER_NAME_PARAM_NAME));
             params.put(PASSWORD_PARAM_NAME, (String) storeParams.get(PASSWORD_PARAM_NAME));
         }
         return params;
     }
-
 }

@@ -22,6 +22,7 @@
 		<value>DEFAULT</value>
 	</property>
 	<property name="utility" ref="wmsUtilities"/>
+    <property name="securityDispatcher" ref="gwcSecurityDispatcher"/>
   </bean>
   
   <bean id="wmsUtilities" class="org.geowebcache.service.wms.WMSUtilities"/>
@@ -40,10 +41,18 @@
   </bean>
   <alias name="gwcServiceWMSProxy" alias="gwcServiceWMS"/>
 
+    <bean id="ioInitializer" class="org.geowebcache.io.codec.ImageIOInitializer" factory-method="getInstance">
+  		<constructor-arg index="0">
+			<list>
+				<value>com.sun.media.imageioimpl.plugins.tiff.TIFFImageWriterSpi</value>
+				<value>com.sun.media.imageioimpl.plugins.tiff.TIFFImageReaderSpi</value>
+			</list>
+		</constructor-arg>
+  	</bean>
 
 	<!--Encoders -->
 
-	<bean id="PNGEncoder" class="org.geowebcache.io.PNGImageEncoder">
+	<bean id="PNGEncoder" class="org.geowebcache.io.codec.PNGImageEncoder">
 		<constructor-arg index="0" value="false" />
 		<constructor-arg index="1" value="0.25" />
 		<constructor-arg index="2">
@@ -58,12 +67,11 @@
 				<entry key="COMPRESSION_RATE" value="0.75" />
 			</map>
 		</constructor-arg>
-		<property name="disablePNG">
-			<value>FALSE</value>
-		</property>
+		<constructor-arg index="4" value="false" />
+		<constructor-arg ref="ioInitializer" />
 	</bean>
 
-	<bean id="GIFEncoder" class="org.geowebcache.io.ImageEncoderImpl">
+	<bean id="GIFEncoder" class="org.geowebcache.io.codec.ImageEncoderImpl">
 		<constructor-arg type="boolean" value="true" />
 		<constructor-arg>
 			<list>
@@ -82,9 +90,10 @@
 				<entry key="COMPRESSION_RATE" value="NULL" />
 			</map>
 		</constructor-arg>
+		<constructor-arg ref="ioInitializer" />
 	</bean>
 
-	<bean id="JPEGEncoder" class="org.geowebcache.io.ImageEncoderImpl">
+	<bean id="JPEGEncoder" class="org.geowebcache.io.codec.ImageEncoderImpl">
 		<constructor-arg type="boolean" value="true" />
 		<constructor-arg>
 			<list>
@@ -103,9 +112,10 @@
 				<entry key="COMPRESSION_RATE" value="0.75" />
 			</map>
 		</constructor-arg>
+		<constructor-arg ref="ioInitializer" />
 	</bean>
 
-	<bean id="TIFFEncoder" class="org.geowebcache.io.ImageEncoderImpl">
+	<bean id="TIFFEncoder" class="org.geowebcache.io.codec.ImageEncoderImpl">
 		<constructor-arg type="boolean" value="false" />
 		<constructor-arg>
 			<list>
@@ -124,9 +134,10 @@
 				<entry key="COMPRESSION_RATE" value="0.75" />
 			</map>
 		</constructor-arg>
+		<constructor-arg ref="ioInitializer" />
 	</bean>
 
-	<bean id="BMPEncoder" class="org.geowebcache.io.ImageEncoderImpl">
+	<bean id="BMPEncoder" class="org.geowebcache.io.codec.ImageEncoderImpl">
 		<constructor-arg type="boolean" value="true" />
 		<constructor-arg>
 			<list>
@@ -145,11 +156,12 @@
 				<entry key="COMPRESSION_RATE" value="NULL" />
 			</map>
 		</constructor-arg>
+		<constructor-arg ref="ioInitializer" />
 	</bean>
 
 	<!--Decoders -->
 
-	<bean id="PNGDecoder" class="org.geowebcache.io.ImageDecoderImpl">
+	<bean id="PNGDecoder" class="org.geowebcache.io.codec.ImageDecoderImpl">
 		<constructor-arg type="boolean" value="false" />
 		<constructor-arg>
 			<list>
@@ -163,9 +175,10 @@
 				<value>com.sun.imageio.plugins.png.PNGImageReaderSpi</value>
 			</list>
 		</constructor-arg>
+		<constructor-arg ref="ioInitializer" />
 	</bean>
 
-	<bean id="GIFDecoder" class="org.geowebcache.io.ImageDecoderImpl">
+	<bean id="GIFDecoder" class="org.geowebcache.io.codec.ImageDecoderImpl">
 		<constructor-arg type="boolean" value="true" />
 		<constructor-arg>
 			<list>
@@ -177,9 +190,10 @@
 				<value>com.sun.imageio.plugins.gif.GIFImageReaderSpi</value>
 			</list>
 		</constructor-arg>
+		<constructor-arg ref="ioInitializer" />
 	</bean>
 
-	<bean id="JPEGDecoder" class="org.geowebcache.io.ImageDecoderImpl">
+	<bean id="JPEGDecoder" class="org.geowebcache.io.codec.ImageDecoderImpl">
 		<constructor-arg type="boolean" value="true" />
 		<constructor-arg>
 			<list>
@@ -192,9 +206,10 @@
 				<value>com.sun.imageio.plugins.jpeg.JPEGImageReaderSpi</value>
 			</list>
 		</constructor-arg>
+		<constructor-arg ref="ioInitializer" />
 	</bean>
 
-	<bean id="TIFFDecoder" class="org.geowebcache.io.ImageDecoderImpl">
+	<bean id="TIFFDecoder" class="org.geowebcache.io.codec.ImageDecoderImpl">
 		<constructor-arg type="boolean" value="false" />
 		<constructor-arg>
 			<list>
@@ -207,9 +222,10 @@
 				<value>com.sun.media.imageioimpl.plugins.tiff.TIFFImageReaderSpi</value>
 			</list>
 		</constructor-arg>
+		<constructor-arg ref="ioInitializer" />
 	</bean>
 
-	<bean id="BMPDecoder" class="org.geowebcache.io.ImageDecoderImpl">
+	<bean id="BMPDecoder" class="org.geowebcache.io.codec.ImageDecoderImpl">
 		<constructor-arg type="boolean" value="true" />
 		<constructor-arg>
 			<list>
@@ -222,11 +238,12 @@
 				<value>com.sun.imageio.plugins.bmp.BMPImageReaderSpi</value>
 			</list>
 		</constructor-arg>
+		<constructor-arg ref="ioInitializer" />
 	</bean>
 
-	<bean id="decoderContainer" class="org.geowebcache.io.ImageDecoderContainer" />
+	<bean id="decoderContainer" class="org.geowebcache.io.codec.ImageDecoderContainer" />
 
-	<bean id="encoderContainer" class="org.geowebcache.io.ImageEncoderContainer" />
+	<bean id="encoderContainer" class="org.geowebcache.io.codec.ImageEncoderContainer" />
   
   
   

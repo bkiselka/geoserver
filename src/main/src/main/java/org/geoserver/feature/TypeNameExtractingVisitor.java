@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -6,9 +7,7 @@ package org.geoserver.feature;
 
 import java.util.HashSet;
 import java.util.Set;
-
 import javax.xml.namespace.QName;
-
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.ResourceInfo;
 import org.geotools.filter.visitor.DefaultFilterVisitor;
@@ -17,8 +16,8 @@ import org.opengis.filter.identity.FeatureId;
 import org.opengis.filter.identity.Identifier;
 
 /**
- * Extracts feature type names from any Id filters. 
- * 
+ * Extracts feature type names from any Id filters.
+ *
  * @author Justin Deoliveira, OpenGeo
  */
 public class TypeNameExtractingVisitor extends DefaultFilterVisitor {

@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -10,14 +11,13 @@ import org.geoserver.security.GeoServerUserGroupService;
 
 /**
  * {@link GeoServerAuthenticationProvider} configuration object.
- * <p>
- * The {@link #getUserGroupServiceName()} may be null if no {@link GeoServerUserGroupService} is 
+ *
+ * <p>The {@link #getUserGroupServiceName()} may be null if no {@link GeoServerUserGroupService} is
  * needed.
- * </p> 
  */
 public interface SecurityAuthProviderConfig extends SecurityNamedServiceConfig {
 
     public String getUserGroupServiceName();
-    public void setUserGroupServiceName(String userGroupServiceName);
 
+    public void setUserGroupServiceName(String userGroupServiceName);
 }

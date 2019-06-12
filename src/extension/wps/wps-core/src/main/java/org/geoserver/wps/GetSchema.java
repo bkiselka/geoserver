@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -9,7 +10,6 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Enumeration;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -36,7 +36,7 @@ public class GetSchema {
         String name = null;
 
         // Iterate over all parameters looking case insensitively for 'identifier'
-        for(Enumeration<String> a = request.getParameterNames(); a.hasMoreElements();) {
+        for (Enumeration<String> a = request.getParameterNames(); a.hasMoreElements(); ) {
             String i = a.nextElement();
 
             if ("identifier".equalsIgnoreCase(i)) {
@@ -57,16 +57,16 @@ public class GetSchema {
         }
 
         BufferedReader bufReader = new BufferedReader(new InputStreamReader(stream));
-        StringBuilder  schema    = new StringBuilder();
-        String         line      = null;
+        StringBuilder schema = new StringBuilder();
+        String line = null;
 
         try {
-            while(null != (line = bufReader.readLine())) {
+            while (null != (line = bufReader.readLine())) {
                 schema.append(line + "\n");
             }
 
             bufReader.close();
-        } catch(Exception e) {
+        } catch (Exception e) {
             throw new WPSException("NoApplicableCode", "Error reading schema on server.");
         }
 
@@ -74,10 +74,8 @@ public class GetSchema {
 
         try {
             response.getOutputStream().print(schema.toString());
-        } catch(Exception e) {
+        } catch (Exception e) {
             throw new WPSException("NoApplicableCode", "Could not write schema to output.");
         }
-
-        return;
     }
 }

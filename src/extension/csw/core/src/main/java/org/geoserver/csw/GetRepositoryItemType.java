@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -7,9 +8,9 @@ package org.geoserver.csw;
 
 /**
  * Represents the CSW/ebRIM GetRepositoryItem request
- * 
+ *
  * @author Andrea Aime - GeoSolutions
- * */
+ */
 public class GetRepositoryItemType {
 
     String service;
@@ -18,11 +19,7 @@ public class GetRepositoryItemType {
 
     String id;
 
-    /**
-     * The OGC service (should be "CSW")
-     * 
-     * @return
-     */
+    /** The OGC service (should be "CSW") */
     public String getService() {
         return service;
     }
@@ -31,11 +28,7 @@ public class GetRepositoryItemType {
         this.service = service;
     }
 
-    /**
-     * The service version (for example "2.0.2")
-     * 
-     * @return
-     */
+    /** The service version (for example "2.0.2") */
     public String getVersion() {
         return version;
     }
@@ -44,11 +37,7 @@ public class GetRepositoryItemType {
         this.version = version;
     }
 
-    /**
-     * The repository item id
-     * 
-     * @return
-     */
+    /** The repository item id */
     public String getId() {
         return id;
     }
@@ -56,5 +45,4 @@ public class GetRepositoryItemType {
     public void setId(String id) {
         this.id = id;
     }
-
 }

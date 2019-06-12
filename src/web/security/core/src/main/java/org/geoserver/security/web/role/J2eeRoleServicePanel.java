@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -9,7 +10,7 @@ import org.geoserver.security.config.J2eeRoleServiceConfig;
 
 /**
  * Configuration panel for {@link J2eeRoleServiceConfig}.
- *  
+ *
  * @author christian
  */
 public class J2eeRoleServicePanel extends RoleServicePanel<J2eeRoleServiceConfig> {

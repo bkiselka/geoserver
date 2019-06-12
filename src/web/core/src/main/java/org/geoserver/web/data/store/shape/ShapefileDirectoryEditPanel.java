@@ -1,10 +1,11 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 - 2016 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 package org.geoserver.web.data.store.shape;
 
-import static org.geotools.data.shapefile.ShapefileDataStoreFactory.*;
+import static org.geotools.data.shapefile.ShapefileDataStoreFactory.URLP;
 
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.model.IModel;
@@ -17,9 +18,8 @@ import org.geoserver.web.wicket.browser.ExtensionFileFilter;
 
 /**
  * Provides the form components for the directory of shapefiles store
- * 
+ *
  * @author Andrea Aime - GeoSolutions
- * 
  */
 @SuppressWarnings("serial")
 public class ShapefileDirectoryEditPanel extends ShapefileStoreEditPanel {
@@ -29,10 +29,13 @@ public class ShapefileDirectoryEditPanel extends ShapefileStoreEditPanel {
     }
 
     protected FileParamPanel buildFileParamPanel(final IModel paramsModel) {
-        FileParamPanel file = new DirectoryParamPanel("url", new MapModel(paramsModel, URLP.key),
-                new ParamResourceModel("shapefile", this), true);
+        FileParamPanel file =
+                new DirectoryParamPanel(
+                        "url",
+                        new MapModel(paramsModel, URLP.key),
+                        new ParamResourceModel("shapefile", this),
+                        true);
         file.setFileFilter(new Model<ExtensionFileFilter>(new ExtensionFileFilter(".shp")));
         return file;
     }
-
 }

@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -12,10 +13,11 @@ import org.geoserver.security.web.usergroup.UserGroupServiceChoice;
 
 /**
  * Configuration panel for {@link GeoServerDigestAuthenticationFilter}.
- * 
+ *
  * @author Justin Deoliveira, OpenGeo
  */
-public class DigestAuthFilterPanel extends AuthenticationFilterPanel<DigestAuthenticationFilterConfig>{
+public class DigestAuthFilterPanel
+        extends AuthenticationFilterPanel<DigestAuthenticationFilterConfig> {
 
     /** serialVersionUID */
     private static final long serialVersionUID = 1L;
@@ -26,5 +28,4 @@ public class DigestAuthFilterPanel extends AuthenticationFilterPanel<DigestAuthe
         add(new UserGroupServiceChoice("userGroupServiceName"));
         add(new TextField("nonceValiditySeconds").setType(Integer.class));
     }
-
 }

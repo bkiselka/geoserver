@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -8,8 +9,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import com.sleepycat.je.DatabaseEntry;
 import java.io.File;
-
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.WorkspaceInfo;
@@ -18,8 +19,6 @@ import org.geoserver.importer.ImportContext;
 import org.geoserver.importer.ImportTask;
 import org.geoserver.importer.ImporterTestSupport;
 import org.junit.Test;
-
-import com.sleepycat.je.DatabaseEntry;
 
 public class SerialVersionSafeSerialBindingTest extends ImporterTestSupport {
 
@@ -42,7 +41,7 @@ public class SerialVersionSafeSerialBindingTest extends ImporterTestSupport {
 
         DatabaseEntry e = new DatabaseEntry();
         binding.objectToEntry(context, e);
-        
+
         ImportContext context2 = (ImportContext) binding.entryToObject(e);
         context2.reattach(cat, true);
 

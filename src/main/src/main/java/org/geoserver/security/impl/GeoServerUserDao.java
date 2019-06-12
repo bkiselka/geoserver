@@ -1,11 +1,11 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 package org.geoserver.security.impl;
 
-import java.io.File;
-import java.io.FileOutputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -19,7 +19,15 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
+import org.geoserver.config.GeoServer;
+import org.geoserver.config.GeoServerInfo;
+import org.geoserver.platform.GeoServerExtensions;
+import org.geoserver.platform.GeoServerResourceLoader;
+import org.geoserver.platform.resource.Resource;
+import org.geoserver.platform.resource.Resource.Type;
+import org.geoserver.security.PropertyFileWatcher;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,19 +35,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.core.userdetails.memory.UserAttribute;
 import org.springframework.security.core.userdetails.memory.UserAttributeEditor;
-import org.geoserver.config.GeoServer;
-import org.geoserver.config.GeoServerInfo;
-import org.geoserver.platform.GeoServerExtensions;
-import org.geoserver.security.PropertyFileWatcher;
-import org.springframework.dao.DataAccessException;
-import org.springframework.dao.DataAccessResourceFailureException;
-import org.vfny.geoserver.global.GeoserverDataDirectory;
 
 /**
  * A simple DAO reading/writing the user's property files
- * 
+ *
  * @author Andrea Aime - OpenGeo
- * 
  */
 public class GeoServerUserDao implements UserDetailsService {
     /** logger */
@@ -48,23 +48,18 @@ public class GeoServerUserDao implements UserDetailsService {
     TreeMap<String, User> userMap;
 
     PropertyFileWatcher userDefinitionsFile;
-    
-    File securityDir;
-    
-    /**
-     * Returns the {@link GeoServerUserDao} instance registered in the GeoServer Spring context
-     */
+
+    /** Returns the {@link GeoServerUserDao} instance registered in the GeoServer Spring context */
     public static GeoServerUserDao get() {
         return GeoServerExtensions.bean(GeoServerUserDao.class);
     }
-    
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException,
-            DataAccessException {
+
+    public UserDetails loadUserByUsername(String username)
+            throws UsernameNotFoundException, DataAccessException {
         checkUserMap();
 
         UserDetails user = userMap.get(username);
-        if (user == null)
-            throw new UsernameNotFoundException("Could not find user: " + username);
+        if (user == null) throw new UsernameNotFoundException("Could not find user: " + username);
 
         return user;
     }
@@ -72,65 +67,77 @@ public class GeoServerUserDao implements UserDetailsService {
     /**
      * Either loads the default property file on the first access, or reloads it if it has been
      * modified since last access.
-     * 
+     *
      * @throws DataAccessResourceFailureException
      */
     void checkUserMap() throws DataAccessResourceFailureException {
-        InputStream is = null;
-        OutputStream os = null;
-        if ((userMap == null) || userDefinitionsFile == null || userDefinitionsFile.isStale()) {
-            try {
+        try {
+            if ((userMap == null) || userDefinitionsFile == null || userDefinitionsFile.isStale()) {
                 if (userDefinitionsFile == null) {
-                    securityDir = GeoserverDataDirectory.findCreateConfigDir("security");
-                    File propFile = new File(securityDir, "users.properties");
-
-                    if (!propFile.exists()) {
-                        // we're probably dealing with an old data dir, create
-                        // the file without
-                        // changing the username and password if possible
-                        Properties p = new Properties();
-                        GeoServerInfo global = GeoServerExtensions.bean(GeoServer.class).getGlobal();
-                        if ((global != null) && (global.getAdminUsername() != null)
-                                && !global.getAdminUsername().trim().equals("")) {
-                            p.put(global.getAdminUsername(), global.getAdminPassword()
-                                    + ",ROLE_ADMINISTRATOR");
-                        } else {
-                            p.put("admin", "geoserver,ROLE_ADMINISTRATOR");
-                        }
-
-                        os = new FileOutputStream(propFile);
-                        p.store(os, "Format: name=password,ROLE1,...,ROLEN");
-                        os.close();
-
-                        // setup a sample service.properties
-                        File serviceFile = new File(securityDir, "service.properties");
-                        os = new FileOutputStream(serviceFile);
-                        is = GeoServerUserDao.class
-                                .getResourceAsStream("serviceTemplate.properties");
-                        byte[] buffer = new byte[1024];
-                        int count = 0;
-                        while ((count = is.read(buffer)) > 0) {
-                            os.write(buffer, 0, count);
-                        }
-                    }
-
+                    Resource propFile = findUserProperties();
                     userDefinitionsFile = new PropertyFileWatcher(propFile);
                 }
-
                 userMap = loadUsersFromProperties(userDefinitionsFile.getProperties());
-            } catch (Exception e) {
-                LOGGER.log(Level.SEVERE, "An error occurred loading user definitions", e);
-            } finally {
-                if (is != null)
-                    try {
-                        is.close();
-                    } catch (IOException ei) { /* nothing to do */
-                    }
-                if (os != null)
-                    try {
-                        os.close();
-                    } catch (IOException eo) { /* nothing to do */
-                    }
+            }
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "An error occurred loading user definitions", e);
+        }
+    }
+
+    private Resource findUserProperties() throws IOException {
+        GeoServerResourceLoader loader = GeoServerExtensions.bean(GeoServerResourceLoader.class);
+        Resource propFile = loader.get("security/users.properties");
+
+        InputStream is = null;
+        OutputStream os = null;
+        try {
+            if (propFile.getType() == Type.RESOURCE) {
+                // we're probably dealing with an old data dir, create
+                // the file without
+                // changing the username and password if possible
+                Properties p = new Properties();
+                GeoServerInfo global = GeoServerExtensions.bean(GeoServer.class).getGlobal();
+                if ((global != null)
+                        && (global.getAdminUsername() != null)
+                        && !global.getAdminUsername().trim().equals("")) {
+                    p.put(
+                            global.getAdminUsername(),
+                            global.getAdminPassword() + ",ROLE_ADMINISTRATOR");
+                } else {
+                    p.put("admin", "geoserver,ROLE_ADMINISTRATOR");
+                }
+
+                os = propFile.out();
+                p.store(os, "Format: name=password,ROLE1,...,ROLEN");
+                os.close();
+
+                // setup a sample service.properties
+                Resource serviceFile = loader.get("security/service.properties");
+                os = serviceFile.out();
+                is = GeoServerUserDao.class.getResourceAsStream("serviceTemplate.properties");
+                byte[] buffer = new byte[1024];
+                int count = 0;
+                while ((count = is.read(buffer)) > 0) {
+                    os.write(buffer, 0, count);
+                }
+                return propFile;
+            } else {
+                throw new FileNotFoundException("Unable to find security/users.properties");
+            }
+        } finally {
+            if (is != null) {
+                try {
+                    is.close();
+                } catch (IOException ei) {
+                    /* nothing to do */
+                }
+            }
+            if (os != null) {
+                try {
+                    os.close();
+                } catch (IOException eo) {
+                    /* nothing to do */
+                }
             }
         }
     }
@@ -141,7 +148,7 @@ public class GeoServerUserDao implements UserDetailsService {
      */
     public List<String> getRoles() {
         checkUserMap();
-        
+
         Set<String> roles = new TreeSet<String>();
         roles.add("ROLE_ADMINISTRATOR");
         for (User user : getUsers()) {
@@ -152,89 +159,82 @@ public class GeoServerUserDao implements UserDetailsService {
         return new ArrayList<String>(roles);
     }
 
-    /**
-     * Returns the list of users. To be used for UI editing of users, it's a live map
-     * 
-     * @return
-     */
+    /** Returns the list of users. To be used for UI editing of users, it's a live map */
     public List<User> getUsers() {
         checkUserMap();
-        
+
         return new ArrayList<User>(userMap.values());
     }
-    
+
     /**
      * Adds a user in the user map
+     *
      * @param user
      */
     public void putUser(User user) {
         checkUserMap();
-        
-        if(userMap.containsKey(user.getUsername()))
-            throw new IllegalArgumentException("The user " + user.getUsername() + " already exists");
-        else
-            userMap.put(user.getUsername(), user);
+
+        if (userMap.containsKey(user.getUsername()))
+            throw new IllegalArgumentException(
+                    "The user " + user.getUsername() + " already exists");
+        else userMap.put(user.getUsername(), user);
     }
-    
+
     /**
      * Updates a user in the user map
+     *
      * @param user
      */
     public void setUser(User user) {
         checkUserMap();
-        
-        if(userMap.containsKey(user.getUsername()))
-            userMap.put(user.getUsername(), user);
+
+        if (userMap.containsKey(user.getUsername())) userMap.put(user.getUsername(), user);
         else
-            throw new IllegalArgumentException("The user " + user.getUsername() + " already exists");
-    }
-    
-    /**
-     * Removes the specified user from the users list
-     * @param username
-     * @return
-     */
-    public boolean removeUser(String username) {
-        checkUserMap();
-        
-        return userMap.remove(username) != null;
+            throw new IllegalArgumentException(
+                    "The user " + user.getUsername() + " already exists");
     }
 
     /**
-     * Writes down the current users map to file system
+     * Removes the specified user from the users list
+     *
+     * @param username
      */
+    public boolean removeUser(String username) {
+        checkUserMap();
+
+        return userMap.remove(username) != null;
+    }
+
+    /** Writes down the current users map to file system */
     public void storeUsers() throws IOException {
-        FileOutputStream os = null;
+        OutputStream os = null;
         try {
             // turn back the users into a users map
             Properties p = storeUsersToProperties(userMap);
 
             // write out to the data dir
-            File propFile = new File(securityDir, "users.properties");
-            os = new FileOutputStream(propFile);
+            Resource propFile = userDefinitionsFile.getResource();
+            os = propFile.out();
             p.store(os, null);
         } catch (Exception e) {
-            if (e instanceof IOException)
-                throw (IOException) e;
+            if (e instanceof IOException) throw (IOException) e;
             else
-                throw (IOException) new IOException(
-                        "Could not write updated users list to file system").initCause(e);
+                throw (IOException)
+                        new IOException("Could not write updated users list to file system")
+                                .initCause(e);
         } finally {
-            if (os != null)
-                os.close();
+            if (os != null) os.close();
         }
     }
 
-    /**
-     * Force the dao to reload its definitions from the file
-     */
+    /** Force the dao to reload its definitions from the file */
     public void reload() {
         userDefinitionsFile = null;
     }
 
     /**
      * Loads the user from property file into the users map
-     * 
+     *
      * @param users
      * @param props
      */
@@ -242,7 +242,7 @@ public class GeoServerUserDao implements UserDetailsService {
         TreeMap<String, User> users = new TreeMap<String, User>();
         UserAttributeEditor configAttribEd = new UserAttributeEditor();
 
-        for (Iterator<Object> iter = props.keySet().iterator(); iter.hasNext();) {
+        for (Iterator<Object> iter = props.keySet().iterator(); iter.hasNext(); ) {
             // the attribute editors parses the list of strings into password, username and enabled
             // flag
             String username = (String) iter.next();
@@ -251,25 +251,30 @@ public class GeoServerUserDao implements UserDetailsService {
             // if the parsing succeeded turn that into a user object
             UserAttribute attr = (UserAttribute) configAttribEd.getValue();
             if (attr != null) {
-                User user = createUserObject(username, attr.getPassword(), attr.isEnabled(), attr.getAuthorities());
+                User user =
+                        createUserObject(
+                                username,
+                                attr.getPassword(),
+                                attr.isEnabled(),
+                                attr.getAuthorities());
                 users.put(username, user);
             }
         }
-
         return users;
     }
 
-    protected User createUserObject(String username,String password, boolean isEnabled,List<GrantedAuthority> authorities) {
-       return new User(username, password, isEnabled, true, true,
-                true, authorities);
+    protected User createUserObject(
+            String username,
+            String password,
+            boolean isEnabled,
+            List<GrantedAuthority> authorities) {
+        return new User(username, password, isEnabled, true, true, true, authorities);
     }
-    
-    
+
     /**
      * Stores the provided user map into a properties object
-     * 
+     *
      * @param userMap
-     * @return
      */
     Properties storeUsersToProperties(Map<String, User> userMap) {
         Properties p = new Properties();
@@ -281,9 +286,8 @@ public class GeoServerUserDao implements UserDetailsService {
 
     /**
      * Turns the users password, granted authorities and enabled state into a property file value
-     * 
+     *
      * @param user
-     * @return
      */
     String serializeUser(User user) {
         StringBuffer sb = new StringBuffer();
@@ -296,5 +300,4 @@ public class GeoServerUserDao implements UserDetailsService {
         sb.append(user.isEnabled() ? "enabled" : "disabled");
         return sb.toString();
     }
-
 }

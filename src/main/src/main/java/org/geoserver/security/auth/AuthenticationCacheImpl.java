@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -9,22 +10,18 @@ import org.springframework.security.core.Authentication;
 
 /**
  * @author mcr
- *
- * Null implementation doing nothing
+ *     <p>Null implementation doing nothing
  */
 public class AuthenticationCacheImpl implements AuthenticationCache {
 
     @Override
-    public void removeAll() {
-    }
+    public void removeAll() {}
 
     @Override
-    public void removeAll(String filterName) {
-    }
+    public void removeAll(String filterName) {}
 
     @Override
-    public void remove(String filterName, String cacheKey) {
-    }
+    public void remove(String filterName, String cacheKey) {}
 
     @Override
     public Authentication get(String filterName, String cacheKey) {
@@ -32,11 +29,13 @@ public class AuthenticationCacheImpl implements AuthenticationCache {
     }
 
     @Override
-    public void put(String filterName, String cacheKey, Authentication auth,
-            Integer timeToIdleSeconds, Integer timeToLiveSeconds) {
-    }
+    public void put(
+            String filterName,
+            String cacheKey,
+            Authentication auth,
+            Integer timeToIdleSeconds,
+            Integer timeToLiveSeconds) {}
 
     @Override
-    public void put(String filterName, String cacheKey, Authentication auth) {
-    }
+    public void put(String filterName, String cacheKey, Authentication auth) {}
 }

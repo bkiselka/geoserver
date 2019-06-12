@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -10,7 +11,7 @@ import org.geoserver.web.GeoServerApplication;
 
 /**
  * Model for the main {@link MasterPasswordConfig} configuration.
- *  
+ *
  * @author Justin Deoliveira, OpenGeo
  */
 public class MasterPasswordConfigModel extends LoadableDetachableModel<MasterPasswordConfig> {
@@ -19,5 +20,4 @@ public class MasterPasswordConfigModel extends LoadableDetachableModel<MasterPas
     protected MasterPasswordConfig load() {
         return GeoServerApplication.get().getSecurityManager().getMasterPasswordConfig();
     }
-
 }

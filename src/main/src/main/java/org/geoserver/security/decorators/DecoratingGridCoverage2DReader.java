@@ -1,15 +1,15 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014-2015 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 package org.geoserver.security.decorators;
 
+import it.geosolutions.imageio.maskband.DatasetLayout;
 import java.io.IOException;
 import java.util.List;
 import java.util.Set;
-
 import javax.media.jai.ImageLayout;
-
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.io.GridCoverage2DReader;
 import org.geotools.coverage.grid.io.OverviewPolicy;
@@ -23,9 +23,9 @@ import org.opengis.referencing.datum.PixelInCell;
 import org.opengis.referencing.operation.MathTransform;
 
 /**
- * Delegates every method to the delegate grid coverage reader. Subclasses will
- * override selected methods to perform their "decoration" job
- * 
+ * Delegates every method to the delegate grid coverage reader. Subclasses will override selected
+ * methods to perform their "decoration" job
+ *
  * @author Andrea Aime
  */
 public abstract class DecoratingGridCoverage2DReader implements GridCoverage2DReader {
@@ -84,8 +84,8 @@ public abstract class DecoratingGridCoverage2DReader implements GridCoverage2DRe
         return delegate.getOriginalGridToWorld(coverageName, pixInCell);
     }
 
-    public GridCoverage2D read(GeneralParameterValue[] parameters) throws IllegalArgumentException,
-            IOException {
+    public GridCoverage2D read(GeneralParameterValue[] parameters)
+            throws IllegalArgumentException, IOException {
         return delegate.read(parameters);
     }
 
@@ -100,22 +100,6 @@ public abstract class DecoratingGridCoverage2DReader implements GridCoverage2DRe
 
     public String getMetadataValue(String coverageName, String name) throws IOException {
         return delegate.getMetadataValue(coverageName, name);
-    }
-
-    public String[] listSubNames() throws IOException {
-        return delegate.listSubNames();
-    }
-
-    public String getCurrentSubname() throws IOException {
-        return delegate.getCurrentSubname();
-    }
-
-    public boolean hasMoreGridCoverages() throws IOException {
-        return delegate.hasMoreGridCoverages();
-    }
-
-    public void skip() throws IOException {
-        delegate.skip();
     }
 
     public void dispose() throws IOException {
@@ -136,8 +120,9 @@ public abstract class DecoratingGridCoverage2DReader implements GridCoverage2DRe
         return delegate.getReadingResolutions(policy, requestedResolution);
     }
 
-    public double[] getReadingResolutions(String coverageName, OverviewPolicy policy,
-            double[] requestedResolution) throws IOException {
+    public double[] getReadingResolutions(
+            String coverageName, OverviewPolicy policy, double[] requestedResolution)
+            throws IOException {
         return delegate.getReadingResolutions(coverageName, policy, requestedResolution);
     }
 
@@ -147,14 +132,6 @@ public abstract class DecoratingGridCoverage2DReader implements GridCoverage2DRe
 
     public int getGridCoverageCount() throws IOException {
         return delegate.getGridCoverageCount();
-    }
-
-    public int getNumOverviews() {
-        return delegate.getNumOverviews();
-    }
-
-    public int getNumOverviews(String coverageName) {
-        return delegate.getNumOverviews(coverageName);
     }
 
     public ImageLayout getImageLayout() throws IOException {
@@ -172,5 +149,14 @@ public abstract class DecoratingGridCoverage2DReader implements GridCoverage2DRe
     public double[][] getResolutionLevels(String coverageName) throws IOException {
         return delegate.getResolutionLevels(coverageName);
     }
-    
+
+    @Override
+    public DatasetLayout getDatasetLayout() {
+        return delegate.getDatasetLayout();
+    }
+
+    @Override
+    public DatasetLayout getDatasetLayout(String coverageName) {
+        return delegate.getDatasetLayout(coverageName);
+    }
 }

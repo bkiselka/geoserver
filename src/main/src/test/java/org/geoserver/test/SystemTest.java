@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -8,8 +9,9 @@ import org.junit.experimental.categories.Category;
 
 /**
  * Category marker for system test.
- * <p>
- * System test classes should be marked with this interface as an {@link Category}. For example.
+ *
+ * <p>System test classes should be marked with this interface as an {@link Category}. For example.
+ *
  * <pre>
  * <code>
  * {@literal @}Category(SystemTest.class)
@@ -18,10 +20,7 @@ import org.junit.experimental.categories.Category;
  * }
  * </code>
  * </pre>
- * </p>
- * @author Justin Deoliveira, OpenGeo
  *
+ * @author Justin Deoliveira, OpenGeo
  */
-public interface SystemTest {
-
-}
+public interface SystemTest {}

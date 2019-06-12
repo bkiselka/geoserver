@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -8,8 +9,7 @@ import org.geotools.data.FeatureEvent;
 import org.geotools.data.FeatureListener;
 
 /**
- * A FeatureListener wrapper that changes the feature source, to be used in
- * wrapping feature sources
+ * A FeatureListener wrapper that changes the feature source, to be used in wrapping feature sources
  */
 public class WrappingFeatureListener implements FeatureListener {
 
@@ -22,9 +22,8 @@ public class WrappingFeatureListener implements FeatureListener {
     }
 
     public void changed(FeatureEvent featureEvent) {
-        FeatureEvent retyped = new FeatureEvent(source, featureEvent.getEventType(), featureEvent
-                .getBounds());
+        FeatureEvent retyped =
+                new FeatureEvent(source, featureEvent.getType(), featureEvent.getBounds());
         listener.changed(retyped);
     }
-
 }

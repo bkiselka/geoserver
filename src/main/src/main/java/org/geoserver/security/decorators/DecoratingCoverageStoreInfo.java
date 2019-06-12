@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -7,30 +8,28 @@ package org.geoserver.security.decorators;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Map;
-
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogVisitor;
 import org.geoserver.catalog.CoverageStoreInfo;
 import org.geoserver.catalog.MetadataMap;
 import org.geoserver.catalog.WorkspaceInfo;
-import org.geoserver.catalog.impl.AbstractDecorator;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
-import org.geotools.factory.Hints;
+import org.geotools.util.decorate.AbstractDecorator;
+import org.geotools.util.factory.Hints;
 import org.opengis.coverage.grid.GridCoverageReader;
 import org.opengis.util.ProgressListener;
 
 /**
- * Delegates all methods to the provided delegate. Suclasses will override
- * methods in order to perform their decoration work
- * 
+ * Delegates all methods to the provided delegate. Suclasses will override methods in order to
+ * perform their decoration work
+ *
  * @author Andrea Aime - TOPP
- * 
  * @param <T>
  * @param <F>
  */
-public class DecoratingCoverageStoreInfo extends
-        AbstractDecorator<CoverageStoreInfo> implements CoverageStoreInfo {
-    
+public class DecoratingCoverageStoreInfo extends AbstractDecorator<CoverageStoreInfo>
+        implements CoverageStoreInfo {
+
     public DecoratingCoverageStoreInfo(CoverageStoreInfo delegate) {
         super(delegate);
     }
@@ -114,7 +113,7 @@ public class DecoratingCoverageStoreInfo extends
     public void accept(CatalogVisitor visitor) {
         delegate.accept(visitor);
     }
-    
+
     public <T> T getAdapter(Class<T> adapterClass, Map<?, ?> hints) {
         return delegate.getAdapter(adapterClass, hints);
     }
@@ -124,5 +123,4 @@ public class DecoratingCoverageStoreInfo extends
             throws IOException {
         return delegate.getGridCoverageReader(listener, hints);
     }
-
 }

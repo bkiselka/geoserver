@@ -1,18 +1,16 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 package org.geoserver.importer.mosaic;
 
 import java.util.Date;
-
+import org.geoserver.importer.SpatialFile;
 import org.geotools.coverage.grid.GridGeometry2D;
 import org.geotools.geometry.Envelope2D;
-import org.geoserver.importer.SpatialFile;
 
-/**
- * A tile of a mosaic. 
- */
+/** A tile of a mosaic. */
 public class Granule extends SpatialFile {
 
     Date timestamp;
@@ -46,6 +44,4 @@ public class Granule extends SpatialFile {
     public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
     }
-
-    
 }

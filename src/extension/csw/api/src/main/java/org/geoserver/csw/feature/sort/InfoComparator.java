@@ -1,16 +1,16 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 package org.geoserver.csw.feature.sort;
 
 import java.util.Comparator;
-
 import org.geoserver.catalog.Info;
 
 /**
  * Compares two feature based on their catalog info id
- * 
+ *
  * @author Niels Charlier
  */
 class InfoComparator implements Comparator<Info> {
@@ -19,8 +19,8 @@ class InfoComparator implements Comparator<Info> {
 
     /**
      * Builds a new comparator
-     * 
-     * @param inverse If true the comparator will force an ascending order (descending otherwise)
+     *
+     * @param ascending If true the comparator will force an ascending order (descending otherwise)
      */
     public InfoComparator(boolean ascending) {
         this.ascending = ascending;
@@ -51,5 +51,4 @@ class InfoComparator implements Comparator<Info> {
             return id1.compareTo(id2);
         }
     }
-
 }

@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -10,16 +11,13 @@ import org.geoserver.wcs.WCSInfo;
 
 /**
  * Base support class for wcs tests.
- * 
+ *
  * @author Andrea Aime, TOPP
- * 
  */
 public abstract class CoverageTestSupport extends GeoServerSystemTestSupport {
     protected static final String BASEPATH = "wcs";
 
-    /**
-     * @return The global wfs instance from the application context.
-     */
+    /** @return The global wfs instance from the application context. */
     protected WCSInfo getWCS() {
         return getGeoServer().getService(WCSInfo.class);
     }

@@ -1,4 +1,5 @@
-/* Copyright (c) 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -6,7 +7,6 @@ package org.geoserver.wms.featureinfo;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.geoserver.wms.MapLayerInfo;
 import org.geotools.styling.FeatureTypeStyle;
 import org.geotools.styling.Rule;
@@ -23,10 +23,9 @@ abstract class AbstractVectorLayerIdentifier implements LayerIdentifier {
 
     /**
      * Selects the rules active at this zoom level
-     * 
+     *
      * @param style
      * @param scaleDenominator
-     * @return
      */
     protected List<Rule> getActiveRules(Style style, double scaleDenominator) {
         List<Rule> result = new ArrayList<Rule>();
@@ -34,13 +33,13 @@ abstract class AbstractVectorLayerIdentifier implements LayerIdentifier {
         for (FeatureTypeStyle fts : style.featureTypeStyles()) {
             for (Rule r : fts.rules()) {
                 if ((r.getMinScaleDenominator() - TOLERANCE <= scaleDenominator)
-                        && (r.getMaxScaleDenominator() + TOLERANCE > scaleDenominator) 
-                        && r.getSymbolizers() != null && r.getSymbolizers().length > 0) {
+                        && (r.getMaxScaleDenominator() + TOLERANCE > scaleDenominator)
+                        && r.symbolizers() != null
+                        && r.symbolizers().size() > 0) {
                     result.add(r);
                 }
             }
         }
         return result;
     }
-
 }

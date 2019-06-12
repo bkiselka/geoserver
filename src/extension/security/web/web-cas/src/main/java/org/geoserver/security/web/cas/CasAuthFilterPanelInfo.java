@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -10,11 +11,11 @@ import org.geoserver.security.web.auth.AuthenticationFilterPanelInfo;
 
 /**
  * Configuration panel extension for {@link GeoServerCasAuthenticationFilter}.
- * 
+ *
  * @author mcr
  */
-public class CasAuthFilterPanelInfo 
-    extends AuthenticationFilterPanelInfo<CasAuthenticationFilterConfig, CasAuthFilterPanel> {
+public class CasAuthFilterPanelInfo
+        extends AuthenticationFilterPanelInfo<CasAuthenticationFilterConfig, CasAuthFilterPanel> {
 
     private static final long serialVersionUID = 1L;
 

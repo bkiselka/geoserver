@@ -1,23 +1,22 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 package org.geoserver.wfs.xml.gml2;
 
 import java.net.URI;
-
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
-import org.geotools.xml.ElementInstance;
-import org.geotools.xml.Node;
+import org.geotools.xsd.ElementInstance;
+import org.geotools.xsd.Node;
+import org.locationtech.jts.geom.Envelope;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
-import com.vividsolutions.jts.geom.Envelope;
-
 /**
- * Subclass of {@link GMLBoxTypeBinding} that parses srsName and 
- * can inherit the CRS from the containing elements
- * 
+ * Subclass of {@link GMLBoxTypeBinding} that parses srsName and can inherit the CRS from the
+ * containing elements
+ *
  * @author Andrea Aime
  */
 public class GMLBoxTypeBinding extends org.geotools.gml2.bindings.GMLBoxTypeBinding {
@@ -38,8 +37,8 @@ public class GMLBoxTypeBinding extends org.geotools.gml2.bindings.GMLBoxTypeBind
             URI srs = (URI) node.getAttributeValue("srsName");
             crs = CRS.decode(srs.toString());
         }
-        
-        if(crs != null) {
+
+        if (crs != null) {
             return new ReferencedEnvelope(envelope, crs);
         } else {
             return envelope;

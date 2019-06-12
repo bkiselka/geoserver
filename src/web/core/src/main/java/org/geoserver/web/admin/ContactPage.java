@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 - 2016 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -11,10 +12,9 @@ import org.apache.wicket.model.IModel;
 import org.geoserver.config.ContactInfo;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerInfo;
-import org.geoserver.web.GeoServerHomePage;
 
 public class ContactPage extends ServerAdminPage {
-    public ContactPage(){
+    public ContactPage() {
         final IModel geoServerModel = getGeoServerModel();
         final IModel contactModel = getContactInfoModel();
 
@@ -22,21 +22,23 @@ public class ContactPage extends ServerAdminPage {
         add(form);
 
         form.add(new ContactPanel("contact", contactModel));
-        form.add(new Button("submit") {
-            @Override
-            public void onSubmit() {
-                GeoServer gs = (GeoServer)geoServerModel.getObject();
-                GeoServerInfo global = gs.getGlobal();
-                global.setContact((ContactInfo)contactModel.getObject());
-                gs.save(global);
-                doReturn();
-            }
-        });
-        form.add(new Button("cancel") {
-            @Override
-            public void onSubmit() {
-                doReturn();
-            }
-        });
+        form.add(
+                new Button("submit") {
+                    @Override
+                    public void onSubmit() {
+                        GeoServer gs = (GeoServer) geoServerModel.getObject();
+                        GeoServerInfo global = gs.getGlobal();
+                        global.getSettings().setContact((ContactInfo) contactModel.getObject());
+                        gs.save(global);
+                        doReturn();
+                    }
+                });
+        form.add(
+                new Button("cancel") {
+                    @Override
+                    public void onSubmit() {
+                        doReturn();
+                    }
+                });
     }
 }

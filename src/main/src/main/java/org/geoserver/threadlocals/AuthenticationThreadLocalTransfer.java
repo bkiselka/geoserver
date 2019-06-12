@@ -1,4 +1,5 @@
-/* Copyright (c) 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -6,16 +7,14 @@
 package org.geoserver.threadlocals;
 
 import java.util.Map;
-
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
  * Moves the Spring Authentication thread local to another thread
- * 
+ *
  * @author Andrea Aime - GeoSolutions
- * 
  */
 public class AuthenticationThreadLocalTransfer implements ThreadLocalTransfer {
 
@@ -39,5 +38,4 @@ public class AuthenticationThreadLocalTransfer implements ThreadLocalTransfer {
     public void cleanup() {
         SecurityContextHolder.getContext().setAuthentication(null);
     }
-
 }

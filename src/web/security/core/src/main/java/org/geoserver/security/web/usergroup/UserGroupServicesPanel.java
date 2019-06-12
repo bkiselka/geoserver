@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -12,10 +13,11 @@ import org.geoserver.security.web.SecurityNamedServicesPanel;
 
 /**
  * Panel for providing list of user group service configurations.
- * 
+ *
  * @author Justin Deoliveira, OpenGeo
  */
-public class UserGroupServicesPanel extends SecurityNamedServicesPanel<SecurityUserGroupServiceConfig> {
+public class UserGroupServicesPanel
+        extends SecurityNamedServicesPanel<SecurityUserGroupServiceConfig> {
 
     public UserGroupServicesPanel(String id) {
         super(id, new UserGroupServiceProvider());
@@ -29,8 +31,9 @@ public class UserGroupServicesPanel extends SecurityNamedServicesPanel<SecurityU
     @Override
     protected void validateRemoveConfig(SecurityUserGroupServiceConfig config)
             throws SecurityConfigException {
-        SecurityConfigValidator.getConfigurationValiator(GeoServerUserGroupService.class, 
-            config.getClassName()).validateRemoveUserGroupService(config);
+        SecurityConfigValidator.getConfigurationValiator(
+                        GeoServerUserGroupService.class, config.getClassName())
+                .validateRemoveUserGroupService(config);
     }
 
     @Override

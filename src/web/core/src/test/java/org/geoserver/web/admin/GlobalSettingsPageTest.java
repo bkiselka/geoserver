@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -17,6 +18,6 @@ public class GlobalSettingsPageTest extends GeoServerWicketTestSupport {
         login();
         tester.startPage(GlobalSettingsPage.class);
         tester.assertComponent("form:verbose", CheckBox.class);
-        tester.assertModelValue("form:verbose", info.isVerbose());
+        tester.assertModelValue("form:verbose", info.getSettings().isVerbose());
     }
 }

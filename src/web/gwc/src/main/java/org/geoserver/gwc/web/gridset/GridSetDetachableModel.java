@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -9,10 +10,7 @@ import org.geoserver.gwc.GWC;
 import org.geowebcache.grid.GridSet;
 import org.geowebcache.grid.GridSetBroker;
 
-/**
- * @see GWC#getGridSetBroker()
- * 
- */
+/** @see GWC#getGridSetBroker() */
 class GridSetDetachableModel extends LoadableDetachableModel<GridSet> {
     private static final long serialVersionUID = 7948457592325861589L;
 
@@ -28,5 +26,4 @@ class GridSetDetachableModel extends LoadableDetachableModel<GridSet> {
         GridSet gridSet = gridSetBroker.get(name);
         return gridSet;
     }
-
 }

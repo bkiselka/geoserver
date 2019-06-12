@@ -18,25 +18,20 @@ package org.geoserver.wcs2_0.kvp;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import net.opengis.wcs20.ExtensionItemType;
 import net.opengis.wcs20.GetCoverageType;
-
 import org.apache.commons.collections.map.CaseInsensitiveMap;
 import org.geoserver.config.GeoServer;
 import org.geoserver.ows.util.KvpUtils;
 import org.geoserver.wcs.WCSInfo;
 import org.geoserver.wcs.kvp.GetCoverageRequestReader;
-import org.geoserver.wcs.xml.v1_1_1.WCSConfiguration;
 import org.geoserver.wcs2_0.WCSTestSupport;
 import org.geoserver.wcs2_0.WebCoverageService20;
+import org.geotools.wcs.v1_1.WCSConfiguration;
 import org.junit.Before;
 import org.opengis.coverage.grid.GridCoverage;
 
-/**
- * @author Simone Giannecchini, GeoSolutions SAS
- *
- */
+/** @author Simone Giannecchini, GeoSolutions SAS */
 public abstract class WCSKVPTestSupport extends WCSTestSupport {
 
     static final double EPS = 10 - 6;
@@ -61,15 +56,16 @@ public abstract class WCSKVPTestSupport extends WCSTestSupport {
         // collect extensions
         Map<String, Object> extensions = new HashMap<String, Object>();
         for (ExtensionItemType item : gc.getExtension().getContents()) {
-            Object value = item.getSimpleContent() != null ? item.getSimpleContent() : item.getObjectContent();
+            Object value =
+                    item.getSimpleContent() != null
+                            ? item.getSimpleContent()
+                            : item.getObjectContent();
             extensions.put(item.getNamespace() + ":" + item.getName(), value);
         }
         return extensions;
     }
 
-    /**
-     * Runs GetCoverage on the specified parameters and returns an array of coverages
-     */
+    /** Runs GetCoverage on the specified parameters and returns an array of coverages */
     protected GridCoverage executeGetCoverage(String url) throws Exception {
         GridCoverage coverage = service.getCoverage(parse(url));
         super.scheduleForCleaning(coverage);
@@ -92,9 +88,10 @@ public abstract class WCSKVPTestSupport extends WCSTestSupport {
 
     @Before
     public void setup() {
-        kvpreader = (GetCoverageRequestReader) applicationContext.getBean("wcs111GetCoverageRequestReader");
+        kvpreader =
+                (GetCoverageRequestReader)
+                        applicationContext.getBean("wcs111GetCoverageRequestReader");
         service = (WebCoverageService20) applicationContext.getBean("wcs20ServiceTarget");
         configuration = new WCSConfiguration();
     }
-
 }

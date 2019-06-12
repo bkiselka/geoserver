@@ -1,20 +1,18 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 
-
 package org.geoserver.security.filter;
 
 import javax.servlet.http.HttpServletRequest;
-
-import org.springframework.security.web.authentication.WebAuthenticationDetails;;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
 
 /**
  * extension for adding additional authentication details
- * 
- * @author christian
  *
+ * @author christian
  */
 public class GeoServerWebAuthenticationDetails extends WebAuthenticationDetails {
 
@@ -31,7 +29,5 @@ public class GeoServerWebAuthenticationDetails extends WebAuthenticationDetails 
 
     public GeoServerWebAuthenticationDetails(HttpServletRequest request) {
         super(request);
-        
     }
-
 }

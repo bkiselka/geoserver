@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -6,18 +7,17 @@ package org.geoserver.security.decorators;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.opengis.feature.simple.SimpleFeature;
 
 /**
- * Simple Feature iterators are read only by design, but just to make extra sure there
- * are no write enabled subclasses floating around we make the wrapping anyways,
- * 
- * 
+ * Simple Feature iterators are read only by design, but just to make extra sure there are no write
+ * enabled subclasses floating around we make the wrapping anyways,
+ *
  * @author Josh Vote, CSIRO Earth Science and Resource Engineering
  */
-public class SecuredSimpleFeatureIterator implements SimpleFeatureIterator, Iterator<SimpleFeature> {
+public class SecuredSimpleFeatureIterator
+        implements SimpleFeatureIterator, Iterator<SimpleFeature> {
 
     SimpleFeatureIterator wrapped;
 

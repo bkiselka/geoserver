@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -7,23 +8,23 @@ package org.geoserver.security.decorators;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Map;
-
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogVisitor;
 import org.geoserver.catalog.MetadataMap;
 import org.geoserver.catalog.WMSStoreInfo;
 import org.geoserver.catalog.WorkspaceInfo;
-import org.geoserver.catalog.impl.AbstractDecorator;
-import org.geotools.data.wms.WebMapServer;
+import org.geotools.ows.wms.WebMapServer;
+import org.geotools.util.decorate.AbstractDecorator;
 import org.opengis.util.ProgressListener;
 
 /**
  * Delegates every method to the delegate wms store info. Subclasses will override selected methods
  * to perform their "decoration" job
- * 
+ *
  * @author Andrea Aime - GeoSolutions
  */
-public class DecoratingWMSStoreInfo extends AbstractDecorator<WMSStoreInfo> implements WMSStoreInfo {
+public class DecoratingWMSStoreInfo extends AbstractDecorator<WMSStoreInfo>
+        implements WMSStoreInfo {
 
     public DecoratingWMSStoreInfo(WMSStoreInfo delegate) {
         super(delegate);
@@ -140,7 +141,7 @@ public class DecoratingWMSStoreInfo extends AbstractDecorator<WMSStoreInfo> impl
 
     @Override
     public void setMaxConnections(int maxConcurrentConnections) {
-        delegate.setMaxConnections(maxConcurrentConnections);        
+        delegate.setMaxConnections(maxConcurrentConnections);
     }
 
     public int getReadTimeout() {
@@ -166,5 +167,4 @@ public class DecoratingWMSStoreInfo extends AbstractDecorator<WMSStoreInfo> impl
     public void setUseConnectionPooling(boolean useHttpConnectionPooling) {
         delegate.setUseConnectionPooling(useHttpConnectionPooling);
     }
-
 }

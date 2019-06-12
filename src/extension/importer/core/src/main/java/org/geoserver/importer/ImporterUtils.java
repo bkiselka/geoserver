@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -6,7 +7,6 @@ package org.geoserver.importer;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.LayerInfo;
-import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.StoreInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.catalog.impl.StoreInfoImpl;
@@ -14,9 +14,8 @@ import org.geoserver.ows.util.OwsUtils;
 
 /**
  * Utility class.
- * 
- * @author Justin Deoliveira, OpenGeo
  *
+ * @author Justin Deoliveira, OpenGeo
  */
 public class ImporterUtils {
 
@@ -27,7 +26,7 @@ public class ImporterUtils {
                 resolved = cat.getWorkspace(ws.getId());
             }
             if (resolved == null && lookupByName) {
-                //try looking up by name
+                // try looking up by name
                 resolved = cat.getWorkspaceByName(ws.getName());
             }
 
@@ -44,7 +43,7 @@ public class ImporterUtils {
             if (s.getId() != null) {
                 resolved = cat.getStore(s.getId(), StoreInfo.class);
             }
-            
+
             if (resolved == null && lookupByName) {
                 resolved = cat.getStoreByName(s.getWorkspace(), s.getName(), StoreInfo.class);
             }
@@ -54,7 +53,7 @@ public class ImporterUtils {
         }
 
         if (s != null && s.getCatalog() == null && s instanceof StoreInfoImpl) {
-            ((StoreInfoImpl)s).setCatalog(cat);
+            ((StoreInfoImpl) s).setCatalog(cat);
         }
         return resolveCollections(s);
     }
@@ -68,7 +67,7 @@ public class ImporterUtils {
         }
 
         if (l != null && l.getId() == null && lookupByName) {
-            LayerInfo resolved = cat.getLayerByName(l.getName());
+            LayerInfo resolved = cat.getLayerByName(l.prefixedName());
             if (resolved != null) {
                 l = resolved;
             }

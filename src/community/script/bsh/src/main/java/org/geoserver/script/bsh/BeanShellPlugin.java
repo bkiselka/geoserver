@@ -1,17 +1,17 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 package org.geoserver.script.bsh;
 
-import org.geoserver.script.ScriptPlugin;
 import bsh.BshScriptEngineFactory;
+import org.geoserver.script.ScriptPlugin;
 
 /**
  * Script plugin for BeanShell.
- * 
- * @author Justin Deoliveira, OpenGeo
  *
+ * @author Justin Deoliveira, OpenGeo
  */
 public class BeanShellPlugin extends ScriptPlugin {
 

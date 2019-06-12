@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -13,7 +14,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
 import org.geowebcache.diskquota.QuotaStore;
 import org.geowebcache.diskquota.storage.PageStats;
 import org.geowebcache.diskquota.storage.PageStatsPayload;
@@ -24,19 +24,17 @@ import org.geowebcache.diskquota.storage.TileSet;
 import org.geowebcache.diskquota.storage.TileSetVisitor;
 
 public class DummyQuotaStore implements QuotaStore {
-    
-    private static final Quota EMPTY_QUOTA = new Quota(new BigInteger("0"));
-    
+
+    private static final Quota EMPTY_QUOTA = new Quota(BigInteger.valueOf(0));
+
     TilePageCalculator calculator;
-    
+
     public DummyQuotaStore(TilePageCalculator calculator) {
         this.calculator = calculator;
     }
 
     @Override
-    public void createLayer(String layerName) throws InterruptedException {
-        
-    }
+    public void createLayer(String layerName) throws InterruptedException {}
 
     @Override
     public Quota getGloballyUsedQuota() throws InterruptedException {
@@ -49,12 +47,10 @@ public class DummyQuotaStore implements QuotaStore {
     }
 
     @Override
-    public void deleteLayer(String layerName) {
-    }
+    public void deleteLayer(String layerName) {}
 
     @Override
-    public void renameLayer(String oldLayerName, String newLayerName) throws InterruptedException {
-    }
+    public void renameLayer(String oldLayerName, String newLayerName) throws InterruptedException {}
 
     @Override
     public Quota getUsedQuotaByLayerName(String layerName) throws InterruptedException {
@@ -79,8 +75,7 @@ public class DummyQuotaStore implements QuotaStore {
     }
 
     @Override
-    public void accept(TileSetVisitor visitor) {
-    }
+    public void accept(TileSetVisitor visitor) {}
 
     @Override
     public TilePageCalculator getTilePageCalculator() {
@@ -88,12 +83,13 @@ public class DummyQuotaStore implements QuotaStore {
     }
 
     @Override
-    public void addToQuotaAndTileCounts(TileSet tileSet, Quota quotaDiff,
-            Collection<PageStatsPayload> tileCountDiffs) throws InterruptedException {
-    }
+    public void addToQuotaAndTileCounts(
+            TileSet tileSet, Quota quotaDiff, Collection<PageStatsPayload> tileCountDiffs)
+            throws InterruptedException {}
 
     @Override
-    public Future<List<PageStats>> addHitsAndSetAccesTime(Collection<PageStatsPayload> statsUpdates) {
+    public Future<List<PageStats>> addHitsAndSetAccesTime(
+            Collection<PageStatsPayload> statsUpdates) {
         return new Future<List<PageStats>>() {
 
             @Override
@@ -117,8 +113,8 @@ public class DummyQuotaStore implements QuotaStore {
             }
 
             @Override
-            public List<PageStats> get(long timeout, TimeUnit unit) throws InterruptedException,
-                    ExecutionException, TimeoutException {
+            public List<PageStats> get(long timeout, TimeUnit unit)
+                    throws InterruptedException, ExecutionException, TimeoutException {
                 return Collections.emptyList();
             }
         };
@@ -140,11 +136,11 @@ public class DummyQuotaStore implements QuotaStore {
     }
 
     @Override
-    public void deleteGridSubset(String layerName, String gridSetId) {
-    }
+    public void deleteGridSubset(String layerName, String gridSetId) {}
 
     @Override
-    public void close() throws Exception {
-    }
+    public void close() throws Exception {}
 
+    @Override
+    public void deleteParameters(String layerName, String parametersId) {}
 }

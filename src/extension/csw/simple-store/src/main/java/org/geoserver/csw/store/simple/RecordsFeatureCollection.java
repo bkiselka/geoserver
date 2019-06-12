@@ -1,17 +1,17 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 package org.geoserver.csw.store.simple;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
 import org.geoserver.csw.feature.AbstractFeatureCollection;
 import org.geoserver.csw.feature.MemoryFeatureCollection;
 import org.geoserver.csw.records.CSWRecordDescriptor;
+import org.geoserver.platform.resource.Resource;
 import org.geotools.data.store.FilteringFeatureCollection;
 import org.geotools.feature.FeatureCollection;
 import org.opengis.feature.Feature;
@@ -21,16 +21,16 @@ import org.opengis.filter.sort.SortBy;
 
 /**
  * A feature collection reading record files from the specified directory
- * 
+ *
  * @author Andrea Aime - GeoSolutions
  */
 class RecordsFeatureCollection extends AbstractFeatureCollection<FeatureType, Feature> {
 
-    File root;
+    Resource root;
 
     int offset;
 
-    public RecordsFeatureCollection(File root, int offset) {
+    public RecordsFeatureCollection(Resource root, int offset) {
         super(CSWRecordDescriptor.RECORD_TYPE);
         this.root = root;
         this.offset = offset;
@@ -58,5 +58,4 @@ class RecordsFeatureCollection extends AbstractFeatureCollection<FeatureType, Fe
         MemoryFeatureCollection memory = new MemoryFeatureCollection(getSchema(), features);
         return memory.sort(order);
     }
-
 }

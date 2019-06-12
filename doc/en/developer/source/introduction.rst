@@ -5,9 +5,9 @@ Introduction
 
 Welcome to GeoServer development. The project makes use of a number of resources:
 
-* http://geoserver.org/display/GEOS/Welcome (confluence wiki)
-* https://github.com/geoserver/geoserver (github source code)
-* http://jira.codehaus.org/browse/GEOS (codehaus issue tracker)
+* https://github.com/geoserver/geoserver.github.io/wiki Wiki used for Proposals
+* https://github.com/geoserver/geoserver Github source code
+* https://osgeo-org.atlassian.net/projects/GEOS Jira issue tracker
 * `GeoServer User Manual <http://docs.geoserver.org/latest/en/user/>`_
 * `GeoServer Developer Manual <http://docs.geoserver.org/latest/en/developer/>`_
 
@@ -16,14 +16,12 @@ Communication channels:
 * http://blog.geoserver.org/
 * `geoserver-devel <http://lists.sourceforge.net/mailman/listinfo/geoserver-devel>`_ email list
 * `geoserver-users <http://lists.sourceforge.net/mailman/listinfo/geoserver-users>`_ email list
-* irc://irc.freenode.net/#geoserver
+* https://gitter.im/geoserver/geoserver
 
 We have a number of build servers employed to assist with day to day activities:
 
-* http://hudson.opengeo.org/hudson/view/geoserver/ (main build server)
+* https://build.geoserver.org/view/geoserver/ (main build server)
 * http://office.geo-solutions.it/jenkins/ (windows build server)
-* http://aaime.no-ip.org/jenkins/ (JDK 7)
-* http://aaime.no-ip.org/sonar/ (Sonar)
 
 Notification email lists:
 
@@ -38,11 +36,13 @@ Question and answer:
 License
 -------
 
-GeoServer is free software and is licensed under the :download:`GNU General Public License <gpl-2.0.txt>`.::
+For complete license information review :download:`LICENSE.txt </../../../../LICENSE.txt>`.
 
+* GeoServer is free software and is licensed under the :download:`GNU General Public License </../../../../src/release/GPL.txt>`::
+  
     GeoServer, open geospatial information server
-    Copyright (C) 2001 - 2011 The Open Planning Project dba OpenPlans
-    http://openplans.org
+    Copyright (C) 2014 - Open Source Geospatial Foundation
+    Copyright (C) 2001 - 2014 OpenPlans
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -93,6 +93,10 @@ Additionally:
      */
 
 * SetCharacterEncodingFilter and RewindableInputStream makes use of code provided
-  under :download:`Apache License Version 2.0 <apache-2.0.txt>`.
+  under :download:`Apache License Version 2.0 </../../../../src/release/apache-2.0.txt>`.
 
-* UCSReader is provided using :download:`Apache License Version 1.1 <apache-1.1.txt>`.
+* UCSReader is provided using :download:`Apache License Version 1.1 </../../../../src/release/apache-1.1.txt>`.
+
+* Snippets from the Prototype library (www.prototypejs.org) under a MIT license.
+
+* The build process will download jars from JAI ImageIO (BSD), Jetty (Jetty License), EMF (EPL), XSD (EPL). Several projects using the Apache License 2.0: Spring, Apache Commons, Log4j, Batik, Xerces.

@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -14,7 +15,7 @@ import org.geoserver.web.wicket.FileExistsValidator;
 
 /**
  * Provides the URL form component to edit a {@link CoverageStoreInfo}
- * 
+ *
  * @author Gabriel Roldan
  * @see AbstractCoverageStorePage
  */
@@ -27,10 +28,13 @@ public class DefaultCoverageStoreEditPanel extends StoreEditPanel {
 
         final IModel formModel = storeEditForm.getModel();
         // url
-        TextParamPanel url = new TextParamPanel("urlPanel", new PropertyModel(formModel, "URL"),
-                new ResourceModel("url", "URL"), true);
+        TextParamPanel url =
+                new TextParamPanel(
+                        "urlPanel",
+                        new PropertyModel(formModel, "URL"),
+                        new ResourceModel("url", "URL"),
+                        true);
         url.getFormComponent().add(new FileExistsValidator());
         add(url);
     }
-
 }

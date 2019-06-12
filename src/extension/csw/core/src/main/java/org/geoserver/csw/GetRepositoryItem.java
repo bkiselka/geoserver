@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -12,7 +13,7 @@ import org.geoserver.platform.ServiceException;
 
 /**
  * Runs the GetRepositoryItem request
- * 
+ *
  * @author Alessio Fabiani - GeoSolutions
  */
 public class GetRepositoryItem {
@@ -28,16 +29,16 @@ public class GetRepositoryItem {
 
     /**
      * Returns the requested RepositoryItem
-     * 
+     *
      * @param request
-     * @return
      */
-    public RepositoryItem run(GetRepositoryItemType request)  {
+    public RepositoryItem run(GetRepositoryItemType request) {
         try {
             RepositoryItem item = store.getRepositoryItem(request.getId());
-            if(item == null) {
+            if (item == null) {
                 // by spec we have to return a 404
-                throw new HttpErrorCodeException(404, "No repository item found for id " + request.getId());
+                throw new HttpErrorCodeException(
+                        404, "No repository item found for id " + request.getId());
             }
             return item;
         } catch (IOException e) {

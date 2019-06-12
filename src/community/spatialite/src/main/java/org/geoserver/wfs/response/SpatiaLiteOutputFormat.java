@@ -1,9 +1,10 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 package org.geoserver.wfs.response;
- 
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -13,7 +14,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-
 import org.apache.commons.io.IOUtils;
 import org.geoserver.config.GeoServer;
 import org.geoserver.platform.Operation;
@@ -32,95 +32,87 @@ import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
 
 /**
+ * WFS output format for a GetFeature operation in which the outputFormat is "spatialite". The
+ * reference documentation for this format can be found in this link:
  *
- * WFS output format for a GetFeature operation in which the outputFormat is "spatialite".
- * The reference documentation for this format can be found in this link:
  * @link:http://www.gaia-gis.it/spatialite/docs.html.
- * 
- * Based on CSVOutputFormat.java and ShapeZipOutputFormat.java from geoserver 2.2.x
- *
+ *     <p>Based on CSVOutputFormat.java and ShapeZipOutputFormat.java from geoserver 2.2.x
  * @author Pablo Velazquez, Geotekne, info@geotekne.com
  * @author Jose Macchi, Geotekne, jmacchi@geotekne.com
- *
  */
-
 public class SpatiaLiteOutputFormat extends WFSGetFeatureOutputFormat {
-    
-    
+
     public SpatiaLiteOutputFormat(GeoServer gs) {
-        super(gs,"SpatiaLite");
-        
+        super(gs, "SpatiaLite");
     }
 
-    /**
-     * @return "application/x-sqlite3";
-     */
+    /** @return "application/x-sqlite3"; */
     @Override
-    public String getMimeType(Object value, Operation operation)
-            throws ServiceException {
+    public String getMimeType(Object value, Operation operation) throws ServiceException {
         return "application/zip";
-        //return "application/x-sqlite3";
+        // return "application/x-sqlite3";
     }
 
     @Override
-    protected void write(FeatureCollectionResponse featureCollection, OutputStream output, 
-        Operation getFeature) throws IOException, ServiceException {
+    protected void write(
+            FeatureCollectionResponse featureCollection, OutputStream output, Operation getFeature)
+            throws IOException, ServiceException {
 
         SpatiaLiteDataStoreFactory dsFactory = new SpatiaLiteDataStoreFactory();
         if (!dsFactory.isAvailable()) {
-            throw new ServiceException("SpatiaLite support not avaialable, ensure all required " +
-                "native libraries are installed");
+            throw new ServiceException(
+                    "SpatiaLite support not avaialable, ensure all required "
+                            + "native libraries are installed");
         }
 
-        /**
-         * base location to temporally store spatialite database `es
-         */
+        /** base location to temporally store spatialite database `es */
         File dbFile = File.createTempFile("spatialite", ".db");
-
-        Map dbParams = new HashMap();
-        dbParams.put(SpatiaLiteDataStoreFactory.DBTYPE.key, "spatialite");
-        dbParams.put(SpatiaLiteDataStoreFactory.DATABASE.key, dbFile.getAbsolutePath());
-
-        DataStore dataStore = dsFactory.createDataStore(dbParams);
         try {
-            for (FeatureCollection fc : featureCollection.getFeatures()) {
+            Map dbParams = new HashMap();
+            dbParams.put(SpatiaLiteDataStoreFactory.DBTYPE.key, "spatialite");
+            dbParams.put(SpatiaLiteDataStoreFactory.DATABASE.key, dbFile.getAbsolutePath());
 
-                SimpleFeatureType featureType = (SimpleFeatureType) fc.getSchema()
-                        ; 
-                //create a feature type
-                dataStore.createSchema(featureType);
+            DataStore dataStore = dsFactory.createDataStore(dbParams);
+            try {
+                for (FeatureCollection fc : featureCollection.getFeatures()) {
 
-                FeatureWriter fw = dataStore.getFeatureWriterAppend(
-                    featureType.getTypeName(), Transaction.AUTO_COMMIT);
+                    SimpleFeatureType featureType = (SimpleFeatureType) fc.getSchema();
+                    // create a feature type
+                    dataStore.createSchema(featureType);
 
-                //Start populating the table: tbl_name.
-                SimpleFeatureIterator it = (SimpleFeatureIterator) fc.features();
-                while(it.hasNext()) {
-                    SimpleFeature f = it.next(); 
-                    SimpleFeature g = (SimpleFeature) fw.next();
+                    FeatureWriter fw =
+                            dataStore.getFeatureWriterAppend(
+                                    featureType.getTypeName(), Transaction.AUTO_COMMIT);
 
-                    for (AttributeDescriptor att : f.getFeatureType().getAttributeDescriptors()) {
-                        String attName = att.getLocalName();
-                        g.setAttribute(attName, f.getAttribute(attName));
+                    // Start populating the table: tbl_name.
+                    SimpleFeatureIterator it = (SimpleFeatureIterator) fc.features();
+                    while (it.hasNext()) {
+                        SimpleFeature f = it.next();
+                        SimpleFeature g = (SimpleFeature) fw.next();
+
+                        for (AttributeDescriptor att :
+                                f.getFeatureType().getAttributeDescriptors()) {
+                            String attName = att.getLocalName();
+                            g.setAttribute(attName, f.getAttribute(attName));
+                        }
+                        fw.write();
                     }
-                    fw.write();
                 }
+            } finally {
+                dataStore.dispose();
             }
+
+            BufferedInputStream bin = new BufferedInputStream(new FileInputStream(dbFile));
+
+            ZipOutputStream zout = new ZipOutputStream(output);
+            zout.putNextEntry(new ZipEntry(getDbFileName(getFeature)));
+
+            IOUtils.copy(bin, zout);
+            zout.flush();
+            zout.closeEntry();
+        } finally {
+            dbFile.delete();
         }
-        finally {
-            dataStore.dispose();
-        }
-
-        BufferedInputStream bin = new BufferedInputStream(new FileInputStream(dbFile));
-
-        ZipOutputStream zout = new ZipOutputStream(output);
-        zout.putNextEntry(new ZipEntry(getDbFileName(getFeature)));
-
-        IOUtils.copy(bin, zout);
-        zout.flush();
-        zout.closeEntry();
-
-        dbFile.delete();
     }
 
     public String getCapabilitiesElementName() {
@@ -140,10 +132,11 @@ public class SpatiaLiteOutputFormat extends WFSGetFeatureOutputFormat {
     String getDbFileName(Operation operation) {
         GetFeatureRequest request = GetFeatureRequest.adapt(operation.getParameters()[0]);
 
-        //check format options
+        // check format options
         String outputFileName = (String) request.getFormatOptions().get("FILENAME");
         if (outputFileName == null) {
-            outputFileName = request.getQueries().get(0).getTypeNames().get(0).getLocalPart() + ".db";
+            outputFileName =
+                    request.getQueries().get(0).getTypeNames().get(0).getLocalPart() + ".db";
         }
 
         return outputFileName;

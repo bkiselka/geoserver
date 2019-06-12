@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -64,10 +65,10 @@ public abstract class RunnerBase implements Runnable {
         }
     }
 
-    public static void checkForRunnerExceptions(List<? extends RunnerBase> runners) throws Exception {
+    public static void checkForRunnerExceptions(List<? extends RunnerBase> runners)
+            throws Exception {
         for (RunnerBase runner : runners) {
             checkForRunnerException(runner);
         }
     }
-
 }

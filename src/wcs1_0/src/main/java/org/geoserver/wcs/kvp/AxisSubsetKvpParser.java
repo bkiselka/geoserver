@@ -1,16 +1,15 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 package org.geoserver.wcs.kvp;
 
 import java.util.List;
-
 import net.opengis.wcs10.AxisSubsetType;
 import net.opengis.wcs10.IntervalType;
 import net.opengis.wcs10.TypedLiteralType;
 import net.opengis.wcs10.Wcs10Factory;
-
 import org.geoserver.ows.KvpParser;
 import org.geoserver.ows.util.KvpUtils;
 import org.geoserver.ows.util.KvpUtils.Tokenizer;
@@ -19,9 +18,8 @@ import org.vfny.geoserver.wcs.WcsException.WcsExceptionCode;
 
 /**
  * WCS 1.0.0 BBoxKvpParser.
- * 
+ *
  * @author Alessio Fabiani, GeoSolutions
- * 
  */
 public class AxisSubsetKvpParser extends KvpParser {
     public AxisSubsetKvpParser() {
@@ -64,7 +62,9 @@ public class AxisSubsetKvpParser extends KvpParser {
             if (unparsed.size() == 0) {
                 throw new WcsException(
                         "Requested axis subset contains wrong number of values (should have at least 1): "
-                                + unparsed.size(), WcsExceptionCode.InvalidParameterValue, "band");
+                                + unparsed.size(),
+                        WcsExceptionCode.InvalidParameterValue,
+                        "band");
             }
 
             for (String bandValue : unparsed) {

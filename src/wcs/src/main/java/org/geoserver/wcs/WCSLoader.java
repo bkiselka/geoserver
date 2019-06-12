@@ -1,11 +1,11 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 package org.geoserver.wcs;
 
 import java.util.Map;
-
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.util.LegacyServiceLoader;
 import org.geoserver.config.util.LegacyServicesReader;
@@ -13,9 +13,8 @@ import org.geotools.util.Version;
 
 /**
  * Configuration loader for Web Coverage Service.
- * 
+ *
  * @author Justin Deoliveira, The Open Planning Project
- * 
  */
 public class WCSLoader extends LegacyServiceLoader<WCSInfo> {
 
@@ -38,6 +37,5 @@ public class WCSLoader extends LegacyServiceLoader<WCSInfo> {
         return wcs;
     }
 
-    public void save(WCSInfo service, GeoServer gs) throws Exception {
-    }
+    public void save(WCSInfo service, GeoServer gs) throws Exception {}
 }

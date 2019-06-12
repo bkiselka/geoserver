@@ -1,18 +1,17 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 package org.geoserver.csw.response;
 
 import java.util.Date;
-
 import net.opengis.cat.csw20.ElementSetType;
-
 import org.geotools.feature.FeatureCollection;
 
 /**
  * The full response to a GetRecords request
- * 
+ *
  * @author Andrea Aime - GeoSolutions
  */
 public class CSWRecordsResult {
@@ -31,9 +30,14 @@ public class CSWRecordsResult {
 
     Date timestamp;
 
-    public CSWRecordsResult(ElementSetType elementSet, String recordSchema,
-            int numberOfRecordsMatched, int numberOfRecordsReturned, int nextRecord,
-            Date timestamp, FeatureCollection records) {
+    public CSWRecordsResult(
+            ElementSetType elementSet,
+            String recordSchema,
+            int numberOfRecordsMatched,
+            int numberOfRecordsReturned,
+            int nextRecord,
+            Date timestamp,
+            FeatureCollection records) {
         super();
         this.elementSet = elementSet;
         this.recordSchema = recordSchema;
@@ -99,5 +103,4 @@ public class CSWRecordsResult {
     public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
     }
-
 }

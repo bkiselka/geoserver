@@ -1,11 +1,13 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 package org.geoserver.security.decorators;
 
-import java.io.IOException;
+import static org.geoserver.security.SecurityUtils.*;
 
+import java.io.IOException;
 import org.geoserver.security.WrapperPolicy;
 import org.geotools.data.FeatureLock;
 import org.geotools.data.FeatureLocking;
@@ -14,18 +16,15 @@ import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.filter.Filter;
 
-import static org.geoserver.security.SecurityUtils.*;
-
 /**
  * See {@link SecuredFeatureStore} for an explanation of why this class exists
- * 
+ *
  * @author Andrea Aime GeoSolutions
- * 
  * @param <T>
  * @param <F>
  */
-public class SecuredFeatureLocking<T extends FeatureType, F extends Feature> extends
-        SecuredFeatureStore<T, F> implements FeatureLocking<T, F> {
+public class SecuredFeatureLocking<T extends FeatureType, F extends Feature>
+        extends SecuredFeatureStore<T, F> implements FeatureLocking<T, F> {
 
     FeatureLocking lockDelegate;
 
@@ -42,10 +41,10 @@ public class SecuredFeatureLocking<T extends FeatureType, F extends Feature> ext
         Query writeQuery = getWriteQuery(policy);
         Query mixed = mixQueries(query, writeQuery);
         final Filter writeFilter = writeQuery.getFilter();
-        
-        if(writeFilter == Filter.EXCLUDE) {
+
+        if (writeFilter == Filter.EXCLUDE) {
             throw unsupportedOperation();
-        } else if(writeFilter == Filter.INCLUDE) {
+        } else if (writeFilter == Filter.INCLUDE) {
             return lockDelegate.lockFeatures(query);
         } else {
             return lockDelegate.lockFeatures(mixed);
@@ -58,7 +57,7 @@ public class SecuredFeatureLocking<T extends FeatureType, F extends Feature> ext
 
     public void setFeatureLock(FeatureLock lock) {
         Query writeQuery = getWriteQuery(policy);
-        if(writeQuery.getFilter() == Filter.EXCLUDE) {
+        if (writeQuery.getFilter() == Filter.EXCLUDE) {
             throw unsupportedOperation();
         } else {
             lockDelegate.setFeatureLock(lock);
@@ -77,14 +76,13 @@ public class SecuredFeatureLocking<T extends FeatureType, F extends Feature> ext
         Query writeQuery = getWriteQuery(policy);
         Query mixed = mixQueries(query, writeQuery);
         final Filter writeFilter = writeQuery.getFilter();
-        
-        if(writeFilter == Filter.EXCLUDE) {
+
+        if (writeFilter == Filter.EXCLUDE) {
             throw unsupportedOperation();
-        } else if(writeFilter == Filter.INCLUDE) {
+        } else if (writeFilter == Filter.INCLUDE) {
             lockDelegate.unLockFeatures(query);
         } else {
             lockDelegate.unLockFeatures(mixed);
         }
     }
-
 }

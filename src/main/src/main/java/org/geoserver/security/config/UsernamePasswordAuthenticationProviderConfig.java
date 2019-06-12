@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -8,20 +9,20 @@ import org.geoserver.security.auth.UsernamePasswordAuthenticationProvider;
 
 /**
  * Config object for {@link UsernamePasswordAuthenticationProvider}.
- * 
+ *
  * @author Justin Deoliveira, OpenGeo
  */
-public class UsernamePasswordAuthenticationProviderConfig extends BaseSecurityNamedServiceConfig 
-    implements SecurityAuthProviderConfig {
+public class UsernamePasswordAuthenticationProviderConfig extends BaseSecurityNamedServiceConfig
+        implements SecurityAuthProviderConfig {
 
     private static final long serialVersionUID = 1L;
 
     String userGroupServiceName;
 
-    public UsernamePasswordAuthenticationProviderConfig() {
-    }
+    public UsernamePasswordAuthenticationProviderConfig() {}
 
-    public UsernamePasswordAuthenticationProviderConfig(UsernamePasswordAuthenticationProviderConfig other) {
+    public UsernamePasswordAuthenticationProviderConfig(
+            UsernamePasswordAuthenticationProviderConfig other) {
         super(other);
         userGroupServiceName = other.getUserGroupServiceName();
     }

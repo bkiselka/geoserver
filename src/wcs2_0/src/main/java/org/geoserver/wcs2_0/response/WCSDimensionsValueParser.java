@@ -1,4 +1,5 @@
-/* Copyright (c) 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -9,7 +10,6 @@ import java.util.List;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.geoserver.wcs2_0.exception.WCS20Exception;
 import org.geotools.util.DateRange;
 import org.geotools.util.NumberRange;
@@ -18,21 +18,19 @@ import org.geotools.xml.impl.DatatypeConverterImpl;
 
 /**
  * Class to parse different types of dimension values
- * 
- * @author Daniele Romagnoli, GeoSolutions SAS
  *
+ * @author Daniele Romagnoli, GeoSolutions SAS
  */
 public class WCSDimensionsValueParser {
 
-    private final static Logger LOGGER = Logging.getLogger(WCSDimensionsValueParser.class);
-    
-    private final static DatatypeConverterImpl XML_CONVERTER = DatatypeConverterImpl.getInstance();
-    
+    private static final Logger LOGGER = Logging.getLogger(WCSDimensionsValueParser.class);
+
+    private static final DatatypeConverterImpl XML_CONVERTER = DatatypeConverterImpl.getInstance();
 
     /**
      * Parse a string value as a {@link Date}
+     *
      * @param value
-     * @return
      */
     public Date parseDateTime(String value) {
         return XML_CONVERTER.parseDateTime(value).getTime();
@@ -40,8 +38,8 @@ public class WCSDimensionsValueParser {
 
     /**
      * Parse a string value as a {@link Double}
+     *
      * @param value
-     * @return
      */
     public Double parseDouble(String value) {
         return XML_CONVERTER.parseDouble(value);
@@ -49,9 +47,9 @@ public class WCSDimensionsValueParser {
 
     /**
      * Set the slicePoint string as an {@link Integer}. Return true in case of success
+     *
      * @param slicePointS
      * @param selectedValues
-     * @return
      */
     public boolean setAsInteger(String slicePointS, List<Object> selectedValues) {
         final Integer slicePoint = parseAsInteger(slicePointS);
@@ -61,13 +59,13 @@ public class WCSDimensionsValueParser {
         }
         return false;
     }
-    
+
     /**
      * Set the 2 strings as an {@link Integer} range. Return true in case of success
+     *
      * @param low
      * @param high
      * @param selectedValues
-     * @return
      */
     public boolean setAsIntegerRange(String low, String high, List<Object> selectedValues) {
         final Integer l = parseAsInteger(low);
@@ -84,9 +82,9 @@ public class WCSDimensionsValueParser {
 
     /**
      * Set the slicePoint string as an {@link Double}. Return true in case of success
+     *
      * @param slicePointS
      * @param selectedValues
-     * @return
      */
     public boolean setAsDouble(String slicePointS, List<Object> selectedValues) {
         final Double slicePoint = parseAsDouble(slicePointS);
@@ -99,10 +97,10 @@ public class WCSDimensionsValueParser {
 
     /**
      * Set the 2 strings as an {@link Double} range. Return true in case of success
+     *
      * @param low
      * @param high
      * @param selectedValues
-     * @return
      */
     public boolean setAsDoubleRange(String low, String high, List<Object> selectedValues) {
         final Double l = parseAsDouble(low);
@@ -117,12 +115,11 @@ public class WCSDimensionsValueParser {
         return false;
     }
 
-
     /**
      * Set the slicePoint string as an {@link Date}. Return true in case of success
+     *
      * @param slicePointS
      * @param selectedValues
-     * @return
      */
     public boolean setAsDate(String slicePointS, List<Object> selectedValues) {
         final Date slicePoint = parseAsDate(slicePointS);
@@ -135,10 +132,10 @@ public class WCSDimensionsValueParser {
 
     /**
      * Set the 2 strings as a DateRange. Return true in case of success
+     *
      * @param low
      * @param high
      * @param selectedValues
-     * @return
      */
     public boolean setAsDateRange(String low, String high, List<Object> selectedValues) {
         final Date l = parseAsDate(low);
@@ -155,8 +152,8 @@ public class WCSDimensionsValueParser {
 
     /**
      * Parse a String as a Double or return null if impossible.
+     *
      * @param text
-     * @return
      */
     public static Double parseAsDouble(String text) {
         try {
@@ -172,8 +169,8 @@ public class WCSDimensionsValueParser {
 
     /**
      * Parse a String as a Range of Double or return null if impossible.
+     *
      * @param text
-     * @return
      */
     public static NumberRange<Double> parseAsDoubleRange(String text) {
         try {
@@ -197,8 +194,8 @@ public class WCSDimensionsValueParser {
 
     /**
      * Parse a String as an Integer or return null if impossible.
+     *
      * @param text
-     * @return
      */
     public Integer parseAsInteger(String text) {
         try {
@@ -214,8 +211,8 @@ public class WCSDimensionsValueParser {
 
     /**
      * Parse a String as a Date or return null if impossible.
+     *
      * @param text
-     * @return
      */
     public static Date parseAsDate(String text) {
         try {
@@ -233,6 +230,7 @@ public class WCSDimensionsValueParser {
 
     /**
      * Set the slice value as proper object depending on the datatype
+     *
      * @param slicePointS
      * @param selectedValues
      * @param domainDatatype
@@ -247,16 +245,18 @@ public class WCSDimensionsValueParser {
         } else if (domainDatatype.endsWith("String")) {
             selectedValues.add(slicePointS);
         }
-        // TODO: Add support for more datatype management 
+        // TODO: Add support for more datatype management
     }
-    
+
     /**
      * Set the slice value as proper object depending on the datatype
+     *
      * @param slicePointS
      * @param selectedValues
      * @param domainDatatype
      */
-    public void setRangeValues(String low, String high, List<Object> selectedValues, String domainDatatype) {
+    public void setRangeValues(
+            String low, String high, List<Object> selectedValues, String domainDatatype) {
         if (domainDatatype.endsWith("Timestamp") || domainDatatype.endsWith("Date")) {
             setAsDateRange(low, high, selectedValues);
         } else if (domainDatatype.endsWith("Integer")) {
@@ -266,35 +266,36 @@ public class WCSDimensionsValueParser {
         } else if (domainDatatype.endsWith("String")) {
             selectedValues.add(low + "/" + high); // TODO Check me
         }
-        // TODO: Add support for more datatype management 
+        // TODO: Add support for more datatype management
     }
 
     /**
      * Get the domain set as a set of number.
+     *
      * @param domain
-     * @return
      */
     public TreeSet<Double> getDomainNumber(TreeSet<Object> domain) {
         TreeSet<Double> results = new TreeSet<Double>();
         for (Object item : domain) {
-            if(item instanceof Number) {
+            if (item instanceof Number) {
                 Double number = (Double) item;
                 results.add(number);
-            } else if(item instanceof NumberRange) {
+            } else if (item instanceof NumberRange) {
                 NumberRange range = (NumberRange) item;
                 results.add(range.getMinimum());
                 results.add(range.getMaximum());
             } else {
-                throw new IllegalArgumentException("The specified domain set doesn't contain Number or NumberRange instances");
+                throw new IllegalArgumentException(
+                        "The specified domain set doesn't contain Number or NumberRange instances");
             }
         }
         return results;
     }
 
     private static void throwInvalidRangeException(String low, String high) {
-        throw new WCS20Exception("Low greater than High: " + low + ", " + high,
-        WCS20Exception.WCS20ExceptionCode.InvalidSubsetting, "subset");
-        
+        throw new WCS20Exception(
+                "Low greater than High: " + low + ", " + high,
+                WCS20Exception.WCS20ExceptionCode.InvalidSubsetting,
+                "subset");
     }
-    
 }

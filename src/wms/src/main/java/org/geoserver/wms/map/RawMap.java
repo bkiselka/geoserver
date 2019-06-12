@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -8,14 +9,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-
 import org.apache.commons.io.IOUtils;
 import org.geoserver.wms.WMSMapContent;
 import org.geoserver.wms.WebMap;
 
 /**
  * An already encoded {@link WebMap} that holds the raw response content in a byte array.
- * 
+ *
  * @author Gabriel Roldan
  * @see RawMapResponse
  */
@@ -33,7 +33,9 @@ public class RawMap extends WebMap {
         setMimeType(mimeType);
     }
 
-    public RawMap(final WMSMapContent mapContent, final ByteArrayOutputStream buff,
+    public RawMap(
+            final WMSMapContent mapContent,
+            final ByteArrayOutputStream buff,
             final String mimeType) {
         super(mapContent);
         this.buffer = buff;
@@ -58,4 +60,16 @@ public class RawMap extends WebMap {
         }
     }
 
+    @Override
+    public void disposeInternal() {
+        buffer = null;
+        mapContents = null;
+        if (stream != null) {
+            try {
+                stream.close();
+            } catch (Exception ignore) {
+                //
+            }
+        }
+    }
 }

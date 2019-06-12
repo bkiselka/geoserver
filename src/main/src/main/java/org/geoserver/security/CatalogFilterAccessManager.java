@@ -1,16 +1,18 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 package org.geoserver.security;
 
+import java.util.ArrayList;
 import java.util.List;
-
-import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.CatalogInfo;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
+import org.geoserver.catalog.Predicates;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.StyleInfo;
 import org.geoserver.catalog.WMSLayerInfo;
@@ -21,7 +23,7 @@ import org.springframework.security.core.Authentication;
 
 /**
  * Filters viewable layers based on the registered CatalogFilter
- * 
+ *
  * @author Justin Deoliveira, OpenGeo
  * @author David Winslow, OpenGeo
  * @author Andrea Aime, GeoSolutions
@@ -32,8 +34,8 @@ public class CatalogFilterAccessManager extends ResourceAccessManagerWrapper {
 
     private DataAccessLimits hide(ResourceInfo info) {
         if (info instanceof FeatureTypeInfo) {
-            return new VectorAccessLimits(CatalogMode.HIDE, null, Filter.EXCLUDE, null,
-                    Filter.EXCLUDE);
+            return new VectorAccessLimits(
+                    CatalogMode.HIDE, null, Filter.EXCLUDE, null, Filter.EXCLUDE);
         } else if (info instanceof CoverageInfo) {
             return new CoverageAccessLimits(CatalogMode.HIDE, Filter.EXCLUDE, null, null);
         } else if (info instanceof WMSLayerInfo) {
@@ -50,6 +52,15 @@ public class CatalogFilterAccessManager extends ResourceAccessManagerWrapper {
             return hide(layer.getResource());
         }
         return super.getAccessLimits(user, layer);
+    }
+
+    @Override
+    public DataAccessLimits getAccessLimits(
+            Authentication user, LayerInfo layer, List<LayerGroupInfo> containers) {
+        if (hideLayer(layer) || hideResource(layer.getResource())) {
+            return hide(layer.getResource());
+        }
+        return super.getAccessLimits(user, layer, containers);
     }
 
     @Override
@@ -74,8 +85,7 @@ public class CatalogFilterAccessManager extends ResourceAccessManagerWrapper {
     public StyleAccessLimits getAccessLimits(Authentication user, StyleInfo style) {
         if (hideStyle(style)) {
             return new StyleAccessLimits(CatalogMode.HIDE);
-        }
-        else {
+        } else {
             return super.getAccessLimits(user, style);
         }
     }
@@ -85,11 +95,19 @@ public class CatalogFilterAccessManager extends ResourceAccessManagerWrapper {
         if (hideLayerGroup(layerGroup)) {
             return new LayerGroupAccessLimits(CatalogMode.HIDE);
         }
-        else {
-            return super.getAccessLimits(user, layerGroup);
+        return super.getAccessLimits(user, layerGroup);
+    }
+
+    @Override
+    public LayerGroupAccessLimits getAccessLimits(
+            Authentication user, LayerGroupInfo layerGroup, List<LayerGroupInfo> containers) {
+        if (hideLayerGroup(layerGroup)) {
+            return new LayerGroupAccessLimits(CatalogMode.HIDE);
+        } else {
+            return super.getAccessLimits(user, layerGroup, containers);
         }
     }
-    
+
     private boolean hideResource(ResourceInfo resource) {
         for (CatalogFilter filter : getCatalogFilters()) {
             if (filter.hideResource(resource)) {
@@ -106,7 +124,6 @@ public class CatalogFilterAccessManager extends ResourceAccessManagerWrapper {
             }
         }
         return false;
-
     }
 
     private boolean hideWorkspace(WorkspaceInfo workspace) {
@@ -116,7 +133,6 @@ public class CatalogFilterAccessManager extends ResourceAccessManagerWrapper {
             }
         }
         return false;
-
     }
 
     private boolean hideStyle(StyleInfo style) {
@@ -136,21 +152,36 @@ public class CatalogFilterAccessManager extends ResourceAccessManagerWrapper {
         }
         return false;
     }
-    
+
     private List<? extends CatalogFilter> getCatalogFilters() {
         if (filters == null) {
             filters = GeoServerExtensions.extensions(CatalogFilter.class);
         }
         return filters;
     }
-    
+
     /**
-     * Designed for testing, allows to manually configure the catalog filters bypassing
-     * the Spring context lookup
+     * Designed for testing, allows to manually configure the catalog filters bypassing the Spring
+     * context lookup
+     *
      * @param filters
      */
     public void setCatalogFilters(List<? extends CatalogFilter> filters) {
         this.filters = filters;
     }
 
+    @Override
+    public Filter getSecurityFilter(Authentication user, Class<? extends CatalogInfo> clazz) {
+        // If there are no CatalogFilters, just get the delegate's filter
+        if (filters == null || filters.isEmpty()) return delegate.getSecurityFilter(user, clazz);
+
+        // Result is the conjunction of delegate's filter, and those of all the CatalogFilters
+        ArrayList<Filter> convertedFilters = new ArrayList<Filter>(this.filters.size() + 1);
+        convertedFilters.add(delegate.getSecurityFilter(user, clazz)); // Delegate's filter
+
+        for (CatalogFilter filter : getCatalogFilters()) {
+            convertedFilters.add(filter.getSecurityFilter(clazz)); // Each CatalogFilter's filter
+        }
+        return Predicates.and(convertedFilters.toArray(new Filter[convertedFilters.size()]));
+    }
 }

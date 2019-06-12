@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -10,20 +11,19 @@ import org.geoserver.security.web.group.ConfirmRemovalGroupPanelTest;
 import org.junit.Test;
 
 public class JDBCConfirmRemovalGroupPanelTest extends ConfirmRemovalGroupPanelTest {
-    
+
     private static final long serialVersionUID = 1L;
 
     @Test
     public void testRemoveGroup() throws Exception {
-        disassociateRoles=false;
+        disassociateRoles = false;
         initializeForJDBC();
         removeObject();
-        
     }
 
     @Test
     public void testRemoveGroupWithRoles() throws Exception {
-        disassociateRoles=true;
+        disassociateRoles = true;
         initializeForJDBC();
         removeObject();
     }
@@ -32,4 +32,3 @@ public class JDBCConfirmRemovalGroupPanelTest extends ConfirmRemovalGroupPanelTe
         initialize(new H2UserGroupServiceTest(), new H2RoleServiceTest());
     }
 }
-

@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -14,7 +15,6 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.MetadataMap;
@@ -23,9 +23,8 @@ import org.geowebcache.config.XMLGridSubset;
 
 /**
  * Backwards (<= 2.1.3) compatible {@link GeoServerTileLayerInfoImpl} loader.
- * 
+ *
  * @author groldan
- * 
  */
 public class LegacyTileLayerInfoLoader {
 
@@ -47,9 +46,19 @@ public class LegacyTileLayerInfoLoader {
 
     public static final String CONFIG_KEY_CACHED_STYLES = "GWC.cachedNonDefaultStyles";
 
-    public static final String[] _ALL_KEYS = { CONFIG_KEY_ENABLED, CONFIG_KEY_GUTTER,
-            CONFIG_KEY_GRIDSETS, CONFIG_KEY_METATILING_X, CONFIG_KEY_METATILING_Y,
-            CONFIG_KEY_FORMATS, CONFIG_KEY_AUTO_CACHE_STYLES, CONFIG_KEY_CACHED_STYLES };
+    public static final String CONFIG_KEY_IN_MEMORY_CACHED = "GWC.inMemoryUncached";
+
+    public static final String[] _ALL_KEYS = {
+        CONFIG_KEY_ENABLED,
+        CONFIG_KEY_GUTTER,
+        CONFIG_KEY_GRIDSETS,
+        CONFIG_KEY_METATILING_X,
+        CONFIG_KEY_METATILING_Y,
+        CONFIG_KEY_FORMATS,
+        CONFIG_KEY_AUTO_CACHE_STYLES,
+        CONFIG_KEY_CACHED_STYLES,
+        CONFIG_KEY_IN_MEMORY_CACHED
+    };
 
     public static GeoServerTileLayerInfoImpl load(final LayerInfo layer) {
         MetadataMap metadataMap = layer.getMetadata();
@@ -60,14 +69,13 @@ public class LegacyTileLayerInfoLoader {
         GeoServerTileLayerInfoImpl tileLayerInfo = load(metadataMap);
 
         if (metadataMap.containsKey(CONFIG_KEY_CACHED_STYLES)) {
-            final String defaultStyle = layer.getDefaultStyle() == null ? "" : layer
-                    .getDefaultStyle().getName();
+            final String defaultStyle =
+                    layer.getDefaultStyle() == null ? "" : layer.getDefaultStyle().prefixedName();
             String cachedStylesStr = metadataMap.get(CONFIG_KEY_CACHED_STYLES, String.class);
             Set<String> cachedStyles = unmarshalSet(cachedStylesStr);
             TileLayerInfoUtil.setCachedStyles(tileLayerInfo, defaultStyle, cachedStyles);
-
         }
-        
+
         TileLayerInfoUtil.checkAutomaticStyles(layer, tileLayerInfo);
         tileLayerInfo.setName(tileLayerName(layer));
         tileLayerInfo.setId(layer.getId());
@@ -120,9 +128,14 @@ public class LegacyTileLayerInfoLoader {
         }
 
         if (metadataMap.containsKey(CONFIG_KEY_AUTO_CACHE_STYLES)) {
-            boolean autoCacheStyles = metadataMap.get(CONFIG_KEY_AUTO_CACHE_STYLES, Boolean.class)
-                    .booleanValue();
+            boolean autoCacheStyles =
+                    metadataMap.get(CONFIG_KEY_AUTO_CACHE_STYLES, Boolean.class).booleanValue();
             info.setAutoCacheStyles(autoCacheStyles);
+        }
+
+        if (metadataMap.containsKey(CONFIG_KEY_IN_MEMORY_CACHED)) {
+            boolean inMemoryCached = metadataMap.get(CONFIG_KEY_IN_MEMORY_CACHED, Boolean.class);
+            info.setInMemoryCached(inMemoryCached);
         }
 
         return info;
@@ -135,7 +148,7 @@ public class LegacyTileLayerInfoLoader {
 
     private static String marshalList(final Collection<String> list) {
         StringBuilder sb = new StringBuilder();
-        for (Iterator<String> i = list.iterator(); i.hasNext();) {
+        for (Iterator<String> i = list.iterator(); i.hasNext(); ) {
             sb.append(i.next());
             if (i.hasNext()) {
                 sb.append(",");
@@ -146,11 +159,10 @@ public class LegacyTileLayerInfoLoader {
     }
 
     /**
-     * @param gridSubsetsStr
-     *            comma separated list of epsg codes (usually just {@code EPSG:900913,EPSG:4326}
+     * @param gridSubsetsStr comma separated list of epsg codes (usually just {@code
+     *     EPSG:900913,EPSG:4326}
      * @return the list of parsed grid subsets from the argument JSON array
-     * @throws IllegalArgumentException
-     *             if {@code str} can't be parsed to a JSONArray
+     * @throws IllegalArgumentException if {@code str} can't be parsed to a JSONArray
      */
     private static Set<XMLGridSubset> unmarshalGridSubsets(String gridSubsetsStr)
             throws IllegalArgumentException {
@@ -186,7 +198,7 @@ public class LegacyTileLayerInfoLoader {
     /**
      * Saves a tile layer info into the given metadata map using the old legacy metadata elements.
      * For unit testing only.
-     * 
+     *
      * @param source
      * @param metadata
      */
@@ -199,6 +211,7 @@ public class LegacyTileLayerInfoLoader {
         final Set<String> mimeFormats = source.getMimeFormats();
         final Boolean autoCacheStyles = source.isAutoCacheStyles();
         final Set<String> cachedStyles = source.cachedStyles();
+        final boolean inMemoryCached = source.isInMemoryCached();
 
         metadata.put(CONFIG_KEY_ENABLED, Boolean.valueOf(enabled));
         metadata.put(CONFIG_KEY_GUTTER, Integer.valueOf(gutter));
@@ -211,6 +224,7 @@ public class LegacyTileLayerInfoLoader {
         metadata.put(CONFIG_KEY_METATILING_Y, Integer.valueOf(metaTilingY));
         metadata.put(CONFIG_KEY_FORMATS, marshalList(mimeFormats));
         metadata.put(CONFIG_KEY_AUTO_CACHE_STYLES, autoCacheStyles);
+        metadata.put(CONFIG_KEY_IN_MEMORY_CACHED, inMemoryCached);
 
         if (cachedStyles.size() > 0) {
             metadata.put(CONFIG_KEY_CACHED_STYLES, marshalList(cachedStyles));

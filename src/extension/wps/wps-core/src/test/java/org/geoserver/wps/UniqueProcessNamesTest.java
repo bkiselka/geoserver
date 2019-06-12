@@ -1,17 +1,17 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 package org.geoserver.wps;
 
-import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import org.geoserver.wps.process.GeoServerProcessors;
 import org.geotools.process.ProcessFactory;
 import org.junit.Test;
@@ -19,14 +19,12 @@ import org.opengis.feature.type.Name;
 
 /**
  * Tests that the set of registered processes has unique names.
- * <p>
- * Duplicate names can happen if a process is defined in both the GeoServer wps-core
+ *
+ * <p>Duplicate names can happen if a process is defined in both the GeoServer wps-core
  * applicationContext.xml and in a GeoTools factory. (This isn't a functional problem, but is
  * confusing when displayed in the UI and listed in GetCapabilities).
- * 
- * 
+ *
  * @author Martin Davis, OpenGeo
- * 
  */
 public class UniqueProcessNamesTest extends WPSTestSupport {
 

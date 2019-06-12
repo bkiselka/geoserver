@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -6,29 +7,25 @@ package org.geoserver.wfs.xml;
 
 import java.util.HashSet;
 import java.util.Set;
-
 import org.geotools.feature.FeatureCollection;
-
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryCollection;
-import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.geom.MultiLineString;
-import com.vividsolutions.jts.geom.MultiPoint;
-import com.vividsolutions.jts.geom.MultiPolygon;
-import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.geom.Polygon;
-
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.GeometryCollection;
+import org.locationtech.jts.geom.LineString;
+import org.locationtech.jts.geom.MultiLineString;
+import org.locationtech.jts.geom.MultiPoint;
+import org.locationtech.jts.geom.MultiPolygon;
+import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.geom.Polygon;
 
 /**
  * XMLSchemaTranslator purpose.
- * <p>
- * This instance of the NameSpaceTranslator should be used with http://www.opengis.net/gml namespace.
- * </p>
- * <p>
- * Instances of this object should always be retrieved through the NameSpaceTranslatorFactory.
- * </p>
- * @see NameSpaceTranslatorFactory
  *
+ * <p>This instance of the NameSpaceTranslator should be used with http://www.opengis.net/gml
+ * namespace.
+ *
+ * <p>Instances of this object should always be retrieved through the NameSpaceTranslatorFactory.
+ *
+ * @see NameSpaceTranslatorFactory
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
  * @version $Id$
@@ -38,9 +35,9 @@ public class GMLSchemaTranslator extends NameSpaceTranslator {
 
     /**
      * XMLSchemaTranslator constructor.
-     * <p>
-     * Description
-     * </p>
+     *
+     * <p>Description
+     *
      * @param prefix
      */
     public GMLSchemaTranslator(String prefix) {
@@ -87,8 +84,6 @@ public class GMLSchemaTranslator extends NameSpaceTranslator {
      * Implementation of getElements.
      *
      * @see org.vfny.geoserver.global.xml.NameSpaceTranslator#getElements()
-     *
-     * @return
      */
     public Set getElements() {
         return elements;
@@ -98,14 +93,11 @@ public class GMLSchemaTranslator extends NameSpaceTranslator {
      * Implementation of getNameSpace.
      *
      * @see org.vfny.geoserver.global.xml.NameSpaceTranslator#getNameSpace()
-     *
-     * @return
      */
     public String getNameSpace() {
         return "http://www.opengis.net/gml";
     }
 }
-
 
 class AbstractFeatureElement extends NameSpaceElement {
     public AbstractFeatureElement(String prefix) {
@@ -153,7 +145,6 @@ class AbstractFeatureElement extends NameSpaceElement {
     }
 }
 
-
 class AbstractFeatureCollectionBaseElement extends NameSpaceElement {
     public AbstractFeatureCollectionBaseElement(String prefix) {
         super(prefix);
@@ -199,7 +190,6 @@ class AbstractFeatureCollectionBaseElement extends NameSpaceElement {
         return true;
     }
 }
-
 
 class AbstractFeatureCollectionElement extends NameSpaceElement {
     public AbstractFeatureCollectionElement(String prefix) {
@@ -247,8 +237,7 @@ class AbstractFeatureCollectionElement extends NameSpaceElement {
     }
 }
 
-
-// I don't think this big chunk of junk is useful, as I don't think you're 
+// I don't think this big chunk of junk is useful, as I don't think you're
 // going to define a schema with it, unless you do something more complicated
 // then what we are doing.  We only want the GeometryPropertyType stuff, which
 // allows us to name the element as we will.  The rest is only useful if you
@@ -302,7 +291,6 @@ class GeometryPropertyElement extends NameSpaceElement {
         return true;
     }
 }
-
 
 /*
 class FeatureAssociationElement extends NameSpaceElement{
@@ -806,7 +794,6 @@ class PointPropertyElement extends NameSpaceElement {
     }
 }
 
-
 class PolygonPropertyElement extends NameSpaceElement {
     public PolygonPropertyElement(String prefix) {
         super(prefix);
@@ -864,7 +851,6 @@ class PolygonPropertyElement extends NameSpaceElement {
         return true;
     }
 }
-
 
 class LineStringPropertyElement extends NameSpaceElement {
     public LineStringPropertyElement(String prefix) {
@@ -924,7 +910,6 @@ class LineStringPropertyElement extends NameSpaceElement {
     }
 }
 
-
 class MultiPointPropertyElement extends NameSpaceElement {
     public MultiPointPropertyElement(String prefix) {
         super(prefix);
@@ -982,7 +967,6 @@ class MultiPointPropertyElement extends NameSpaceElement {
         return true;
     }
 }
-
 
 class MultiLineStringPropertyElement extends NameSpaceElement {
     public MultiLineStringPropertyElement(String prefix) {
@@ -1042,7 +1026,6 @@ class MultiLineStringPropertyElement extends NameSpaceElement {
     }
 }
 
-
 class MultiPolygonPropertyElement extends NameSpaceElement {
     public MultiPolygonPropertyElement(String prefix) {
         super(prefix);
@@ -1101,7 +1084,6 @@ class MultiPolygonPropertyElement extends NameSpaceElement {
     }
 }
 
-
 class MultiGeometryPropertyElement extends NameSpaceElement {
     public MultiGeometryPropertyElement(String prefix) {
         super(prefix);
@@ -1159,7 +1141,6 @@ class MultiGeometryPropertyElement extends NameSpaceElement {
         return true;
     }
 }
-
 
 class NullElement extends NameSpaceElement {
     public NullElement(String prefix) {

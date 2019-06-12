@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -6,7 +7,6 @@ package org.geoserver.security.decorators;
 
 import java.util.List;
 import java.util.Set;
-
 import org.geoserver.catalog.AttributionInfo;
 import org.geoserver.catalog.AuthorityURLInfo;
 import org.geoserver.catalog.CatalogVisitor;
@@ -14,15 +14,15 @@ import org.geoserver.catalog.LayerIdentifierInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.LegendInfo;
 import org.geoserver.catalog.MetadataMap;
+import org.geoserver.catalog.PublishedType;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.StyleInfo;
-import org.geoserver.catalog.WorkspaceInfo;
-import org.geoserver.catalog.impl.AbstractDecorator;
+import org.geotools.util.decorate.AbstractDecorator;
 
 /**
- * Delegates every method to the wrapped {@link LayerInfo}. Subclasses will
- * override selected methods to perform their "decoration" job
- * 
+ * Delegates every method to the wrapped {@link LayerInfo}. Subclasses will override selected
+ * methods to perform their "decoration" job
+ *
  * @author Andrea Aime
  */
 public class DecoratingLayerInfo extends AbstractDecorator<LayerInfo> implements LayerInfo {
@@ -67,7 +67,7 @@ public class DecoratingLayerInfo extends AbstractDecorator<LayerInfo> implements
         return delegate.getStyles();
     }
 
-    public Type getType() {
+    public PublishedType getType() {
         return delegate.getType();
     }
 
@@ -107,22 +107,25 @@ public class DecoratingLayerInfo extends AbstractDecorator<LayerInfo> implements
         delegate.setResource(resource);
     }
 
-    public void setType(Type type) {
+    public void setType(PublishedType type) {
         delegate.setType(type);
     }
 
     public void setAttribution(AttributionInfo attr) {
         delegate.setAttribution(attr);
     }
-    
+
     public void accept(CatalogVisitor visitor) {
         delegate.accept(visitor);
     }
 
     @Override
     public String toString() {
-        return new StringBuilder(getClass().getSimpleName()).append('[').append(delegate).append(
-                ']').toString();
+        return new StringBuilder(getClass().getSimpleName())
+                .append('[')
+                .append(delegate)
+                .append(']')
+                .toString();
     }
 
     public void setQueryable(boolean _queryableEnabled) {
@@ -179,5 +182,15 @@ public class DecoratingLayerInfo extends AbstractDecorator<LayerInfo> implements
     @Override
     public void setAbstract(String abstractTxt) {
         delegate.setAbstract(abstractTxt);
+    }
+
+    @Override
+    public WMSInterpolation getDefaultWMSInterpolationMethod() {
+        return delegate.getDefaultWMSInterpolationMethod();
+    }
+
+    @Override
+    public void setDefaultWMSInterpolationMethod(WMSInterpolation interpolationMethod) {
+        delegate.setDefaultWMSInterpolationMethod(interpolationMethod);
     }
 }

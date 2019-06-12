@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -9,7 +10,7 @@ import org.geoserver.security.impl.GeoServerUserGroup;
 
 /**
  * Choice renderer for {@link GeoServerUserGroup}.
- * 
+ *
  * @author Justin Deoliveira, OpenGeo
  */
 public class UserGroupRenderer extends ChoiceRenderer<GeoServerUserGroup> {
@@ -19,8 +20,8 @@ public class UserGroupRenderer extends ChoiceRenderer<GeoServerUserGroup> {
         return object.getGroupname();
     }
 
-     @Override
+    @Override
     public Object getDisplayValue(GeoServerUserGroup object) {
-         return getIdValue(object, -1);
+        return getIdValue(object, -1);
     }
 }

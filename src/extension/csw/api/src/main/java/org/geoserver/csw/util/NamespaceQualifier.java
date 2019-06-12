@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -10,11 +11,10 @@ import org.opengis.filter.spatial.BBOX;
 import org.xml.sax.helpers.NamespaceSupport;
 
 /**
- * Adds the propert namespace support to PropertyName instances lacking it, and expands
- * the paths referring to SimpleLiteral instances so that they contain the dc:value ending
- * 
+ * Adds the propert namespace support to PropertyName instances lacking it, and expands the paths
+ * referring to SimpleLiteral instances so that they contain the dc:value ending
+ *
  * @author Andrea Aime - GeoSolutions
- * 
  */
 public class NamespaceQualifier extends DuplicatingFilterVisitor {
 
@@ -33,13 +33,13 @@ public class NamespaceQualifier extends DuplicatingFilterVisitor {
         }
         return getFactory(extraData).property(expression.getPropertyName(), nss);
     }
-    
+
     @Override
     public Object visit(BBOX filter, Object extraData) {
-        if(filter.getExpression1() instanceof PropertyName) {
+        if (filter.getExpression1() instanceof PropertyName) {
             PropertyName pname = (PropertyName) filter.getExpression1();
             PropertyName qualified = (PropertyName) pname.accept(this, extraData);
-            return getFactory(extraData).bbox(qualified, filter.getBounds());            
+            return getFactory(extraData).bbox(qualified, filter.getBounds());
         } else {
             return super.visit(filter, extraData);
         }

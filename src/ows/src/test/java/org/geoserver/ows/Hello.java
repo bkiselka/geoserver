@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -8,7 +9,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
-public class Hello implements OWS {
+public class Hello {
     public String getId() {
         return "hello";
     }
@@ -53,41 +54,31 @@ public class Hello implements OWS {
         return false;
     }
 
-    public void setAbstract(String serverAbstract) {
-    }
+    public void setAbstract(String serverAbstract) {}
 
-    public void setAccessConstraints(String accessConstraints) {
-    }
+    public void setAccessConstraints(String accessConstraints) {}
 
-    public void setEnabled(boolean enabled) {
-    }
+    public void setEnabled(boolean enabled) {}
 
-    public void setFees(String fees) {
-    }
+    public void setFees(String fees) {}
 
-    public void setMaintainer(String maintainer) {
-    }
+    public void setMaintainer(String maintainer) {}
 
-    public void setName(String name) {
-    }
+    public void setName(String name) {}
 
-    public void setOnlineResource(URL onlineResource) {
-    }
+    public void setOnlineResource(URL onlineResource) {}
 
-    public void setTitle(String title) {
-    }
+    public void setTitle(String title) {}
 
     public String getSchemaBaseURL() {
         return null;
     }
 
-    public void setSchemaBaseURL(String schemaBaseURL) {
-    }
+    public void setSchemaBaseURL(String schemaBaseURL) {}
 
     public boolean isVerbose() {
         return false;
     }
 
-    public void setVerbose(boolean verbose) {
-    }
+    public void setVerbose(boolean verbose) {}
 }

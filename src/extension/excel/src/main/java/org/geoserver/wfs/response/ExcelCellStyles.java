@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -26,12 +27,12 @@ public class ExcelCellStyles {
 
         headerStyle = wb.createCellStyle();
         Font headerFont = wb.createFont();
-        headerFont.setBoldweight(Font.BOLDWEIGHT_BOLD);
+        headerFont.setBold(true);
         headerStyle.setFont(headerFont);
 
         warningStyle = wb.createCellStyle();
         Font warningFont = wb.createFont();
-        warningFont.setBoldweight(Font.BOLDWEIGHT_BOLD);
+        warningFont.setBold(true);
         warningFont.setColor(Font.COLOR_RED);
         warningStyle.setFont(warningFont);
     }

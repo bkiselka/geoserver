@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -7,7 +8,7 @@ package org.geoserver.wps.web;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
+import org.geoserver.web.GeoServerApplication;
 import org.geoserver.wps.ppio.ComplexPPIO;
 import org.geoserver.wps.ppio.ProcessParameterIO;
 import org.geoserver.wps.process.GeoServerProcessors;
@@ -17,7 +18,7 @@ import org.opengis.feature.type.Name;
 
 /**
  * A single output parameter, along with the chosen output mime type and the output inclusion flag
- * 
+ *
  * @author Andrea Aime - OpenGeo
  */
 @SuppressWarnings("serial")
@@ -33,7 +34,6 @@ class OutputParameter implements Serializable {
     public OutputParameter(Name processName, String paramName) {
         this.processName = processName;
         this.paramName = paramName;
-        Parameter<?> p = getParameter();
         this.mimeType = getDefaultMime();
     }
 
@@ -60,15 +60,15 @@ class OutputParameter implements Serializable {
     }
 
     List<ProcessParameterIO> getProcessParameterIO() {
-        return ProcessParameterIO.findAll(getParameter(), null);
+        return ProcessParameterIO.findAll(
+                getParameter(), GeoServerApplication.get().getApplicationContext());
     }
 
     ProcessFactory getProcessFactory() {
-        return GeoServerProcessors.createProcessFactory(processName);
+        return GeoServerProcessors.createProcessFactory(processName, false);
     }
 
     Parameter<?> getParameter() {
         return getProcessFactory().getResultInfo(processName, null).get(paramName);
     }
-
 }

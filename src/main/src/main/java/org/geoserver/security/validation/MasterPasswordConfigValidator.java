@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -9,12 +10,10 @@ import org.geoserver.security.password.MasterPasswordConfig;
 
 public class MasterPasswordConfigValidator extends AbstractSecurityValidator {
 
-    public MasterPasswordConfigValidator( GeoServerSecurityManager securityManager) {
+    public MasterPasswordConfigValidator(GeoServerSecurityManager securityManager) {
         super(securityManager);
     }
 
-    public void validateMasterPasswordConfig(MasterPasswordConfig config) 
-        throws SecurityConfigException {
-        
-    }
+    public void validateMasterPasswordConfig(MasterPasswordConfig config)
+            throws SecurityConfigException {}
 }

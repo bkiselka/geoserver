@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -8,20 +9,16 @@ import org.geoserver.test.onlineTest.setup.AppSchemaWmsReferenceMockData;
 import org.geoserver.test.onlineTest.setup.ReferenceDataOracleSetup;
 import org.geoserver.test.onlineTest.support.AbstractReferenceDataSetup;
 
-/**
- * 
- * @author Niels Charlier
- * 
- */
+/** @author Niels Charlier */
 public class DataReferenceWmsOracleWithJoiningTest extends DataReferenceWmsOnlineTest {
 
     public DataReferenceWmsOracleWithJoiningTest() throws Exception {
         super();
-    }    
-    
+    }
+
     @Override
     protected AppSchemaWmsReferenceMockData createTestData() {
-    	AppSchemaWmsReferenceMockData mockData = new AppSchemaWmsReferenceMockData();
+        AppSchemaWmsReferenceMockData mockData = new AppSchemaWmsReferenceMockData();
         mockData.addStyle("Default", "styles/Default.sld");
         mockData.addStyle("simplelithology", "styles/cgi-simplelithology-2008.sld");
         mockData.addStyle("stratchart", "styles/ics-stratchart-2008.sld");

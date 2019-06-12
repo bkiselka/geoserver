@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -7,9 +8,9 @@ package org.geoserver.security.decorators;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogVisitor;
+import org.geoserver.catalog.DataLinkInfo;
 import org.geoserver.catalog.KeywordInfo;
 import org.geoserver.catalog.MetadataLinkInfo;
 import org.geoserver.catalog.MetadataMap;
@@ -18,9 +19,9 @@ import org.geoserver.catalog.ProjectionPolicy;
 import org.geoserver.catalog.StoreInfo;
 import org.geoserver.catalog.WMSLayerInfo;
 import org.geoserver.catalog.WMSStoreInfo;
-import org.geoserver.catalog.impl.AbstractDecorator;
-import org.geotools.data.ows.Layer;
 import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.ows.wms.Layer;
+import org.geotools.util.decorate.AbstractDecorator;
 import org.opengis.feature.type.Name;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.util.ProgressListener;
@@ -28,11 +29,12 @@ import org.opengis.util.ProgressListener;
 /**
  * Delegates every method to the delegate wms layer info. Subclasses will override selected methods
  * to perform their "decoration" job
- * 
+ *
  * @author Andrea Aime - GeoSolutions
  */
-public class DecoratingWMSLayerInfo extends AbstractDecorator<WMSLayerInfo> implements WMSLayerInfo {
-    
+public class DecoratingWMSLayerInfo extends AbstractDecorator<WMSLayerInfo>
+        implements WMSLayerInfo {
+
     public DecoratingWMSLayerInfo(WMSLayerInfo delegate) {
         super(delegate);
     }
@@ -98,6 +100,11 @@ public class DecoratingWMSLayerInfo extends AbstractDecorator<WMSLayerInfo> impl
         return delegate.getMetadataLinks();
     }
 
+    @Override
+    public List<DataLinkInfo> getDataLinks() {
+        return delegate.getDataLinks();
+    }
+
     public String getName() {
         return delegate.getName();
     }
@@ -116,10 +123,6 @@ public class DecoratingWMSLayerInfo extends AbstractDecorator<WMSLayerInfo> impl
 
     public String getNativeName() {
         return delegate.getNativeName();
-    }
-
-    public String getPrefixedName() {
-        return delegate.getPrefixedName();
     }
 
     public String prefixedName() {
@@ -218,11 +221,29 @@ public class DecoratingWMSLayerInfo extends AbstractDecorator<WMSLayerInfo> impl
     public boolean isAdvertised() {
         return delegate.isAdvertised();
     }
-    
+
     @Override
     public void setAdvertised(boolean advertised) {
         delegate.setAdvertised(advertised);
     }
 
+    @Override
+    public boolean isServiceConfiguration() {
+        return delegate.isServiceConfiguration();
+    }
 
+    @Override
+    public void setServiceConfiguration(boolean serviceConfiguration) {
+        delegate.setServiceConfiguration(serviceConfiguration);
+    }
+
+    @Override
+    public List<String> getDisabledServices() {
+        return delegate.getDisabledServices();
+    }
+
+    @Override
+    public void setDisabledServices(List<String> disabledServices) {
+        delegate.setDisabledServices(disabledServices);
+    }
 }

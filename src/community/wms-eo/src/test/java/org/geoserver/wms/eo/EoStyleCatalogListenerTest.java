@@ -1,4 +1,5 @@
-/* Copyright (c) 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -11,16 +12,13 @@ import org.geoserver.catalog.StyleInfo;
 import org.geoserver.test.GeoServerSystemTestSupport;
 import org.junit.Test;
 
-/**
- * 
- * @author Davide Savazzi - geo-solutions.it
- */
+/** @author Davide Savazzi - geo-solutions.it */
 public class EoStyleCatalogListenerTest extends GeoServerSystemTestSupport {
 
     private String[] getStyleNames() {
         return EoStyleCatalogListener.EO_STYLE_NAMES;
     }
-    
+
     @Test
     public void testStylesExist() {
         Catalog catalog = getCatalog();
@@ -28,7 +26,7 @@ public class EoStyleCatalogListenerTest extends GeoServerSystemTestSupport {
             assertNotNull(catalog.getStyleByName(styleName));
         }
     }
-        
+
     @Test
     public void testDelete() {
         Catalog catalog = getCatalog();
@@ -37,5 +35,5 @@ public class EoStyleCatalogListenerTest extends GeoServerSystemTestSupport {
         catalog.remove(style);
         // style should have been recreated
         assertNotNull(catalog.getStyleByName(getStyleNames()[0]));
-    }    
+    }
 }

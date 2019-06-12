@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -6,10 +7,8 @@ package org.geoserver.script.js;
 
 import java.util.Map;
 import java.util.logging.Logger;
-
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
-
 import org.geoscript.js.process.MetaProcess;
 import org.geoserver.script.wps.WpsHook;
 import org.geotools.data.Parameter;
@@ -40,7 +39,7 @@ public class JavaScriptWpsHook extends WpsHook {
         }
         return title;
     }
-    
+
     @Override
     public String getDescription(ScriptEngine engine) throws ScriptException {
         return getProcess(engine).getDescription();
@@ -83,5 +82,4 @@ public class JavaScriptWpsHook extends WpsHook {
         }
         return process;
     }
-
 }

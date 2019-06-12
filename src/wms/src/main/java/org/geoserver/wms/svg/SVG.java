@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -8,16 +9,15 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-
 import org.geoserver.wms.WMS;
 
 class SVG {
 
     public static final String MIME_TYPE = "image/svg+xml";
 
-    public static final Set<String> OUTPUT_FORMATS = Collections
-            .unmodifiableSet(new HashSet<String>(Arrays.asList(MIME_TYPE, "image/svg xml",
-                    "image/svg")));
+    public static final Set<String> OUTPUT_FORMATS =
+            Collections.unmodifiableSet(
+                    new HashSet<String>(Arrays.asList(MIME_TYPE, "image/svg xml", "image/svg")));
 
     private SVG() {
         //

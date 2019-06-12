@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -8,16 +9,16 @@ import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.geoserver.catalog.LayerIdentifierInfo;
 import org.geoserver.catalog.impl.LayerIdentifier;
 import org.junit.Test;
 
 public class LayerIdentifierInfoListConverterTest {
 
-    @Test 
+    @Test
     public void testFromString() {
-        final String serialized = "[{\"authority\":\"auth1\",\"identifier\":\"IDENTIFIER_1\"},{\"authority\":\"auth2\",\"identifier\":\"IDENTIFIER_2\"}]";
+        final String serialized =
+                "[{\"authority\":\"auth1\",\"identifier\":\"IDENTIFIER_1\"},{\"authority\":\"auth2\",\"identifier\":\"IDENTIFIER_2\"}]";
         List<LayerIdentifierInfo> expected = new ArrayList<LayerIdentifierInfo>();
 
         LayerIdentifierInfo id1 = new LayerIdentifier();
@@ -32,7 +33,7 @@ public class LayerIdentifierInfoListConverterTest {
 
         List<LayerIdentifierInfo> actual;
         actual = LayerIdentifierInfoListConverter.fromString(serialized);
-        
+
         assertEquals(expected, actual);
     }
 
@@ -64,7 +65,8 @@ public class LayerIdentifierInfoListConverterTest {
 
         String actual = LayerIdentifierInfoListConverter.toString(list);
         System.out.println(actual);
-        String expected = "[{\"authority\":\"auth1\",\"identifier\":\"IDENTIFIER_1\"},{\"authority\":\"auth2\",\"identifier\":\"IDENTIFIER_2\"}]";
+        String expected =
+                "[{\"authority\":\"auth1\",\"identifier\":\"IDENTIFIER_1\"},{\"authority\":\"auth2\",\"identifier\":\"IDENTIFIER_2\"}]";
         assertEquals(expected, actual);
     }
 
@@ -92,7 +94,6 @@ public class LayerIdentifierInfoListConverterTest {
         list.add(null);
 
         assertNull(LayerIdentifierInfoListConverter.toString(list));
-
     }
 
     @Test

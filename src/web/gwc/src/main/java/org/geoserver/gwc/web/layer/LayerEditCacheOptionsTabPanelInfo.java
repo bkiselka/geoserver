@@ -1,29 +1,28 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 - 2015 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 package org.geoserver.gwc.web.layer;
 
 import org.apache.wicket.model.IModel;
-import org.geoserver.catalog.LayerInfo;
-import org.geoserver.catalog.ResourceInfo;
+import org.geoserver.catalog.PublishedInfo;
 import org.geoserver.gwc.GWC;
 import org.geoserver.gwc.config.GWCConfig;
 import org.geoserver.gwc.layer.GeoServerTileLayer;
 import org.geoserver.gwc.layer.GeoServerTileLayerInfo;
 import org.geoserver.gwc.layer.TileLayerInfoUtil;
-import org.geoserver.web.data.resource.LayerEditTabPanelInfo;
+import org.geoserver.web.publish.CommonPublishedEditTabPanelInfo;
 
-public class LayerEditCacheOptionsTabPanelInfo extends LayerEditTabPanelInfo {
+public class LayerEditCacheOptionsTabPanelInfo extends CommonPublishedEditTabPanelInfo {
 
     private static final long serialVersionUID = 7917940832781227130L;
 
     @Override
     public GeoServerTileLayerInfoModel createOwnModel(
-            final IModel<? extends ResourceInfo> resourceModel, final IModel<LayerInfo> layerModel,
-            final boolean isNew) {
+            final IModel<? extends PublishedInfo> layerModel, final boolean isNew) {
 
-        LayerInfo layerInfo = layerModel.getObject();
+        PublishedInfo layerInfo = layerModel.getObject();
         GeoServerTileLayerInfo tileLayerInfo;
 
         final GWC mediator = GWC.get();
@@ -44,11 +43,11 @@ public class LayerEditCacheOptionsTabPanelInfo extends LayerEditTabPanelInfo {
         }
 
         tileLayerInfo.setEnabled(true);
-        final boolean initWithTileLayer = (isNew && defaultSettings.isCacheLayersByDefault())
-                || tileLayer != null;
+        final boolean initWithTileLayer =
+                (isNew && defaultSettings.isCacheLayersByDefault()) || tileLayer != null;
 
         if (!initWithTileLayer) {
-            tileLayerInfo.setId(null);// indicate not to create the tile layer
+            tileLayerInfo.setId(null); // indicate not to create the tile layer
         }
 
         return new GeoServerTileLayerInfoModel(tileLayerInfo, isNew);

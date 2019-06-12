@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -8,21 +9,19 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
-import org.geotools.util.NumberRange;
-
 import junit.framework.TestCase;
+import org.geotools.util.NumberRange;
 
 /**
  * Test for the elevation kvp parser
- * 
+ *
  * @author Simone Giannecchini, GeoSolutions SAS
  */
 public class ElevationKvpParserTest extends TestCase {
 
     public void testPeriod() throws ParseException {
         final ElevationKvpParser parser = new ElevationKvpParser("ELEVATION");
-        List elements = new ArrayList((Collection) parser.parse("1/9000/1"));
+        List elements = new ArrayList((Collection) parser.parse("1/100/1"));
         assertTrue(elements.get(0) instanceof Double);
         assertTrue(elements.size() == 100);
         assertEquals(1.0, ((Double) elements.get(0)));
@@ -58,5 +57,4 @@ public class ElevationKvpParserTest extends TestCase {
         assertEquals(8.9, elements.get(5));
         return parser;
     }
-
 }

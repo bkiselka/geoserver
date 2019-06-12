@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -10,27 +11,28 @@ import org.geoserver.catalog.LayerInfo;
 import org.geoserver.web.GeoServerApplication;
 
 /**
- * A model that serializes the layer fully, and re-attaches it to the catalog
- * on deserialization
- * @author Andrea Aime - OpenGeo
+ * A model that serializes the layer fully, and re-attaches it to the catalog on deserialization
  *
+ * @author Andrea Aime - OpenGeo
  */
 @SuppressWarnings("serial")
-public class LayerModel implements IModel {
+public class LayerModel implements IModel<LayerInfo> {
     LayerInfo layerInfo;
-    
+
     public LayerModel(LayerInfo layerInfo) {
         setObject(layerInfo);
     }
 
-    public Object getObject() {
-        if(layerInfo.getResource().getCatalog() == null)
+    @Override
+    public LayerInfo getObject() {
+        if (layerInfo.getResource().getCatalog() == null)
             new CatalogBuilder(GeoServerApplication.get().getCatalog()).attach(layerInfo);
         return layerInfo;
     }
 
-    public void setObject(Object object) {
-        //workaround for dbconfig, by "dettaching" we force hibernate to reload the object
+    @Override
+    public void setObject(LayerInfo object) {
+        // workaround for dbconfig, by "dettaching" we force hibernate to reload the object
         // fully initialized with no lazy lists or proxies
         this.layerInfo = GeoServerApplication.get().getCatalog().detach((LayerInfo) object);
     }
@@ -38,7 +40,4 @@ public class LayerModel implements IModel {
     public void detach() {
         // nothing specific to do
     }
-
-    
-
 }

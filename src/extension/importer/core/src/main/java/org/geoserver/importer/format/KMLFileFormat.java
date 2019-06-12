@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -16,7 +17,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.apache.commons.io.FilenameUtils;
 import org.geoserver.catalog.AttributeTypeInfo;
 import org.geoserver.catalog.Catalog;
@@ -28,16 +28,14 @@ import org.geoserver.catalog.MetadataMap;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.StoreInfo;
 import org.geoserver.catalog.WorkspaceInfo;
-import org.geotools.data.FeatureReader;
-import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
-import org.geotools.geometry.jts.ReferencedEnvelope;
-import org.geotools.referencing.CRS;
-import org.geoserver.importer.FileData;
 import org.geoserver.importer.ImportData;
 import org.geoserver.importer.ImportTask;
 import org.geoserver.importer.VectorFormat;
 import org.geoserver.importer.job.ProgressMonitor;
 import org.geoserver.importer.transform.KMLPlacemarkTransform;
+import org.geotools.data.FeatureReader;
+import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
+import org.geotools.referencing.CRS;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
@@ -55,15 +53,12 @@ public class KMLFileFormat extends VectorFormat {
 
     private static KMLPlacemarkTransform kmlTransform = new KMLPlacemarkTransform();
 
-    private static ReferencedEnvelope EMPTY_BOUNDS = new ReferencedEnvelope();
-
     static {
         try {
             KML_CRS = CRS.decode(KML_SRS);
         } catch (Exception e) {
             throw new RuntimeException("Could not decode: EPSG:4326", e);
         }
-        EMPTY_BOUNDS.setToNull();
     }
 
     @SuppressWarnings("rawtypes")
@@ -72,20 +67,15 @@ public class KMLFileFormat extends VectorFormat {
         File file = getFileFromData(data);
 
         // we need to get the feature type, to use for the particular parse through the file
-        // since we put it on the metadata from the list method, we first check if that's still available
+        // since we put it on the metadata from the list method, we first check if that's still
+        // available
         SimpleFeatureType ft = (SimpleFeatureType) task.getMetadata().get(FeatureType.class);
         if (ft == null) {
             // if the type is not available, we can generate one from the resource
             // we aren't able to ask for the feature type from the resource directly,
             // because we don't have a backing store
             FeatureTypeInfo fti = (FeatureTypeInfo) task.getLayer().getResource();
-            SimpleFeatureTypeBuilder ftb = new SimpleFeatureTypeBuilder();
-            ftb.setName(fti.getName());
-            List<AttributeTypeInfo> attributes = fti.getAttributes();
-            for (AttributeTypeInfo attr : attributes) {
-                ftb.add(attr.getName(), attr.getBinding());
-            }
-            ft = ftb.buildFeatureType();
+            ft = buildFeatureTypeFromInfo(fti);
             MetadataMap metadata = fti.getMetadata();
             if (metadata.containsKey("importschemanames")) {
                 Map<Object, Object> userData = ft.getUserData();
@@ -95,8 +85,8 @@ public class KMLFileFormat extends VectorFormat {
         return read(ft, file);
     }
 
-    public FeatureReader<SimpleFeatureType, SimpleFeature> read(SimpleFeatureType featureType,
-            File file) {
+    public FeatureReader<SimpleFeatureType, SimpleFeature> read(
+            SimpleFeatureType featureType, File file) {
         try {
             return new KMLTransformingFeatureReader(featureType, new FileInputStream(file));
         } catch (Exception e) {
@@ -104,8 +94,8 @@ public class KMLFileFormat extends VectorFormat {
         }
     }
 
-    public FeatureReader<SimpleFeatureType, SimpleFeature> read(SimpleFeatureType featureType,
-            InputStream inputStream) {
+    public FeatureReader<SimpleFeatureType, SimpleFeature> read(
+            SimpleFeatureType featureType, InputStream inputStream) {
         return new KMLTransformingFeatureReader(featureType, inputStream);
     }
 
@@ -131,13 +121,6 @@ public class KMLFileFormat extends VectorFormat {
     public boolean canRead(ImportData data) throws IOException {
         File file = getFileFromData(data);
         return file.canRead() && "kml".equalsIgnoreCase(FilenameUtils.getExtension(file.getName()));
-    }
-
-    private File getFileFromData(ImportData data) {
-        assert data instanceof FileData;
-        FileData fileData = (FileData) data;
-        File file = fileData.getFile();
-        return file;
     }
 
     @Override
@@ -179,8 +162,8 @@ public class KMLFileFormat extends VectorFormat {
         return ftb.buildFeatureType();
     }
 
-    public SimpleFeatureType convertParsedFeatureType(SimpleFeatureType ft, String name,
-            Set<String> untypedAttributes) {
+    public SimpleFeatureType convertParsedFeatureType(
+            SimpleFeatureType ft, String name, Set<String> untypedAttributes) {
         SimpleFeatureType transformedType = kmlTransform.convertFeatureType(ft);
         SimpleFeatureTypeBuilder ftb = new SimpleFeatureTypeBuilder();
         ftb.init(transformedType);
@@ -201,8 +184,8 @@ public class KMLFileFormat extends VectorFormat {
 
     public List<SimpleFeatureType> parseFeatureTypes(String typeName, InputStream inputStream)
             throws IOException {
-        KMLRawReader reader = new KMLRawReader(inputStream,
-                KMLRawReader.ReadType.SCHEMA_AND_FEATURES);
+        KMLRawReader reader =
+                new KMLRawReader(inputStream, KMLRawReader.ReadType.SCHEMA_AND_FEATURES);
         Set<String> untypedAttributes = new HashSet<String>();
         List<String> schemaNames = new ArrayList<String>();
         List<SimpleFeatureType> schemas = new ArrayList<SimpleFeatureType>();
@@ -214,8 +197,8 @@ public class KMLFileFormat extends VectorFormat {
                 aggregateFeatureType = unionFeatureTypes(aggregateFeatureType, ft);
                 Map<Object, Object> userData = feature.getUserData();
                 @SuppressWarnings("unchecked")
-                Map<String, Object> untypedData = (Map<String, Object>) userData
-                        .get("UntypedExtendedData");
+                Map<String, Object> untypedData =
+                        (Map<String, Object>) userData.get("UntypedExtendedData");
                 if (untypedData != null) {
                     untypedAttributes.addAll(untypedData.keySet());
                 }

@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -23,8 +24,7 @@ public class MemoryImportStore implements ImportStore {
     }
 
     @Override
-    public void init() {
-    }
+    public void init() {}
 
     @Override
     public ImportContext get(long id) {
@@ -45,7 +45,7 @@ public class MemoryImportStore implements ImportStore {
         }
         return id;
     }
-    
+
     @Override
     public void add(ImportContext context) {
         context.setId(idseq.getAndIncrement());
@@ -54,14 +54,16 @@ public class MemoryImportStore implements ImportStore {
             clearCompletedImports();
         }
     }
-    
+
     void clearCompletedImports() {
-        List<ImportContext> completed = collect(new ImportCollector() {
-            @Override
-            protected boolean capture(ImportContext context) {
-                return context.getState() == ImportContext.State.COMPLETE;
-            }
-        });
+        List<ImportContext> completed =
+                collect(
+                        new ImportCollector() {
+                            @Override
+                            protected boolean capture(ImportContext context) {
+                                return context.getState() == ImportContext.State.COMPLETE;
+                            }
+                        });
         imports.removeAll(completed);
     }
 
@@ -70,17 +72,17 @@ public class MemoryImportStore implements ImportStore {
         imports.remove(context);
         imports.add(context);
     }
-    
+
     @Override
     public void remove(ImportContext importContext) {
         imports.remove(importContext);
     }
-    
+
     @Override
     public void removeAll() {
         imports.clear();
     }
-    
+
     @Override
     public Iterator<ImportContext> iterator() {
         return imports.iterator();
@@ -95,24 +97,28 @@ public class MemoryImportStore implements ImportStore {
 
     @Override
     public Iterator<ImportContext> allNonCompleteImports() {
-        return collect(new ImportCollector() {
-            @Override
-            protected boolean capture(ImportContext context) {
-                return context.getState() != ImportContext.State.COMPLETE;
-            }
-        }).iterator();
+        return collect(
+                        new ImportCollector() {
+                            @Override
+                            protected boolean capture(ImportContext context) {
+                                return context.getState() != ImportContext.State.COMPLETE;
+                            }
+                        })
+                .iterator();
     }
-    
+
     @Override
     public Iterator<ImportContext> importsByUser(final String user) {
-        return collect(new ImportCollector() {
-            @Override
-            protected boolean capture(ImportContext context) {
-                return user.equals(context.getUser());
-            }
-        }).iterator();
+        return collect(
+                        new ImportCollector() {
+                            @Override
+                            protected boolean capture(ImportContext context) {
+                                return user.equals(context.getUser());
+                            }
+                        })
+                .iterator();
     }
-    
+
     @Override
     public void query(ImportVisitor visitor) {
         for (ImportContext context : imports) {
@@ -130,8 +136,8 @@ public class MemoryImportStore implements ImportStore {
         idseq.set(0);
         imports.clear();
     }
-    
-    static abstract class ImportCollector implements ImportVisitor {
+
+    abstract static class ImportCollector implements ImportVisitor {
 
         List<ImportContext> collected = new ArrayList();
 

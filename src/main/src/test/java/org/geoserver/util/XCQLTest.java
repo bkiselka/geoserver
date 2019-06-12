@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -21,9 +22,9 @@ public class XCQLTest {
         try {
             CQL.toFilter(filter);
             fail("filter should have thrown exception");
+        } catch (CQLException e) {
         }
-        catch(CQLException e) {}
-        
+
         Filter f1 = ECQL.toFilter(filter);
         Filter f2 = XCQL.toFilter(filter);
         assertEquals(f1, f2);
@@ -32,17 +33,15 @@ public class XCQLTest {
     @Test
     public void testToFilterFallback() throws Exception {
         String filter = "id = 2";
-        
+
         try {
             ECQL.toFilter(filter);
             fail("filter should have thrown exception");
+        } catch (CQLException e) {
         }
-        catch(CQLException e) {
-        }
-        
+
         Filter f1 = CQL.toFilter(filter);
         Filter f2 = XCQL.toFilter(filter);
         assertEquals(f1, f2);
-        
     }
 }

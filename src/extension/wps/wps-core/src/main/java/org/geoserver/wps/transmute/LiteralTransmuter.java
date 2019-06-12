@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -11,18 +12,13 @@ package org.geoserver.wps.transmute;
  * @author Lucas Reed, Refractions Research Inc
  */
 public interface LiteralTransmuter extends Transmuter {
-    /**
-     * Returns string identifier for encoded value type
-     *
-     * @return
-     */
+    /** Returns string identifier for encoded value type */
     String getEncodedType();
 
     /**
      * Decode string value into Java type
      *
      * @param str
-     * @return
      */
     Object decode(String str);
 
@@ -30,7 +26,6 @@ public interface LiteralTransmuter extends Transmuter {
      * Encode from Java type to String
      *
      * @param obj
-     * @return
      */
     String encode(Object obj);
 }

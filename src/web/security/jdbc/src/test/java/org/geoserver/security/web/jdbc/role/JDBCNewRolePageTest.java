@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -12,7 +13,7 @@ import org.junit.Test;
 public class JDBCNewRolePageTest extends NewRolePageTest {
 
     @Test
-    public void testFill() throws Exception{
+    public void testFill() throws Exception {
         doTestFill();
     }
 
@@ -20,7 +21,7 @@ public class JDBCNewRolePageTest extends NewRolePageTest {
     protected void doInitialize() throws Exception {
         initializeForJDBC();
     }
-    
+
     void initializeForJDBC() throws Exception {
         initialize(new H2UserGroupServiceTest(), new H2RoleServiceTest());
     }

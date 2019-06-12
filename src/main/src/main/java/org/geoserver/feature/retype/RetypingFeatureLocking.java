@@ -1,11 +1,11 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 package org.geoserver.feature.retype;
 
 import java.io.IOException;
-
 import org.geotools.data.FeatureLock;
 import org.geotools.data.FeatureLocking;
 import org.geotools.data.Query;
@@ -13,20 +13,21 @@ import org.geotools.data.simple.SimpleFeatureLocking;
 import org.opengis.filter.Filter;
 
 /**
- * Renaming wrapper for a {@link FeatureLocking} instance, to be used along with {@link RetypingDataStore} 
+ * Renaming wrapper for a {@link FeatureLocking} instance, to be used along with {@link
+ * RetypingDataStore}
  */
-class RetypingFeatureLocking extends RetypingFeatureStore implements
-        SimpleFeatureLocking {
+class RetypingFeatureLocking extends RetypingFeatureStore implements SimpleFeatureLocking {
 
-    RetypingFeatureLocking(RetypingDataStore ds,
-            SimpleFeatureLocking wrapped, FeatureTypeMap typeMap) {
+    RetypingFeatureLocking(
+            RetypingDataStore ds, SimpleFeatureLocking wrapped, FeatureTypeMap typeMap) {
         super(ds, wrapped, typeMap);
     }
-    
-    RetypingFeatureLocking(SimpleFeatureLocking wrapped, FeatureTypeMap typeMap) throws IOException {
+
+    RetypingFeatureLocking(SimpleFeatureLocking wrapped, FeatureTypeMap typeMap)
+            throws IOException {
         super(wrapped, typeMap);
     }
-    
+
     SimpleFeatureLocking featureLocking() {
         return (SimpleFeatureLocking) wrapped;
     }
@@ -58,5 +59,4 @@ class RetypingFeatureLocking extends RetypingFeatureStore implements
     public void unLockFeatures(Query query) throws IOException {
         featureLocking().unLockFeatures(store.retypeQuery(query, typeMap));
     }
-
 }

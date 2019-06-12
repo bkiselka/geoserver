@@ -11,7 +11,7 @@ Before you start
 SNAPSHOT release
 ^^^^^^^^^^^^^^^^
 
-For any non-beta release (including release candidates) a GeoServer release requires an
+For any release (including release candidates) a GeoServer release requires an
 corresponding GeoTools and GeoWebCache release. Therefore before you start you should
 coordinate a release with these projects. Either performing the release yourself or
 asking a volunteer to perform the release.
@@ -22,7 +22,7 @@ asking a volunteer to perform the release.
 Notify developer list
 ^^^^^^^^^^^^^^^^^^^^^
 
-It is good practice to notify the `GeoServer developer list <https://lists.sourceforge.net/lists/listinfo/geoserver-devel>`_ of the intention to make the release a few days in advance, even though the release date has been agreed upon before hand.
+Send an email to the `GeoServer developer list <https://lists.sourceforge.net/lists/listinfo/geoserver-devel>`_ a few days in advance, even though the release date has been agreed upon before hand. It is a good idea to remind developers to get any fixes 24 hours prior to release day, and to start a team discussion to identify any known blockers.
 
 Prerequisites
 -------------
@@ -30,9 +30,9 @@ Prerequisites
 The following are necessary to perform a GeoServer release:
 
 #. Commit access to the GeoServer `Git repository <https://Github.com/geoserver/geoserver>`_
-#. Build access to `Jenkins <http://ares.boundlessgeo.com/jenkins/>`_
+#. Build access to `Jenkins <http://build.geoserver.org/jenkins/>`_
 #. Edit access to the GeoServer `Blog <http://blog.geoserver.org>`_
-#. Administration rights to GeoServer `JIRA <https://jira.codehaus.org/browse/GEOS>`__
+#. Administration rights to GeoServer `JIRA <https://osgeo-org.atlassian.net/projects/GEOS>`__
 #. Release/file management privileges in `SourceForge <https://sourceforge.net/projects/geoserver/>`_
 
 Versions and revisions
@@ -40,51 +40,113 @@ Versions and revisions
 
 When performing a release we don't require a "code freeze" in which no developers can commit to the repository. Instead we release from a revision that is known to pass all tests, including unit/integration tests as well as CITE tests.
 
-To obtain the GeoServer and Geotools revisions that have passed the `CITE test <http://ares.boundlessgeo.com/jenkins/view/geoserver-cite/>`_, navigate to the latest Hudson run of the CITE test  and view it's console output and select to view its full log. For example::
+To obtain the GeoServer and Geotools revisions that have passed the `CITE test <https://build.geoserver.org/view/testing-cite/>`_, navigate to the latest Jenkins run of the CITE test  and view it's console output and select to view its full log. For example:
 
-    http://ares.boundlessgeo.com/jenkins/view/geoserver-cite/job/cite-wfs-1.1/9/consoleText
+    https://build.geoserver.org/job/2.11-cite-wms-1.1/286/consoleText
 
-Perform a search on the log for 'Git revision' and you should obtain the following.::
+Perform a search on the log for 'git revision' (this is the GeoServer revision) and you should obtain the following:
 
-	version = 2.2-SNAPSHOT
-	Git revision = 4ea8d3fdcdbb130892a03f27ab086068b95a3b01
-	Git branch = 4ea8d3fdcdbb130892a03f27ab086068b95a3b01
-	build date = 03-Aug-2012 03:39
-	geotools version = 8-SNAPSHOT
-	geotools revision = 73e8d0746a4527e46a46e5e8bc778ca92ca89130
+.. code-block:: none
 
-Since we don't make any release from master, ensure you select the right CITE test that passed to obtain the right revision.
+    version = 2.11-SNAPSHOT
+    git revision = 08f43fa77fdcd0698640d823065b6dfda7f87497
+    git branch = origin/2.11.x
+    build date = 18-Dec-2017 19:51
+    geotools version = 17-SNAPSHOT
+    geotools revision = a91a88002c7b2958140321fbba4d5ed0fa85b78d
+    geowebcache version = 1.11-SNAPSHOT
+    geowebcache revision = 0f1cbe9466e424621fae9fefdab4ac5a7e26bd8b/0f1cb
 
-Since most GeoServer releases require an official GeoTools release the GeoTools revision is usually not needed. But if performing a beta release it is
-allowed to release directly from a specific GeoTools revision.
+Since most GeoServer releases require an official GeoTools release, the GeoTools revision is usually not needed.
 
 Release in JIRA
 ---------------
 
-Run the `geoserver-release-jira <http://ares.boundlessgeo.com/jenkins/job/geoserver-release-jira/>`_ job in Jenkins. The job takes the following parameters:
+1. Navigate to the `GeoServer project page <https://osgeo-org.atlassian.net/projects/GEOS?selectedItem=com.atlassian.jira.jira-projects-plugin:release-page&status=released-unreleased>`_ in JIRA.
 
-**VERSION**
+2. Add a new version for the next version to be released after the current release. For example, if you are releasing GeoServer 2.11.5, create version 2.11.6.
 
-  The version to release, same as in the previous section. This version must match a version in JIRA.
+3. Click in the Actions column for the version you are releasing and select Release. Enter the release date when prompted. If there are still unsolved issues remaining in this release, you will be prompted to move them to an unreleased version. If so, choose the new version you created in step 2.
 
-**NEXT_VERSION**
+If you are cutting the first RC of a series, create the stable branch
+---------------------------------------------------------------------
 
-  The next version in the series. All unresolved issues currently fils against ``VERSION`` will be transitioned to this version.
+When creating the first release candidate of a series, there are some extra steps to create the new stable branch and update the version on master.
 
-**JIRA_USER**
+* Checkout the master branch and make sure it is up to date and that there are no changes in your local workspace::
 
-  A JIRA user name that has release privileges. This user  will be used to perform the release in JIRA, via the SOAP api.
+    git checkout master
+    git pull
+    git status
 
-**JIRA_PASSWD**
+* Create the new stable branch and push it to GitHub; for example, if master is ``2.11-SNAPSHOT`` and the remote for the official GeoServer is called ``geoserver``::
 
-  The password for the ``JIRA_USER``.
+    git checkout -b 2.11.x
+    git push geoserver 2.11.x
 
-This job will perform the tasks in JIRA to release ``VERSION``. Navigate to `JIRA <http://jira.codehaus.org/browse/GEOS>`__ and verify that the version has actually been released.
+* Enable `GitHub branch protection <https://github.com/geoserver/geoserver/settings/branches>`_ for the new stable branch: tick "Protect this branch" (only) and press "Save changes".
+
+* Checkout the master branch and update the version in all pom.xml files; for example, if changing master from ``2.11-SNAPSHOT`` to ``2.12-SNAPSHOT``::
+
+    git checkout master
+    find . -name pom.xml -exec sed -i 's/2.11-SNAPSHOT/2.12-SNAPSHOT/g' {} \;
+
+  .. note:: ``sed`` behaves differently on Linux vs. Mac OS X. If running on OS X, the ``-i`` should be followed by ``'' -e`` for each of these ``sed`` commands.
+
+* Update release artifact paths and labels, for example, if changing master from ``2.11-SNAPSHOT`` to ``2.12-SNAPSHOT``::
+
+    sed -i 's/2.11-SNAPSHOT/2.12-SNAPSHOT/g' src/release/bin.xml
+    sed -i 's/2.11-SNAPSHOT/2.12-SNAPSHOT/g' src/release/installer/win/GeoServerEXE.nsi
+    sed -i 's/2.11-SNAPSHOT/2.12-SNAPSHOT/g' src/release/installer/win/wrapper.conf
+
+  .. note:: These can be written as a single ``sed`` command with multiple files.
+
+* Update GeoTools dependency; for example if changing from ``17-SNAPSHOT`` to ``18-SNAPSHOT``::
+
+    sed -i 's/17-SNAPSHOT/18-SNAPSHOT/g' src/pom.xml
+
+* Update GeoWebCache dependency; for example if changing from ``1.11-SNAPSHOT`` to ``1.12-SNAPSHOT``::
+
+    sed -i 's/1.11-SNAPSHOT/1.12-SNAPSHOT/g' src/pom.xml
+
+* Manually update hardcoded versions in configuration files:
+
+    * ``doc/en/developer/source/conf.py``
+    * ``doc/en/docguide/source/conf.py``
+    * ``doc/en/user/source/conf.py``
+    * ``doc/es/user/source/conf.py``
+    * ``doc/fr/user/source/conf.py``
+
+* Commit the changes and push to the master branch on GitHub::
+
+      git commit -am "Updated version to 2.12-SNAPSHOT, updated GeoTools dependency to 18-SNAPSHOT, updated GeoWebCache dependency to 1.12-SNAPSHOT, and related changes"
+      git push geoserver master
+      
+* Create the new RC version in `JIRA <https://osgeo-org.atlassian.net/projects/GEOS>`_ for issues on master; for example, if master is now ``2.12-SNAPSHOT``, create a Jira version ``2.12-RC1`` for the first release of the ``2.12.x`` series
+
+* Update the main, nightly, geogig-plugin and live-docs jobs on build.geoserver.org:
+  
+  * disable the maintenance jobs, and remove them from the geoserver view
+  * create new jobs, copying from the existing stable jobs, and edit the branch.
+  * modify the last line of the live-docs builds, changing ``stable`` to ``maintain`` for the previous stable branch. The new job you created should publish to ``stable``, and master will continue to publish to ``latest``.
+
+* Update the cite tests on build.geoserver.org:
+
+  * disable the maintenance jobs, and remove them from the geoserver view
+  * create new jobs, copying from the existing master jobs, editing the branch in the build command.
+
+* Announce on the developer mailing list that the new stable branch has been created.
+
+* Switch to the new branch and update the documentation links, replacing ``docs.geoserver.org/latest`` with ``docs.geoserver.org/2.12.x`` (for example):
+   
+  * ``README.md``
+  * ``doc/en/developer/source/conf.py``
+  * ``doc/en/user/source/conf.py``
 
 Build the Release
 -----------------
 
-Run the `geoserver-release <http://ares.boundlessgeo.com/jenkins/job/geoserver-release/>`_ job in Jenkins. The job takes the following parameters:
+Run the `geoserver-release <https://build.geoserver.org/view/geoserver/job/geoserver-release/>`_ job in Jenkins. The job takes the following parameters:
 
 **BRANCH**
 
@@ -100,11 +162,11 @@ Run the `geoserver-release <http://ares.boundlessgeo.com/jenkins/job/geoserver-r
 
 **GT_VERSION**
 
-  The GeoTools version to include in the release. This may be specified as a version number such as "8.0" or "2.7.5". Alternatively the version may be specified as a Git branch/revision pair in the form ``<branch>@<revision>``. For example "master@36ba65jg53.....". Finally this value may be left blank in which the version currently declared in the geoserver pom will be used (usually a SNAPSHOT). Again if performing a non-beta release this version must be a version number corresponding to an official GeoTools release.
+  The GeoTools version to include in the release. This may be specified as a version number such as "8.0" or "2.7.5". Alternatively the version may be specified as a Git branch/revision pair in the form ``<branch>@<revision>``. For example "master@36ba65jg53.....". Finally this value may be left blank in which the version currently declared in the geoserver pom will be used (usually a SNAPSHOT). Again, this version must be a version number corresponding to an official GeoTools release.
 
 **GWC_VERSION**
 
-  The GeoWebCache version to include in the release. This may be specified as a version number such as "1.3-RC3". Alternatively the version may be specified as a Git revision of the form ``<branch>@<revision>`` such as "master@1b3243jb...". Finally this value may be left blank in which the version currently declared in the geoserver pom will be used (usually a SNAPSHOT).Git Again if performing a non-beta release this version must be a version number corresponding to an official GeoTools release.
+  The GeoWebCache version to include in the release. This may be specified as a version number such as "1.3-RC3". Alternatively the version may be specified as a Git revision of the form ``<branch>@<revision>`` such as "master@1b3243jb...". Finally this value may be left blank in which the version currently declared in the geoserver pom will be used (usually a SNAPSHOT).Git Again, this version must be a version number corresponding to an official GeoTools release.
 
 **GIT_USER**
 
@@ -119,7 +181,7 @@ release artifacts against the GeoTools/GeoWebCache versions specified. When
 successfully complete all release artifacts will be uploaded to the following
 location::
 
-   http://ares.boundlessgeo.com/geoserver/release/<RELEASE>
+   http://build.geoserver.org/geoserver/release/<RELEASE>
 
 Additionally when the job completes it fires off two jobs for building the
 Windows and OSX installers. These jobs run on different hudson instances.
@@ -136,7 +198,7 @@ test on the developer list.
 Publish the Release
 -------------------
 
-Run the `geoserver-release-publish <http://ares.boundlessgeo.com/jenkins/job/geoserver-release-publish/>`_ in Jenkins. The job takes the following parameters:
+Run the `geoserver-release-publish <https://build.geoserver.org/view/geoserver/job/geoserver-release-publish/>`_ in Jenkins. The job takes the following parameters:
 
 **VERSION**
 
@@ -148,41 +210,14 @@ Run the `geoserver-release-publish <http://ares.boundlessgeo.com/jenkins/job/geo
 
 This job will rsync all the artifacts located at::
 
-     http://ares.boundlessgeo.com/geoserver/release/<RELEASE>
+     http://build.geoserver.org/geoserver/release/<RELEASE>
 
-to the SourceForge FRS server. Navigate to `Sourceforge <http://sourceforge.net/projects/geoserver/>`__ and verify that the artifacts have been uploaded properly. Set the necessary flags on the ``.exe``, ``.dmg`` and ``.bin`` artifacts so that they show up as the appropriate default for users downloading on the Windows, OSX, and Linux platforms.
+to the SourceForge FRS server. Navigate to `Sourceforge <http://sourceforge.net/projects/geoserver/>`__ and verify that the artifacts have been uploaded properly. If this is the latest stable release, set the necessary flags on the ``.exe``, ``.dmg`` and ``.bin`` artifacts so that they show up as the appropriate default for users downloading on the Windows, OSX, and Linux platforms.
 
 Create the download page
 ------------------------
 
-Get the JIRA version for this release:
-
-#. Go to `JIRA <http://jira.codehaus.org/display/GEOS/>`__
-#. Select "Change log"
-#. Open the release notes for the version being released
-#. The version will be in the url, e.g. ``http://jira.codehaus.org/secure/ReleaseNote.jspa?projectId=10311&version=18700`` -> 18700
-
-Create the new download page:
-
-#. Go to `GeoServer web site <http://geoserver.org/>`_ and make sure you are logged in.
-#. Select the "New page" link in the menu
-#. Click "select a page template to start from"
-#. Choose the "Download" template
-#. Fill in the version, release date (e.g., May 17th, 2012) and the jira version
-#. Set the page title to the version being released (e.g. "GeoServer 2.2-RC3")
-#. Save and check all the links are working
-
-Update the download short cuts:
-
-#. If you are instead releasing a beta/RC, edit the `Latest version <http://geoserver.org/display/GEOS/Latest>`_ page and make it include the newly created release page.::
-
-     {note}{*}Releases on this page are known to be unstable.* If you're looking for a stable release, you may want to be on the [Stable] download page.
-     {note}
-     {include:GeoServer 2.4-RC1}
-
-#. If you are releasing a stable version, edit the `Stable version <http://geoserver.org/display/GEOS/Stable>`_ page and make it include the newly created release page.::
-
-      {include:GeoServer 2.3.5}
+The `GeoServer web site <http://geoserver.org/>`_ is managed as a `GitHub Pages repository <https://github.com/geoserver/geoserver.github.io>`_. Follow the `instructions <https://github.com/geoserver/geoserver.github.io#releases>`_ in the repository to create a download page for the release. This requires the url of the blog post announcing the release, so wait until after you have posted the announcement to do this.
 
 Post the Documentation
 ----------------------
@@ -201,19 +236,27 @@ Post the Documentation
 
    where ``a.b.c`` is the full release number.
 
-#. Download the HTML documentation archive from the GeoServer download page, and extract the contents of both user manuals to the appropriate directory::
+#. Download the HTML documentation archive from the GeoServer download page, and extract the contents of both user manuals to the appropriate directory:
+    
+    .. code-block:: bash
 
-    cd /var/www/docs.geoserver.org/htdocs/a.b.c/
-    sudo wget http://downloads.sourceforge.net/geoserver/geoserver-a.b.c-htmldoc.zip
-    sudo unzip geoserver-a.b.c-htmldoc.zip
-    sudo rm geoserver-a.b.c-htmldoc.zip
+       cd /var/www/docs.geoserver.org/htdocs/a.b.c/
+       sudo wget http://downloads.sourceforge.net/geoserver/geoserver-a.b.c-htmldoc.zip
+       sudo unzip geoserver-a.b.c-htmldoc.zip
+       sudo rm geoserver-a.b.c-htmldoc.zip
 
+   .. note:: Steps 2 and 3 have now been automated by a bash script on the server, and can be completed by executing:
+      
+      .. code-block:: bash
+         
+         sudo /var/www/docs.geoserver.org/htdocs/postdocs.sh a.b.c
+ 
 #. Open the file :file:`/var/www/docs.geoserver.org/htdocs/index.html` in a text editor.
 
 #. Add a new entry in the table for the most recent release::
 
     <tr>
-      <td><strong><a href="http://geoserver.org/display/GEOS/GeoServer a.b.c">a.b.c</a></strong></td>
+      <td><strong><a href="http://geoserver.org/release/a.b.c/">a.b.c</a></strong></td>
       <td><a href="a.b.c/user/">User Manual</a></td>
       <td><a href="a.b.c/developer/">Developer Manual</a></td>
     </tr>
@@ -226,7 +269,7 @@ Announce the Release
 GeoServer Blog
 ^^^^^^^^^^^^^^
 
-.. note:: This announcement should be made for all releases, including betas and release candidates.
+.. note:: This announcement should be made for all releases, including release candidates.
 
 .. note::
 
@@ -241,17 +284,17 @@ GeoServer Blog
    .. code-block:: html
 
       The GeoServer team is pleased to announce the release of
-      <a href="http://geoserver.org/display/GEOS/GeoServer+2.3.3">GeoServer 2.3.3</a>:
+      <a href="http://geoserver.org/release/2.5.1/">GeoServer 2.5.1</a>:
       <ul>
-         <li>Downloads (<a href="http://downloads.sourceforge.net/geoserver/geoserver-2.3.3-bin.zip">zip</a>,
-             <a href="http://downloads.sourceforge.net/geoserver/geoserver-2.3.3-war.zip">war</a>,
-             <a href="http://downloads.sourceforge.net/geoserver/geoserver-2.3.3.dmg">dmg</a> and
-             <a href="http://downloads.sourceforge.net/geoserver/geoserver-2.3.3.exe">exe</a>) are listed on the
-             <a href="http://geoserver.org/display/GEOS/GeoServer+2.3.3">GeoServer 2.3.3</a> page
+         <li>Downloads (<a href="http://sourceforge.net/projects/geoserver/files/GeoServer/2.5.1/geoserver-2.5.1-bin.zip/download">zip</a>,
+             <a href="http://sourceforge.net/projects/geoserver/files/GeoServer/2.5.1/geoserver-2.5.1-war.zip/download">war</a>,
+             <a href="http://sourceforge.net/projects/geoserver/files/GeoServer/2.5.1/geoserver-2.5.1.dmg/download">dmg</a> and
+             <a href="http://sourceforge.net/projects/geoserver/files/GeoServer/2.5.1/geoserver-2.5.1.exe/download">exe</a>) are listed on the
+             <a href="http://geoserver.org/release/2.5.1/">GeoServer 2.5.1</a> page
              along with documentation and extensions.
             <ul>
                <li>This release includes and is made in conjunction with
-                 <a href="http://geotoolsnews.blogspot.com.au/2013/06/geotools-93-released.html">GeoTools 9.3</a>.</li>
+                 <a href="http://geotoolsnews.blogspot.com/2014/05/geotools-111-released.html">GeoTools 11.1</a>.</li>
             </ul>
          </li>
          <li>Thanks to <a href="http://www.warwickshire.gov.uk/">Warwickshire County Council</a>
@@ -270,7 +313,7 @@ GeoServer Blog
          </li>
       </ul>
       More details can be found in the
-      <a href="http://jira.codehaus.org/secure/ReleaseNote.jspa?projectId=10311&amp;version=19231">GeoServer 2.3.3 Release Notes</a>.
+      <a href="https://osgeo-org.atlassian.net/jira/secure/ReleaseNote.jspa?projectId=10000&version=10164">GeoServer 2.5.1 Release Notes</a>.
 
 #. Examples of content:
 
@@ -297,142 +340,59 @@ GeoServer Blog
 
      Example: `GeoServer 2.3-beta released <http://blog.geoserver.org/2013/01/29/geoserver-2-3-beta-released/>`_
 
-
-
-#. Do not publish the post. Instead present it to the GeoServer outreach
-   team for review, and they will publish it.
-
-
-Update GeoServer Website
-^^^^^^^^^^^^^^^^^^^^^^^^
-
-#. Navigate to http://geoserver.org/
-
-#. Click :guilabel:`Log In` in the top right corner.
-
-#. Enter your Confluence user name and password and click :guilabel:`Log In`.
-
-#. Navigate back to the home page http://geoserver.org and change the links at the top of
-   the page to include the new GeoServer download page and the blog post.  For example::
-
-    h6. 23 July 2013: [GeoServer 2.4-beta] released\!  [See what's new...|http://blog.geoserver.org/2013/07/22/geoserver-2-4-beta-released/]!
-
-#. Verify that the links work
+#. Do not publish the post right away. Instead ask the devel list for review.
 
 
 Mailing lists
 ^^^^^^^^^^^^^
 
-.. note:: This announcement should be made for all releases, including betas and release candidates.
+.. note:: This announcement should be made for all releases, including release candidates.
 
 Send an email to both the developers list and users list announcing the
 release. The message should be relatively short. You can base it on the blog post.
 The following is an example::
 
-   Subject: GeoServer 1.7.1 Released
+   Subject: GeoServer 2.5.1 Released
 
-   The GeoServer team is happy to announce the release of GeoServer 1.7.1.
+   The GeoServer team is happy to announce the release of GeoServer 2.5.1.
+  
    The release is available for download from:
 
-   http://geoserver.org/display/GEOS/GeoServer+1.7.1
+   http://geoserver.org/release/2.5.1/
+
+   GeoServer 2.5.1 is the next the stable release of GeoServer and is recommended for production deployment.
 
    This release comes with some exciting new features. The new and
    noteworthy include:
+   
+   * By popular request Top/Bottom labels when configuring layer group order
+   * You can now identify GeoServer “nodes” in a cluster by configuring a label and color in the UI. Documentation and example in the user guide.
+   * Have you ever run GeoServer and not quite gotten your file permissions correct? GeoServer now has better logging when it cannot your data directory and is required to “fall back” to the embedded data directory during start up.
+   * We have a new GRIB community module (community modules are not in the release until they pass a    QA check, but great to see new development taking shape)
+   * Documentation on the jp2kak extension now in the user guide
+   * Additional documentation for the image mosaic in the user guide with tutorials covering the plugin, raster time-series, time and elevation and footprint management.
+   * WCS 2.0 support continues to improve with DescribeCoverage now supporting null values
+   * Central Authentication Service (CAS) authentication has received a lot of QA this release and is now available in the GeoServer 2.5.x series.
+   * This release is made in conjunction with GeoTools 11.1
+   
+   Along with many other improvements and bug fixes:
+   
+   * https://osgeo-org.atlassian.net/jira/secure/ReleaseNote.jspa?projectId=10000&version=10164
 
-      * KML Super Overlay and Regionating Support
-      * KML Extrude Support
-      * KML Reflector Improvements
-      * Mac OS X Installer
-      * Dutch Translation
-      * Improved Style for Web Admin Interface
-      * New SQL Server DataStore Extension
-      * Improved Oracle DataStore Extension
-      * Default Templates per Namespace
-
-   Along with many other improvements and bug fixes. The entire change log
-   for the 1.7.1 series is available in the issue tracker:
-
-   http://jira.codehaus.org/browse/GEOS/fixforversion/14502
-
-   A very special thanks to all those who contributed bug fixes, new
+   Thanks to Andrea and Jody (GeoSolutions and Boundless) for publishing this release. A very special thanks to all those who contributed bug fixes, new
    features, bug reports, and testing to this release.
 
    --
    The GeoServer Team
 
+OSGeo Anouncement
+^^^^^^^^^^^^^^^^^
 
-SlashGeo
-^^^^^^^^
+For major releases OSGeo asks that a news item be submitted:
 
-.. note:: This announcement should be made only for official releases. Not betas and release candidates.
+* Login to the osgeo.org website, create a news item using the release announcement text above.
 
-.. note::
+And that an announcement is sent to discuss:
 
-   This step requires an account on http://slashgeo.org
+* Mail major release announcements to discuss@osgeo.org (you will need to `subscribe first <https://lists.osgeo.org/listinfo/discuss>`__ ). 
 
-#. Go to http://slashgeo.org, and log in, creating an account if necessary.
-
-#. Click the **Submit Story** link on the left hand side of the page.
-   Examples of previous stories:
-
-   * http://technology.slashgeo.org/technology/08/12/09/1745249.shtml
-   * http://industry.slashgeo.org/article.pl?sid=08/10/27/137216
-
-FreeGIS
-^^^^^^^
-
-.. note:: This announcement should be made only for official releases. Not betas and release candidates.
-
-Send an email to ``bjoern dot broscheit at uni-osnabrueck dot de``.
-Example::
-
-  Subject: GeoServer update for freegis
-
-  GeoServer 1.7.1 has been released with some exciting new features. The big
-  push for this release has been improved KML support. The new and noteworthy
-  include:
-
-    * KML Super Overlay and Regionating Support
-    * KML Extrude Support
-    * KML Reflector Improvements
-    * Mac OS X Installer
-    * Dutch Translation
-    * Improved Style for Web Admin Interface
-    * New SQL Server DataStore Extension
-    * Improved Oracle DataStore Extension
-    * Default Templates per Namespace
-
-  Along with many other improvements and bug fixes. The entire change log for
-  the 1.7.1 series is available in the issue tracker:
-
-  http://jira.codehaus.org/browse/GEOS/fixforversion/14502
-
-FreshMeat
-^^^^^^^^^
-
-.. note:: This announcement should be made only for official rel-eases. Not betas and release candidates.
-
-.. note::
-
-   This step requires an account on http://freshmeat.net/
-
-#. Go to http://freshmeat.net/ and log in.
-#. Search for "geoserver" and click the resulting link.
-#. Click the **add release** link at the top of the page.
-#. Choose the **Default** branch
-#. Enter the version and choose the appropriate **Release focus**.
-
-   .. note::
-
-      The release focus is usually 4,5,6, or 7. Choose which ever is
-      appropriate.
-
-#. Enter a succinct description (less than 600 characters) of the **Changes**.
-#. Update the links to the following fields:
-
-   * Zip
-   * OS X package
-   * Changelog
-
-#. Click the **Step 3** button.
-#. Click the **Finish** button.

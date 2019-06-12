@@ -13,7 +13,9 @@ Parameter values can be supplied in both WMS and WFS requests.
 Default values can be supplied for parameters, and input values can be validated by Regular Expressions 
 to eliminate the risk of SQL injection attacks.
 
-SQL Views are read-only, and thus cannot be updated by WFS-T transactions.
+.. note::
+
+   SQL Views are read-only, and thus cannot be updated by WFS-T transactions.
 
 Creating a SQL View
 -------------------------
@@ -62,6 +64,9 @@ If further changes to the view are required, the page has a link to the SQL View
 
 Once created, the SQL view layer is used in the same way as a conventional table-backed layer,
 with the one limitation of being read-only.
+
+.. warning:: Saving the SQL view definition here is not sufficient, the layer containing it must be saved as well for the change to have any effect.
+             This is because the SQL view definition is actually just one component of the layer/featuretype/coverage attributes.
 
 Parameterizing SQL Views
 ------------------------
@@ -112,6 +117,8 @@ the **Attributes** :guilabel:`Refresh` link is clicked to parse the query and re
 The computed geometry type and column identifier details can be corrected if required. 
 From this point on the workflow is the same as for a non-parameterized query.
 
+
+.. _using_a_parametric_sql_view:
 
 Using a parametric SQL View
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -176,3 +183,45 @@ The following are some resources for constructing regular expressions:
   * `<http://www.regular-expressions.info>`_ has many tutorials and examples of regular expressions.
   * The `myregexp <http://myregexp.com/>`_ applet can be used to test regular expressions online.
 
+Place holder for the SQL WHERE clause
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The SQL ``WHERE`` clause produced by GeoServer using the context filters, e.g. the bounding box filter of a WMS query, will be added around the SQL view definition. This comes handy (better performance) when we have extra operations that can  be done on top of the rows filtered with the GeoServer produced filter first.
+
+A typical use case for this functionality is the execution of analytic functions on top of the filtered results:
+
+.. code-block:: sql
+
+  SELECT STATION_NAME,
+         MEASUREMENT,
+         MEASUREMENT_TYPE,
+         LOCATION
+  FROM
+    (SELECT STATION_NAME,
+            MEASUREMENT,
+            MEASUREMENT_TYPE,
+            LOCATION,
+            ROW_NUMBER() OVER(PARTITION BY STATION_ID, MEASUREMENT_TYPE
+                              ORDER BY TIME DESC) AS RANK
+     FROM
+       (SELECT st.id AS STATION_ID,
+               st.common_name AS STATION_NAME,
+               ob.value AS MEASUREMENT,
+               pr.param_name AS MEASUREMENT_TYPE,
+               ob.time AS TIME,
+               st.position AS LOCATION
+        FROM meteo.meteo_stations st
+        LEFT JOIN meteo.meteo_observations ob ON st.id = ob.station_id
+        LEFT JOIN meteo.meteo_parameters pr ON ob.parameter_id = pr.id
+
+        -- SQL WHERE clause place holder for GeoServer
+        WHERE 1 = 1 :where_clause:) AS stations_filtered) AS stations
+
+  WHERE RANK = 1;
+
+A few restrictions apply when using the explicit ``:where_clause:`` place holder:
+
+  * it needs to be added in a position where all the attributes known by GeoServer are already present
+  * the ``:where_clause:`` can only appear once 
+
+When a ``WHERE`` clause place holder is present, GeoServer will always add an explicit ``AND`` at the beginning of the produced ``WHERE`` clause. This allows the injection of the produced ``WHERE`` in the middle of complex expressions if needed.

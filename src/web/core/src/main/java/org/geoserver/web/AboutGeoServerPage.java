@@ -1,19 +1,18 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 package org.geoserver.web;
 
 import java.util.logging.Level;
-
 import org.apache.wicket.markup.html.basic.Label;
-import org.geotools.factory.GeoTools;
+import org.geotools.util.factory.GeoTools;
 
 /**
  * An about GeoServer page providing various bits of information.
- * 
- * @author Justin Deoliveira, OpenGeo
  *
+ * @author Justin Deoliveira, OpenGeo
  */
 public class AboutGeoServerPage extends GeoServerBasePage {
 
@@ -34,12 +33,12 @@ public class AboutGeoServerPage extends GeoServerBasePage {
         return p != null ? p.getImplementationVersion() : null;
     }
 
+    @SuppressWarnings("deprecation") // ClassLoader.getDefinedPackage replaces in jdk 9+
     Package lookupGwcPackage() {
         try {
             return Package.getPackage("org.geowebcache");
-        }
-        catch(Exception e) {
-            //be safe
+        } catch (Exception e) {
+            // be safe
             LOGGER.log(Level.FINE, "Error looking up org.geowebcache package", e);
         }
         return null;

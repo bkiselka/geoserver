@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -11,6 +12,7 @@ import org.opengis.feature.simple.SimpleFeature;
 /**
  * Attaches itself to the renderer and ensures no more than a certain amount of errors occur, if
  * they do, the rendering process is stopped
+ *
  * @author Andrea Aime - OpenGeo
  */
 public class MaxErrorEnforcer {
@@ -20,12 +22,12 @@ public class MaxErrorEnforcer {
     int maxErrors;
 
     int errors;
-    
+
     Exception lastException;
 
     /**
      * Builds a new max errors enforcer. If maxErrors is not positive the enforcer will do nothing
-     * 
+     *
      * @param renderer
      * @param maxErrors
      */
@@ -35,36 +37,29 @@ public class MaxErrorEnforcer {
         this.errors = 0;
 
         if (maxErrors > 0) {
-            renderer.addRenderListener(new RenderListener() {
+            renderer.addRenderListener(
+                    new RenderListener() {
 
-                public void featureRenderer(SimpleFeature feature) {
-                }
+                        public void featureRenderer(SimpleFeature feature) {}
 
-                public void errorOccurred(Exception e) {
-                    errors++;
-                    lastException = e;
-                    if (errors > MaxErrorEnforcer.this.maxErrors) {
-                        MaxErrorEnforcer.this.renderer.stopRendering();
-                    }
-                }
-            });
+                        public void errorOccurred(Exception e) {
+                            errors++;
+                            lastException = e;
+                            if (errors > MaxErrorEnforcer.this.maxErrors) {
+                                MaxErrorEnforcer.this.renderer.stopRendering();
+                            }
+                        }
+                    });
         }
     }
 
-    /**
-     * True if the max error threshold was exceeded
-     * @return
-     */
+    /** True if the max error threshold was exceeded */
     public boolean exceedsMaxErrors() {
         return maxErrors > 0 && errors > maxErrors;
     }
-    
-    /**
-     * Returns the last exception occurred (or null if none happened)
-     * @return
-     */
+
+    /** Returns the last exception occurred (or null if none happened) */
     public Exception getLastException() {
         return lastException;
     }
-
 }

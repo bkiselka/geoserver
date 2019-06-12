@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -12,9 +13,8 @@ import org.opengis.coverage.grid.Format;
 /**
  * Used to declare a data store panel information and its icon. Both are optional, you can specify
  * the configuration panel but not the icon, or the opposite.
- * 
+ *
  * @author aaime
- * 
  */
 @SuppressWarnings("serial")
 public class DataStorePanelInfo extends ComponentInfo<StoreEditPanel> {
@@ -39,7 +39,7 @@ public class DataStorePanelInfo extends ComponentInfo<StoreEditPanel> {
     /**
      * Used as the reference class to locate the datastore icon (since the component might not be
      * there)
-     * 
+     *
      * @param iconBase
      */
     public void setIconBase(Class<?> iconBase) {
@@ -50,11 +50,7 @@ public class DataStorePanelInfo extends ComponentInfo<StoreEditPanel> {
         return factoryClass;
     }
 
-    /**
-     * 
-     * @param factoryClassName
-     *            either a {@link DataAccessFactory} or {@link Format} subclass
-     */
+    /** @param factoryClassName either a {@link DataAccessFactory} or {@link Format} subclass */
     public void setFactoryClass(Class<?> factoryClassName) {
         this.factoryClass = factoryClassName;
     }

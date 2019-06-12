@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -10,11 +11,10 @@ import org.geoserver.ows.KvpParser;
 import org.vfny.geoserver.wcs.WcsException;
 
 /**
- * Not really a parser, but a validity checker instead (ensures the specified type
- * is among the values foreseen by the standard and supported by GeoServer)
- * 
+ * Not really a parser, but a validity checker instead (ensures the specified type is among the
+ * values foreseen by the standard and supported by GeoServer)
+ *
  * @author Andrea Aime
- * 
  */
 public class GridTypeKvpParser extends KvpParser {
     public GridTypeKvpParser() {
@@ -32,12 +32,16 @@ public class GridTypeKvpParser extends KvpParser {
         }
 
         if (type == null)
-            throw new WcsException("Could not understand grid type '" + value + "'",
-                    InvalidParameterValue, "GridType");
+            throw new WcsException(
+                    "Could not understand grid type '" + value + "'",
+                    InvalidParameterValue,
+                    "GridType");
 
         if (type == GridType.GT2dGridIn3dCrs)
-            throw new WcsException("GeoServer does not support type " + type.name(),
-                    InvalidParameterValue, "GridType");
+            throw new WcsException(
+                    "GeoServer does not support type " + type.name(),
+                    InvalidParameterValue,
+                    "GridType");
 
         return type.getXmlConstant();
     }

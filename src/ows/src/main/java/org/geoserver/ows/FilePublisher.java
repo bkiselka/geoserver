@@ -1,38 +1,27 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 package org.geoserver.ows;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-import java.util.TimeZone;
-
+import java.net.URLDecoder;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.geoserver.ows.util.EncodingInfo;
-import org.geoserver.ows.util.XmlCharsetDetector;
 import org.geoserver.platform.GeoServerResourceLoader;
-import org.geotools.data.DataUtilities;
+import org.geotools.util.URLs;
 import org.springframework.web.context.support.ServletContextResource;
 import org.springframework.web.context.support.ServletContextResourceLoader;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.AbstractController;
 
 /**
  * Controller which publishes files through a web interface.
- * <p>
- * To use this controller, it should be mapped to a particular url in the url mapping of the spring
- * dispatcher servlet. Example:
- * 
+ *
+ * <p>To use this controller, it should be mapped to a particular url in the url mapping of the
+ * spring dispatcher servlet. Example:
+ *
  * <pre>
  * <code>
  *   &lt;bean id="filePublisher" class="org.geoserver.ows.FilePublisher"/&gt;
@@ -47,26 +36,19 @@ import org.springframework.web.servlet.mvc.AbstractController;
  *   &lt;/bean&gt;
  * </code>
  * </pre>
- * 
- * </p>
- * 
+ *
  * @author Justin Deoliveira, The Open Planning Project
- * 
  */
 public class FilePublisher extends AbstractURLPublisher {
-    /**
-     * Resource loader
-     */
+    /** Resource loader */
     protected GeoServerResourceLoader loader;
 
-    /**
-     * Servlet resource loader
-     */
+    /** Servlet resource loader */
     protected ServletContextResourceLoader scloader;
 
     /**
      * Creates the new file publisher.
-     * 
+     *
      * @param loader The loader used to locate files.
      */
     public FilePublisher(GeoServerResourceLoader loader) {
@@ -82,6 +64,7 @@ public class FilePublisher extends AbstractURLPublisher {
     protected URL getUrl(HttpServletRequest request) throws IOException {
         String ctxPath = request.getContextPath();
         String reqPath = request.getRequestURI();
+        reqPath = URLDecoder.decode(reqPath, "UTF-8");
         reqPath = reqPath.substring(ctxPath.length());
 
         if ((reqPath.length() > 1) && reqPath.startsWith("/")) {
@@ -99,18 +82,17 @@ public class FilePublisher extends AbstractURLPublisher {
 
         if (file == null && scloader != null) {
             // try loading as a servlet resource
-            ServletContextResource resource = (ServletContextResource) scloader
-                    .getResource(reqPath);
+            ServletContextResource resource =
+                    (ServletContextResource) scloader.getResource(reqPath);
             if (resource != null && resource.exists()) {
                 file = resource.getFile();
             }
         }
-        
-        if(file != null) {
-            return DataUtilities.fileToURL(file);
+
+        if (file != null) {
+            return URLs.fileToUrl(file);
         } else {
             return null;
         }
     }
-
 }

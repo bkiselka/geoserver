@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -8,7 +9,6 @@ import java.io.Closeable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
-
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.opengis.feature.Feature;
@@ -16,7 +16,7 @@ import org.opengis.feature.type.FeatureType;
 
 /**
  * A feature iterator wrapping N feature collections with the same feature type
- * 
+ *
  * @author Andrea Aime - GeoSolutions
  */
 public class CompositeIterator implements Iterator<Feature>, Closeable {
@@ -62,5 +62,4 @@ public class CompositeIterator implements Iterator<Feature>, Closeable {
         current.close();
         collections.clear();
     }
-
 }

@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -8,21 +9,21 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
-
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogVisitor;
 import org.geoserver.catalog.CoverageDimensionInfo;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.CoverageStoreInfo;
+import org.geoserver.catalog.DataLinkInfo;
 import org.geoserver.catalog.KeywordInfo;
 import org.geoserver.catalog.MetadataLinkInfo;
 import org.geoserver.catalog.MetadataMap;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.ProjectionPolicy;
 import org.geoserver.catalog.StoreInfo;
-import org.geoserver.catalog.impl.AbstractDecorator;
-import org.geotools.factory.Hints;
 import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.util.decorate.AbstractDecorator;
+import org.geotools.util.factory.Hints;
 import org.opengis.coverage.grid.GridCoverage;
 import org.opengis.coverage.grid.GridCoverageReader;
 import org.opengis.coverage.grid.GridGeometry;
@@ -31,11 +32,10 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.util.ProgressListener;
 
 /**
- * Delegates all methods to the provided delegate. Suclasses will override
- * methods in order to perform their decoration work
- * 
+ * Delegates all methods to the provided delegate. Suclasses will override methods in order to
+ * perform their decoration work
+ *
  * @author Andrea Aime - TOPP
- * 
  * @param <T>
  * @param <F>
  */
@@ -65,9 +65,9 @@ public class DecoratingCoverageInfo extends AbstractDecorator<CoverageInfo>
     public Catalog getCatalog() {
         return delegate.getCatalog();
     }
-    
+
     public void setCatalog(Catalog catalog) {
-        delegate.setCatalog( catalog );
+        delegate.setCatalog(catalog);
     }
 
     public CoordinateReferenceSystem getCRS() {
@@ -90,18 +90,18 @@ public class DecoratingCoverageInfo extends AbstractDecorator<CoverageInfo>
         return delegate.getGrid();
     }
 
-    public GridCoverage getGridCoverage(ProgressListener listener, Hints hints)
-            throws IOException {
+    public GridCoverage getGridCoverage(ProgressListener listener, Hints hints) throws IOException {
         return delegate.getGridCoverage(listener, hints);
     }
 
-    public GridCoverage getGridCoverage(ProgressListener listener,
-            ReferencedEnvelope envelope, Hints hints) throws IOException {
+    public GridCoverage getGridCoverage(
+            ProgressListener listener, ReferencedEnvelope envelope, Hints hints)
+            throws IOException {
         return delegate.getGridCoverage(listener, envelope, hints);
     }
 
-    public GridCoverageReader getGridCoverageReader(ProgressListener listener,
-            Hints hints) throws IOException {
+    public GridCoverageReader getGridCoverageReader(ProgressListener listener, Hints hints)
+            throws IOException {
         return delegate.getGridCoverageReader(listener, hints);
     }
 
@@ -134,13 +134,16 @@ public class DecoratingCoverageInfo extends AbstractDecorator<CoverageInfo>
         return delegate.getMetadataLinks();
     }
 
+    @Override
+    public List<DataLinkInfo> getDataLinks() {
+        return delegate.getDataLinks();
+    }
+
     public String getName() {
         return delegate.getName();
     }
 
-    /**
-     * @see org.geoserver.catalog.ResourceInfo#getQualifiedName()
-     */
+    /** @see org.geoserver.catalog.ResourceInfo#getQualifiedName() */
     public Name getQualifiedName() {
         return delegate.getQualifiedName();
     }
@@ -165,19 +168,13 @@ public class DecoratingCoverageInfo extends AbstractDecorator<CoverageInfo>
         return delegate.getNativeName();
     }
 
-    /**
-     * @see org.geoserver.catalog.ResourceInfo#getQualifiedNativeName()
-     */
+    /** @see org.geoserver.catalog.ResourceInfo#getQualifiedNativeName() */
     public Name getQualifiedNativeName() {
         return delegate.getQualifiedNativeName();
     }
 
     public Map<String, Serializable> getParameters() {
         return delegate.getParameters();
-    }
-
-    public String getPrefixedName() {
-        return delegate.getPrefixedName();
     }
 
     public String prefixedName() {
@@ -283,16 +280,16 @@ public class DecoratingCoverageInfo extends AbstractDecorator<CoverageInfo>
     public void setTitle(String title) {
         delegate.setTitle(title);
     }
-    
+
     public void accept(CatalogVisitor visitor) {
         delegate.accept(visitor);
     }
-    
+
     @Override
     public boolean isAdvertised() {
         return delegate.isAdvertised();
     }
-    
+
     @Override
     public void setAdvertised(boolean advertised) {
         delegate.setAdvertised(advertised);
@@ -306,5 +303,25 @@ public class DecoratingCoverageInfo extends AbstractDecorator<CoverageInfo>
     @Override
     public void setNativeCoverageName(String nativeCoverageName) {
         delegate.setNativeCoverageName(nativeCoverageName);
+    }
+
+    @Override
+    public boolean isServiceConfiguration() {
+        return delegate.isServiceConfiguration();
+    }
+
+    @Override
+    public void setServiceConfiguration(boolean serviceConfiguration) {
+        delegate.setServiceConfiguration(serviceConfiguration);
+    }
+
+    @Override
+    public List<String> getDisabledServices() {
+        return delegate.getDisabledServices();
+    }
+
+    @Override
+    public void setDisabledServices(List<String> disabledServices) {
+        delegate.setDisabledServices(disabledServices);
     }
 }

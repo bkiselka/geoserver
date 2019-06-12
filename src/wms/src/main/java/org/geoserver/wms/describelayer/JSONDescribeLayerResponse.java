@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -12,23 +13,21 @@ import java.io.Writer;
 import java.net.URL;
 import java.util.List;
 import java.util.logging.Logger;
-
 import net.sf.json.JSONException;
 import net.sf.json.util.JSONBuilder;
-
-import org.apache.commons.io.IOUtils;
 import org.geoserver.ows.Dispatcher;
 import org.geoserver.ows.Request;
+import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wfs.json.JSONType;
 import org.geoserver.wms.DescribeLayerRequest;
 import org.geoserver.wms.WMS;
-import org.geotools.data.ows.LayerDescription;
+import org.geotools.ows.wms.LayerDescription;
 import org.geotools.util.logging.Logging;
 
 /**
  * A DescribeLayer response specialized in producing Json or JsonP data for a DescribeLayer request.
- * 
+ *
  * @author carlo cancellieri - GeoSolutions
  */
 public class JSONDescribeLayerResponse extends DescribeLayerResponse {
@@ -43,9 +42,7 @@ public class JSONDescribeLayerResponse extends DescribeLayerResponse {
 
     protected final WMS wms;
 
-    /**
-     * Constructor for subclasses
-     */
+    /** Constructor for subclasses */
     public JSONDescribeLayerResponse(final WMS wms, final String outputFormat) {
         super(outputFormat);
         this.wms = wms;
@@ -54,49 +51,44 @@ public class JSONDescribeLayerResponse extends DescribeLayerResponse {
             throw new IllegalArgumentException("Not supported mime type for:" + outputFormat);
     }
 
-    /**
-     * Actually write the passed DescribeLayerModel on the OutputStream
-     */
+    /** Actually write the passed DescribeLayerModel on the OutputStream */
     public void write(DescribeLayerModel layers, DescribeLayerRequest request, OutputStream output)
             throws ServiceException, IOException {
 
         switch (type) {
-        case JSON:
-            OutputStreamWriter osw = null;
-            Writer outWriter = null;
-            try {
-                osw = new OutputStreamWriter(output, wms.getGeoServer().getSettings().getCharset());
-                outWriter = new BufferedWriter(osw);
+            case JSON:
+                OutputStreamWriter osw = null;
+                Writer outWriter = null;
+                try {
+                    osw =
+                            new OutputStreamWriter(
+                                    output, wms.getGeoServer().getSettings().getCharset());
+                    outWriter = new BufferedWriter(osw);
 
-                writeJSON(outWriter, layers);
-            } finally {
-                IOUtils.closeQuietly(outWriter);
-                IOUtils.closeQuietly(osw);
-            }
-        case JSONP:
-            writeJSONP(output, layers);
+                    writeJSON(outWriter, layers);
+                } finally {
+                    if (outWriter != null) {
+                        outWriter.flush();
+                    }
+                }
+                break;
+            case JSONP:
+                writeJSONP(output, layers);
         }
     }
 
     private void writeJSONP(OutputStream out, DescribeLayerModel layers) throws IOException {
-
         // prepare to write out
-        OutputStreamWriter osw = null;
-        Writer outWriter = null;
-        try {
-            osw = new OutputStreamWriter(out, wms.getGeoServer().getSettings().getCharset());
-            outWriter = new BufferedWriter(osw);
+        OutputStreamWriter osw =
+                new OutputStreamWriter(out, wms.getGeoServer().getSettings().getCharset());
+        Writer outWriter = new BufferedWriter(osw);
 
-            outWriter.write(getCallbackFunction() + "(");
+        outWriter.write(getCallbackFunction() + "(");
 
-            writeJSON(outWriter, layers);
+        writeJSON(outWriter, layers);
 
-            outWriter.write(")");
-            outWriter.flush();
-        } finally {
-            IOUtils.closeQuietly(outWriter);
-            IOUtils.closeQuietly(osw);
-        }
+        outWriter.write(")");
+        outWriter.flush();
     }
 
     private void writeJSON(Writer outWriter, DescribeLayerModel description) throws IOException {
@@ -120,8 +112,8 @@ public class JSONDescribeLayerResponse extends DescribeLayerResponse {
             json.endArray();
             json.endObject();
         } catch (JSONException jsonException) {
-            ServiceException serviceException = new ServiceException("Error: "
-                    + jsonException.getMessage());
+            ServiceException serviceException =
+                    new ServiceException("Error: " + jsonException.getMessage());
             serviceException.initCause(jsonException);
             throw serviceException;
         }
@@ -136,4 +128,8 @@ public class JSONDescribeLayerResponse extends DescribeLayerResponse {
         }
     }
 
+    @Override
+    public String getCharset(Operation operation) {
+        return wms.getGeoServer().getSettings().getCharset();
+    }
 }

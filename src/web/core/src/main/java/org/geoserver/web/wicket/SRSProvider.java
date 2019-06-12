@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 - 2016 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -14,12 +15,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
-
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
-import org.geotools.factory.Hints;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.ReferencingFactoryFinder;
+import org.geotools.util.factory.Hints;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CRSAuthorityFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -27,10 +25,9 @@ import org.vfny.geoserver.crs.GeoserverCustomWKTFactory;
 
 /**
  * Provides a filtered, sorted view over the available EPSG coordinate reference systems.
- * 
+ *
  * @author Gabriel Roldan - OpenGeo
  * @author Andrea Aime - OpenGeo
- * 
  */
 public class SRSProvider extends GeoServerDataProvider<SRSProvider.SRS> {
 
@@ -38,17 +35,16 @@ public class SRSProvider extends GeoServerDataProvider<SRSProvider.SRS> {
 
     /**
      * Spots integral numbers
-     * 
+     *
      * @see #buildCodeList()
      */
     private static Pattern NUMERIC = Pattern.compile("\\d+");
 
     /**
-     * A lightweight bean to carry over the code and description of a
-     * {@link CoordinateReferenceSystem}
-     * 
+     * A lightweight bean to carry over the code and description of a {@link
+     * CoordinateReferenceSystem}
+     *
      * @author Gabriel Roldan - OpenGeo
-     * 
      */
     public static class SRS implements Serializable, Comparable<SRS> {
 
@@ -77,8 +73,10 @@ public class SRSProvider extends GeoServerDataProvider<SRSProvider.SRS> {
                     // description = CRS.getAuthorityFactory(true).getDescriptionText("EPSG:" +
                     // code)
                     // .toString(getLocale()).toUpperCase();
-                    desc = CRS.getAuthorityFactory(true).getDescriptionText("EPSG:" + code)
-                            .toString();
+                    desc =
+                            CRS.getAuthorityFactory(true)
+                                    .getDescriptionText("EPSG:" + code)
+                                    .toString();
                 } catch (Exception e) {
                     // no problem
                 }
@@ -89,6 +87,9 @@ public class SRSProvider extends GeoServerDataProvider<SRSProvider.SRS> {
 
         @Override
         public boolean equals(Object o) {
+            if (!(o instanceof SRS)) {
+                return false;
+            }
             return code.equals(((SRS) o).code);
         }
 
@@ -105,49 +106,48 @@ public class SRSProvider extends GeoServerDataProvider<SRSProvider.SRS> {
     /**
      * custom geoserver crs factory which loads codes from epsg.properties file in data directory
      */
-    private static CRSAuthorityFactory customFactory = ReferencingFactoryFinder
-            .getCRSAuthorityFactory("EPSG", new Hints(Hints.CRS_AUTHORITY_FACTORY,
-                    GeoserverCustomWKTFactory.class));
+    private static CRSAuthorityFactory customFactory =
+            ReferencingFactoryFinder.getCRSAuthorityFactory(
+                    "EPSG",
+                    new Hints(Hints.CRS_AUTHORITY_FACTORY, GeoserverCustomWKTFactory.class));
 
-    public static final Property<SRS> CODE = new BeanProperty<SRS>("code", "code") {
+    public static final Property<SRS> CODE =
+            new BeanProperty<SRS>("code", "code") {
 
-        private static final long serialVersionUID = -1638823520421390286L;
+                private static final long serialVersionUID = -1638823520421390286L;
 
-        @Override
-        public Comparator<SRS> getComparator() {
-            return new CodeComparator();
-        }
-
-    };
-
-    public static final Property<SRS> DESCRIPTION = new BeanProperty<SRS>("description",
-            "description") {
-
-        private static final long serialVersionUID = 3549074714488486991L;
-
-        @Override
-        public Comparator<SRS> getComparator() {
-            return new Comparator<SRS>() {
-
-                public int compare(SRS o1, SRS o2) {
-                    return String.CASE_INSENSITIVE_ORDER.compare(o1.getDescription(), o2
-                            .getDescription());
+                @Override
+                public Comparator<SRS> getComparator() {
+                    return new CodeComparator();
                 }
             };
-        }
 
-    };
+    public static final Property<SRS> DESCRIPTION =
+            new BeanProperty<SRS>("description", "description") {
 
-    @SuppressWarnings("unchecked")
-    private static final ArrayList<Property<SRS>> PROPERTIES = new ArrayList<Property<SRS>>(Arrays
-            .asList(CODE, DESCRIPTION));
+                private static final long serialVersionUID = 3549074714488486991L;
 
-    private List<SRS> items;
+                @Override
+                public Comparator<SRS> getComparator() {
+                    return new Comparator<SRS>() {
+
+                        public int compare(SRS o1, SRS o2) {
+                            return String.CASE_INSENSITIVE_ORDER.compare(
+                                    o1.getDescription(), o2.getDescription());
+                        }
+                    };
+                }
+            };
+
+    private static final ArrayList<Property<SRS>> PROPERTIES =
+            new ArrayList<Property<SRS>>(Arrays.asList(CODE, DESCRIPTION));
+
+    private volatile List<SRS> items;
 
     @Override
     protected List<SRS> getItems() {
         if (items == null) {
-            synchronized (SRSProvider.class) {
+            synchronized (this) {
                 if (items == null) {
                     items = buildCodeList();
                 }
@@ -162,7 +162,7 @@ public class SRSProvider extends GeoServerDataProvider<SRSProvider.SRS> {
     }
 
     static List<SRS> buildCodeList() {
-        long t = System.currentTimeMillis();
+        // long t = System.currentTimeMillis();
         Set<String> codes = CRS.getSupportedCodes("EPSG");
 
         try {
@@ -191,9 +191,8 @@ public class SRSProvider extends GeoServerDataProvider<SRSProvider.SRS> {
     /**
      * Compares the codes so that most of the codes ger compared as numbers, but unfortunately some
      * non numeric ones can sneak in...
-     * 
+     *
      * @author Andrea Aime - TOPP
-     * 
      */
     private static class CodeComparator implements Comparator<SRS> {
 
@@ -212,15 +211,11 @@ public class SRSProvider extends GeoServerDataProvider<SRSProvider.SRS> {
                 //
             }
             if (c1 == null) {
-                if (c2 == null)
-                    return s1.compareTo(s2);
-                else
-                    return -1;
+                if (c2 == null) return s1.compareTo(s2);
+                else return -1;
             } else {
-                if (c2 == null)
-                    return 1;
-                else
-                    return c1 - c2;
+                if (c2 == null) return 1;
+                else return c1 - c2;
             }
         }
     }

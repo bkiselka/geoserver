@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -8,13 +9,14 @@ import java.io.Serializable;
 
 /**
  * The GUI configuration for reference data
- * 
+ *
  * @author Andrea Aime - OpenGeo
  */
 @SuppressWarnings("serial")
 class ReferenceConfiguration implements Serializable {
     enum Method {
-        GET, POST
+        GET,
+        POST
     };
 
     Method method = Method.GET;
@@ -56,5 +58,4 @@ class ReferenceConfiguration implements Serializable {
     public void setBody(String body) {
         this.body = body;
     }
-
 }

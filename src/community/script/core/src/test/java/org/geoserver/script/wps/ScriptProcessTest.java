@@ -1,49 +1,25 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 package org.geoserver.script.wps;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.apache.commons.io.FileUtils;
-import org.geoserver.script.ScriptIntTestSupport;
-import org.geoserver.script.ScriptManager;
 import org.geotools.data.Parameter;
 import org.geotools.feature.NameImpl;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.io.WKTReader;
 import org.opengis.feature.type.Name;
 
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.io.WKTReader;
+public abstract class ScriptProcessTest extends ScriptProcessTestSupport {
 
-public abstract class ScriptProcessTest extends ScriptIntTestSupport {
-
-    File script;
-    
     @Override
-    protected void oneTimeSetUp() throws Exception {
-        super.oneTimeSetUp();
-    
-        script = copyScriptIfExists("buffer");
+    public String getProcessName() {
+        return "buffer";
     }
-
-    File copyScriptIfExists(String baseName) throws IOException {
-        File wps = scriptMgr.getWpsRoot();
-        File script = new File(wps, baseName + "." + getExtension());
-
-        URL u = getClass().getResource(script.getName());
-        if (u != null) {
-            FileUtils.copyURLToFile(u, script);
-            return script;
-        }
-        return null;
-    }
-
-    public abstract String getExtension();
 
     public void testLookupHook() throws Exception {
         assertNotNull(getScriptManager().lookupWpsHook(script));
@@ -72,7 +48,7 @@ public abstract class ScriptProcessTest extends ScriptIntTestSupport {
     public void testInputs() throws Exception {
         ScriptProcessFactory pf = new ScriptProcessFactory(scriptMgr);
         Name buffer = pf.getNames().iterator().next();
-        
+
         Map<String, Parameter<?>> inputs = pf.getParameterInfo(buffer);
         assertNotNull(inputs);
 
@@ -88,7 +64,7 @@ public abstract class ScriptProcessTest extends ScriptIntTestSupport {
     public void testOutputs() throws Exception {
         ScriptProcessFactory pf = new ScriptProcessFactory(scriptMgr);
         Name buffer = pf.getNames().iterator().next();
-        
+
         Map<String, Parameter<?>> outputs = pf.getResultInfo(buffer, null);
         assertNotNull(outputs);
 
@@ -100,6 +76,8 @@ public abstract class ScriptProcessTest extends ScriptIntTestSupport {
     public void testRun() throws Exception {
         ScriptProcessFactory pf = new ScriptProcessFactory(scriptMgr);
         Name buffer = pf.getNames().iterator().next();
+        assertEquals(getNamespace(), buffer.getNamespaceURI());
+        assertEquals(getProcessName(), buffer.getLocalPart());
 
         org.geotools.process.Process p = pf.create(buffer);
 
@@ -119,23 +97,21 @@ public abstract class ScriptProcessTest extends ScriptIntTestSupport {
         File script = copyScriptIfExists(pname);
         if (script != null) {
             ScriptProcessFactory pf = new ScriptProcessFactory(scriptMgr);
-            Name buffer = new NameImpl(getExtension(), pname);
+            Name buffer = new NameImpl(getNamespace(), pname);
 
             org.geotools.process.Process p = pf.create(buffer);
-            
+
             Map inputs = new HashMap();
             inputs.put("geom", new WKTReader().read("POINT(0 0)"));
             inputs.put("distance", 1d);
 
             Map outputs = p.execute(inputs, null);
             assertEquals(2, outputs.size());
-            
+
             assertNotNull((Geometry) outputs.get("geom"));
             assertEquals(1d, (Double) outputs.get("distance"), 0.1);
-        }
-        else {
+        } else {
             System.out.println("Script " + pname + " does not exist, skipping test");
         }
     }
-
 }

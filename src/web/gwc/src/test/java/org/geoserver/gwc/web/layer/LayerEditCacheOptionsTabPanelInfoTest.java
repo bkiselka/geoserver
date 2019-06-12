@@ -1,11 +1,12 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 - 2015 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 package org.geoserver.gwc.web.layer;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.same;
+import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -49,7 +50,7 @@ public class LayerEditCacheOptionsTabPanelInfoTest {
         when(gwc.getConfig()).thenReturn(defaults);
 
         FeatureTypeInfo resource = mock(FeatureTypeInfo.class);
-        when(resource.getPrefixedName()).thenReturn("topp:states");
+        when(resource.prefixedName()).thenReturn("topp:states");
 
         layer = mock(LayerInfo.class);
         when(layer.getResource()).thenReturn(resource);
@@ -69,7 +70,7 @@ public class LayerEditCacheOptionsTabPanelInfoTest {
         final boolean isNew = true;
 
         IModel<GeoServerTileLayerInfo> ownModel;
-        ownModel = panelInfo.createOwnModel(resourceModel, layerModel, isNew);
+        ownModel = panelInfo.createOwnModel(layerModel, isNew);
         assertNotNull(ownModel);
         GeoServerTileLayerInfoImpl expected = TileLayerInfoUtil.loadOrCreate(layer, defaults);
         assertEquals(expected, ownModel.getObject());
@@ -81,7 +82,7 @@ public class LayerEditCacheOptionsTabPanelInfoTest {
         final boolean isNew = false;
 
         IModel<GeoServerTileLayerInfo> ownModel;
-        ownModel = panelInfo.createOwnModel(resourceModel, layerModel, isNew);
+        ownModel = panelInfo.createOwnModel(layerModel, isNew);
         assertNotNull(ownModel);
         GeoServerTileLayerInfo expected = TileLayerInfoUtil.loadOrCreate(layer, defaults);
         assertEquals(expected, ownModel.getObject());
@@ -92,7 +93,7 @@ public class LayerEditCacheOptionsTabPanelInfoTest {
         when(tileLayer.getInfo()).thenReturn(expected);
         when(gwc.getTileLayer(same(layer))).thenReturn(tileLayer);
 
-        ownModel = panelInfo.createOwnModel(resourceModel, layerModel, isNew);
+        ownModel = panelInfo.createOwnModel(layerModel, isNew);
         assertEquals(expected, ownModel.getObject());
     }
 }

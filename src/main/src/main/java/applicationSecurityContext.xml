@@ -39,8 +39,7 @@
   -->
   <bean id="authenticationManager" class="org.geoserver.security.GeoServerSecurityManager"
      depends-on="extensions">
-    <constructor-arg ref="dataDirectory"/>
-    <property name="eraseCredentialsAfterAuthentication" value="false"/>  	  
+    <constructor-arg ref="dataDirectory"/>     
   </bean>
   <alias name="authenticationManager" alias="geoServerSecurityManager"/>
 
@@ -99,7 +98,7 @@
   
   <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
     <property name="targetObject">
-        <ref local="roleFilter"/>
+        <ref bean="roleFilter"/>
     </property>
     <property name="targetMethod">
         <value>initializeFromConfig</value>
@@ -130,6 +129,9 @@
   <bean id="anonymousFilterProvider" class="org.geoserver.security.filter.GeoServerAnonymousAuthenticationProvider"/>
   <bean id="logoutFilterProvider" class="org.geoserver.security.filter.GeoServerLogoutProvider"/>  
   <bean id="securityInterceptorFilterProvider" class="org.geoserver.security.filter.GeoServerSecurityInterceptorProvider"/>  
+  <bean id="credentialsFromRequestHeaderSecurityProvider" class="org.geoserver.security.filter.GeoServerCredentialsFromRequestHeaderProvider"/>
+  
+  
   
   <bean id="urlMasterPasswordProvider" 
     class="org.geoserver.security.password.URLMasterPasswordProvider$SecurityProvider"/>
@@ -157,5 +159,9 @@
   <bean id="operationCallback"
     class="org.geoserver.security.OperationSecurityCallback">
     <constructor-arg ref="serviceRulesDao"/>
+  </bean>
+  
+  <bean id="bruteForceListener" class="org.geoserver.security.BruteForceListener">
+    <constructor-arg ref="geoServerSecurityManager"/>
   </bean>
 </beans>

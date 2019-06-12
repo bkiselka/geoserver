@@ -1,11 +1,11 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 package org.geoserver.csw.records;
 
 import javax.xml.namespace.QName;
-
 import org.geoserver.csw.util.QNameResolver;
 import org.geotools.csw.DC;
 import org.geotools.csw.DCT;
@@ -15,17 +15,17 @@ import org.opengis.filter.expression.PropertyName;
 import org.xml.sax.helpers.NamespaceSupport;
 
 /**
- * Extends a propertyName representing a SimpleLiteral adding /dc:value at its end, and fixing
- * the namespace support as necessary
- * 
- * @author Andrea Aime - GeoSolutions
+ * Extends a propertyName representing a SimpleLiteral adding /dc:value at its end, and fixing the
+ * namespace support as necessary
  *
+ * @author Andrea Aime - GeoSolutions
  */
 public class CSWPropertyPathExtender {
 
     QNameResolver resolver = new QNameResolver();
 
-    PropertyName extendProperty(PropertyName expression, FilterFactory2 filterFactory, NamespaceSupport nss) {
+    PropertyName extendProperty(
+            PropertyName expression, FilterFactory2 filterFactory, NamespaceSupport nss) {
         String path = expression.getPropertyName();
         if (nss != null) {
             QName name = resolver.parseQName(path, nss);
@@ -50,5 +50,4 @@ public class CSWPropertyPathExtender {
 
         return filterFactory.property(path, nss);
     }
-
 }

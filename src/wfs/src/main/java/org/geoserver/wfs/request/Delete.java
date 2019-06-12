@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -6,13 +7,11 @@ package org.geoserver.wfs.request;
 
 import net.opengis.wfs.DeleteElementType;
 import net.opengis.wfs.WfsFactory;
-
 import org.eclipse.emf.ecore.EObject;
-import org.geoserver.wfs.request.Insert.WFS11;
 
 /**
  * Delete element in a Transaction request.
- *  
+ *
  * @author Justin Deoliveira, OpenGeo
  */
 public abstract class Delete extends TransactionElement {
@@ -34,11 +33,10 @@ public abstract class Delete extends TransactionElement {
             return de;
         }
     }
-    
+
     public static class WFS20 extends Delete {
         public WFS20(EObject adaptee) {
             super(adaptee);
         }
     }
-
 }

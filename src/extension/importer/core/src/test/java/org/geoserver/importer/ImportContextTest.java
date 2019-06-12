@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -27,7 +28,7 @@ public class ImportContextTest extends TestCase {
         t1.setState(ImportTask.State.READY);
         context.updated();
         assertEquals(ImportContext.State.PENDING, context.getState());
-        
+
         t2.setState(ImportTask.State.READY);
         t3.setState(ImportTask.State.READY);
         context.updated();
@@ -37,7 +38,7 @@ public class ImportContextTest extends TestCase {
         t2.setState(ImportTask.State.COMPLETE);
         context.updated();
         assertEquals(ImportContext.State.PENDING, context.getState());
-        
+
         t3.setState(ImportTask.State.COMPLETE);
         context.updated();
         assertEquals(ImportContext.State.COMPLETE, context.getState());

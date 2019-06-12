@@ -14,11 +14,16 @@ Oracle
 Installing the Oracle extension
 -------------------------------
 
-#. Download the Oracle extension from the `GeoServer download page <http://geoserver.org/display/GEOS/Download>`_.
+.. warning:: Due to licensing requirements, not all files are included with the extension.  To install Oracle support, it is necessary to download additional files. 
+
+#. Download the Oracle extension from the `GeoServer download page <http://geoserver.org/download>`_.
 
    .. warning:: Make sure to match the version of the extension to the version of the GeoServer instance!
 
 #. Extract the contents of the archive into the ``WEB-INF/lib`` directory of the GeoServer installation.
+
+#. Get the Oracle JDBC driver from either your Oracle installation (e.g. ``ojdbc6.jar``, ``ojdbc7.jar``)
+   or download them from `the Oracle JDBC driver distribution page <http://www.oracle.com/technetwork/database/features/jdbc/index-091264.html>`_
 
 Consider replacing the Oracle JDBC driver
 -----------------------------------------
@@ -27,7 +32,7 @@ The Oracle data store zip file comes with ``ojdbc4.jar``, an old, Oracle 10 comp
 However, minor glitches have been observed with 11g (issues computing layer bounds when session initiation scripts are in use) and the driver
 has not been tested with 12i.
 
-If you encounter functionality or performance issues it is advices to remote this driver and download the latest version from the Oracle web site.
+If you encounter functionality or performance issues it is advised to remove this driver and download the latest version from the Oracle web site.
 
 Adding an Oracle datastore
 --------------------------
@@ -72,7 +77,9 @@ Configuring an Oracle datastore
        ``validate connections``
      - Connection pool configuration parameters. See :ref:`connection_pooling` for details.
    * - ``Loose bbox``
-     - 	Controls how bounding box comparisons are made against geometries in the database. See the :ref:`oracle_loose_bbox` section below.
+     - 	Controls how bounding box filters are made against geometries in the database. See the :ref:`oracle_loose_bbox` section below.
+   * - ``Metadata bbox``
+     - 	Flag controlling the use of MDSYS.USER_SDO_GEOM_METADATA or MDSYS.ALL_SDO_GEOM_METADATA table for bounding box calculations, this brings a better performance if the views access is fast and the bounds are configured right in the tables default is false  
 
 Connecting to an Oracle cluster
 -------------------------------

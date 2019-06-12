@@ -1,10 +1,11 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 - 2016 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 package org.geoserver.importer.web;
 
-import org.apache.wicket.PageParameters;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.web.data.resource.ResourceConfigurationPage;
 
@@ -19,12 +20,11 @@ public class LayerPage extends ResourceConfigurationPage {
 
     @Override
     protected void doSave() {
-        if (getLayerInfo().getId() == null) {
-            //do not call super.doSave(), because this layer is not part of the catalog yet
+        if (getPublishedInfo().getId() == null) {
+            // do not call super.doSave(), because this layer is not part of the catalog yet
 
             onSuccessfulSave();
-        }
-        else {
+        } else {
             super.doSave();
         }
     }
@@ -36,7 +36,7 @@ public class LayerPage extends ResourceConfigurationPage {
 
     @Override
     protected void onCancel() {
-        //TODO: cancel doesn't roll back any changes
+        // TODO: cancel doesn't roll back any changes
         setResponsePage(ImportPage.class, sourcePage);
     }
 }

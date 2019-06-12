@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -16,8 +17,7 @@ public class MemoryRoleServiceConfigImpl extends BaseSecurityNamedServiceConfig
 
     protected String toBeEncrypted;
 
-    public MemoryRoleServiceConfigImpl() {
-    }
+    public MemoryRoleServiceConfigImpl() {}
 
     public MemoryRoleServiceConfigImpl(MemoryRoleServiceConfigImpl other) {
         super(other);
@@ -41,7 +41,7 @@ public class MemoryRoleServiceConfigImpl extends BaseSecurityNamedServiceConfig
 
     @Override
     public void setAdminRoleName(String name) {
-        adminRoleName=name;
+        adminRoleName = name;
     }
 
     public String getGroupAdminRoleName() {
@@ -51,5 +51,4 @@ public class MemoryRoleServiceConfigImpl extends BaseSecurityNamedServiceConfig
     public void setGroupAdminRoleName(String groupAdminRoleName) {
         this.groupAdminRoleName = groupAdminRoleName;
     }
-
 }

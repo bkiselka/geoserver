@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -6,7 +7,6 @@ package org.geoserver.security.impl;
 
 import java.io.IOException;
 import java.util.logging.Logger;
-
 import org.geoserver.security.GeoServerSecurityManager;
 import org.geoserver.security.GeoServerSecurityService;
 import org.geoserver.security.config.SecurityNamedServiceConfig;
@@ -14,7 +14,7 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 
 /**
  * Common base class for user group and role services.
- * 
+ *
  * @author Justin Deoliveira, OpenGeo
  */
 public abstract class AbstractGeoServerSecurityService implements GeoServerSecurityService {
@@ -27,14 +27,13 @@ public abstract class AbstractGeoServerSecurityService implements GeoServerSecur
     // TODO Justin, feel free to change the name
     public static String DEFAULT_LOCAL_GROUP_ADMIN_ROLE = "GROUP_ADMIN";
     /** logger */
-    protected static Logger LOGGER = 
-        org.geotools.util.logging.Logging.getLogger("org.geoserver.security");
+    protected static Logger LOGGER =
+            org.geotools.util.logging.Logging.getLogger("org.geoserver.security");
 
     protected String name;
     protected GeoServerSecurityManager securityManager;
 
-    protected AbstractGeoServerSecurityService() {
-    }
+    protected AbstractGeoServerSecurityService() {}
 
     @Override
     public String getName() {
@@ -55,11 +54,10 @@ public abstract class AbstractGeoServerSecurityService implements GeoServerSecur
     public void setSecurityManager(GeoServerSecurityManager securityManager) {
         this.securityManager = securityManager;
     }
-    
+
     @Override
     public void initializeFromConfig(SecurityNamedServiceConfig config) throws IOException {
-        if (config!=null)
-            this.name=config.getName();
+        if (config != null) this.name = config.getName();
     }
 
     @Override
@@ -68,10 +66,7 @@ public abstract class AbstractGeoServerSecurityService implements GeoServerSecur
     }
 
     /**
-     * Authentication filters with an {@link AuthenticationEntryPoint} must
-     * return their entry point 
-     * 
-     * @return
+     * Authentication filters with an {@link AuthenticationEntryPoint} must return their entry point
      */
     public AuthenticationEntryPoint getAuthenticationEntryPoint() {
         return null;

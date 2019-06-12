@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -7,8 +8,8 @@ package org.geoserver.security.jdbc.config;
 
 import org.geoserver.security.config.SecurityUserGroupServiceConfig;
 
-public class JDBCUserGroupServiceConfig extends JDBCSecurityServiceConfig 
-    implements SecurityUserGroupServiceConfig {
+public class JDBCUserGroupServiceConfig extends JDBCSecurityServiceConfig
+        implements SecurityUserGroupServiceConfig {
 
     private static final long serialVersionUID = 1L;
     protected String passwordEncoderName;
@@ -17,7 +18,7 @@ public class JDBCUserGroupServiceConfig extends JDBCSecurityServiceConfig
     public JDBCUserGroupServiceConfig() {
         super();
     }
-    
+
     public JDBCUserGroupServiceConfig(JDBCUserGroupServiceConfig other) {
         super(other);
         passwordEncoderName = other.getPasswordEncoderName();
@@ -39,7 +40,7 @@ public class JDBCUserGroupServiceConfig extends JDBCSecurityServiceConfig
 
     @Override
     public void setPasswordEncoderName(String name) {
-        passwordEncoderName=name;
+        passwordEncoderName = name;
     }
 
     @Override

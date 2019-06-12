@@ -1,4 +1,5 @@
-/* Copyright (c) 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -13,9 +14,8 @@ import org.opengis.referencing.NoSuchAuthorityCodeException;
 /**
  * A {@link ReferencedEnvelope} subclass that keeps the original SRS after the KVP parse, to ensure
  * we are true to the original SRS when building a BBOX filter
- * 
+ *
  * @author Andrea Aime - GeoSolutions
- * 
  */
 class SRSEnvelope extends ReferencedEnvelope {
     private static final long serialVersionUID = 4510785331988235178L;
@@ -30,5 +30,4 @@ class SRSEnvelope extends ReferencedEnvelope {
     public String getSrs() {
         return srs;
     }
-
 }

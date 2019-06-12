@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -9,7 +10,6 @@ import static org.junit.Assert.*;
 
 import java.util.Collections;
 import java.util.List;
-
 import org.geoserver.ows.URLMangler.URLType;
 import org.geoserver.test.GeoServerSystemTestSupport;
 import org.geoserver.test.SystemTest;
@@ -35,8 +35,12 @@ public class CustomManglerTest extends GeoServerSystemTestSupport {
 
     @Test
     public void testKVP() {
-        String url = buildURL(BASEURL, "test", Collections.singletonMap("param", "value()"),
-                URLType.SERVICE);
+        String url =
+                buildURL(
+                        BASEURL,
+                        "test",
+                        Collections.singletonMap("param", "value()"),
+                        URLType.SERVICE);
         assertEquals("http://localhost:8080/geoserver/test?param=value%28%29&here=iam", url);
     }
 }

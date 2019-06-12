@@ -1,21 +1,20 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 package org.geoserver.wfs.xml.v1_0_0;
 
 import javax.xml.namespace.QName;
-
 import net.opengis.wfs.WfsFactory;
-
-import org.geotools.xml.AbstractComplexEMFBinding;
-
+import org.geotools.xsd.AbstractComplexEMFBinding;
 
 /**
  * Binding object for the element http://www.opengis.net/wfs:GetCapabilities.
  *
  * <p>
- *        <pre>
+ *
+ * <pre>
  *         <code>
  *  &lt;xsd:element name="GetCapabilities" type="wfs:GetCapabilitiesType"&gt;
  *          &lt;xsd:annotation&gt;          &lt;xsd:documentation&gt;             The
@@ -31,18 +30,15 @@ import org.geotools.xml.AbstractComplexEMFBinding;
  *
  *          </code>
  *         </pre>
- * </p>
  *
  * @generated
  */
 public class GetCapabilitiesBinding extends AbstractComplexEMFBinding {
     public GetCapabilitiesBinding(WfsFactory wfsfactory) {
-        super( wfsfactory );
+        super(wfsfactory);
     }
 
-    /**
-     * @generated
-     */
+    /** @generated */
     public QName getTarget() {
         return WFS.GETCAPABILITIES;
     }

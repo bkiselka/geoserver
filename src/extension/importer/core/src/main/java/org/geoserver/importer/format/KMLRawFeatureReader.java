@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -7,7 +8,6 @@ package org.geoserver.importer.format;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.NoSuchElementException;
-
 import org.geotools.data.FeatureReader;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
@@ -23,8 +23,7 @@ public class KMLRawFeatureReader implements FeatureReader<SimpleFeatureType, Sim
     public KMLRawFeatureReader(InputStream inputStream, SimpleFeatureType featureType) {
         this.inputStream = inputStream;
         this.featureType = featureType;
-        reader = new KMLRawReader(inputStream, KMLRawReader.ReadType.FEATURES,
-                featureType);
+        reader = new KMLRawReader(inputStream, KMLRawReader.ReadType.FEATURES, featureType);
     }
 
     @Override
@@ -33,8 +32,8 @@ public class KMLRawFeatureReader implements FeatureReader<SimpleFeatureType, Sim
     }
 
     @Override
-    public SimpleFeature next() throws IOException, IllegalArgumentException,
-            NoSuchElementException {
+    public SimpleFeature next()
+            throws IOException, IllegalArgumentException, NoSuchElementException {
         return (SimpleFeature) reader.next();
     }
 
@@ -47,5 +46,4 @@ public class KMLRawFeatureReader implements FeatureReader<SimpleFeatureType, Sim
     public void close() throws IOException {
         inputStream.close();
     }
-
 }

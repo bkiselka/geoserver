@@ -1,18 +1,17 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 - 2016 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 package org.geoserver.web.data.layer;
 
-import static org.geoserver.catalog.Predicates.acceptAll;
-import static org.geoserver.catalog.Predicates.or;
 import static org.geoserver.catalog.Predicates.sortBy;
 
+import com.google.common.collect.Lists;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-
 import org.apache.wicket.extensions.markup.html.repeater.util.SortParam;
 import org.apache.wicket.model.IModel;
 import org.geoserver.catalog.Catalog;
@@ -24,10 +23,9 @@ import org.geoserver.web.wicket.GeoServerDataProvider;
 import org.opengis.filter.Filter;
 import org.opengis.filter.sort.SortBy;
 
-import com.google.common.collect.Lists;
-
 /**
  * Provides a filtered, sorted view over the catalog layers.
+ *
  * <p>
  * <!-- Implementation detail: This class overrides the following methods in
  * order to leverage the Catalog filtering and paging support:
@@ -43,82 +41,75 @@ import com.google.common.collect.Lists;
  * the above it should not be called
  * </ul>
  * -->
- * 
+ *
  * @author Andrea Aime - OpenGeo
  */
 @SuppressWarnings("serial")
 public class LayerProvider extends GeoServerDataProvider<LayerInfo> {
-    static final Property<LayerInfo> TYPE = new BeanProperty<LayerInfo>("type",
-            "type");
+    static final Property<LayerInfo> TYPE = new BeanProperty<>("type", "type");
 
-    static final Property<LayerInfo> WORKSPACE = new BeanProperty<LayerInfo>(
-            "workspace", "resource.store.workspace.name");
+    static final Property<LayerInfo> STORE = new BeanProperty<>("store", "resource.store.name");
 
-    static final Property<LayerInfo> STORE = new BeanProperty<LayerInfo>(
-            "store", "resource.store.name");
+    static final Property<LayerInfo> NAME = new BeanProperty<>("name", "name");
 
-    static final Property<LayerInfo> NAME = new BeanProperty<LayerInfo>("name",
-            "name");
+    static final Property<LayerInfo> TITLE = new BeanProperty<>("title", "title");
 
     /**
      * A custom property that uses the derived enabled() property instead of isEnabled() to account
      * for disabled resource/store
      */
-    static final Property<LayerInfo> ENABLED = new AbstractProperty<LayerInfo>("enabled") {
+    static final Property<LayerInfo> ENABLED =
+            new AbstractProperty<LayerInfo>("enabled") {
 
-        public Boolean getPropertyValue(LayerInfo item) {
-            return Boolean.valueOf(item.enabled());
-        }
-
-    };
-
-    static final Property<LayerInfo> SRS = new BeanProperty<LayerInfo>("SRS",
-            "resource.SRS") {
-
-        /**
-         * We roll a custom comparator that treats the numeric part of the
-         * code as a number
-         */
-        public java.util.Comparator<LayerInfo> getComparator() {
-            return new Comparator<LayerInfo>() {
-
-                public int compare(LayerInfo o1, LayerInfo o2) {
-                    // split out authority and code
-                    String[] srs1 = o1.getResource().getSRS().split(":");
-                    String[] srs2 = o2.getResource().getSRS().split(":");
-
-                    // use sign to control sort order
-                    if (srs1[0].equalsIgnoreCase(srs2[0]) && srs1.length > 1
-                            && srs2.length > 1) {
-                        try {
-                            // in case of same authority, compare numbers
-                            return new Integer(srs1[1]).compareTo(new Integer(
-                                    srs2[1]));
-                        } catch(NumberFormatException e) {
-                            // a handful of codes are not numeric,
-                            // handle the general case as well
-                            return srs1[1].compareTo(srs2[1]);
-                        }
-                    } else {
-                        // compare authorities
-                        return srs1[0].compareToIgnoreCase(srs2[0]);
-                    }
+                public Boolean getPropertyValue(LayerInfo item) {
+                    return Boolean.valueOf(item.enabled());
                 }
-
             };
 
-        }
-    };
-    
-    static final List<Property<LayerInfo>> PROPERTIES = Arrays.asList(TYPE,
-            WORKSPACE, STORE, NAME, ENABLED, SRS);
+    static final Property<LayerInfo> SRS =
+            new BeanProperty<LayerInfo>("SRS", "resource.SRS") {
+
+                /**
+                 * We roll a custom comparator that treats the numeric part of the code as a number
+                 */
+                public java.util.Comparator<LayerInfo> getComparator() {
+                    return new Comparator<LayerInfo>() {
+
+                        public int compare(LayerInfo o1, LayerInfo o2) {
+                            // split out authority and code
+                            String[] srs1 = o1.getResource().getSRS().split(":");
+                            String[] srs2 = o2.getResource().getSRS().split(":");
+
+                            // use sign to control sort order
+                            if (srs1[0].equalsIgnoreCase(srs2[0])
+                                    && srs1.length > 1
+                                    && srs2.length > 1) {
+                                try {
+                                    // in case of same authority, compare numbers
+                                    return Integer.valueOf(srs1[1])
+                                            .compareTo(Integer.valueOf(srs2[1]));
+                                } catch (NumberFormatException e) {
+                                    // a handful of codes are not numeric,
+                                    // handle the general case as well
+                                    return srs1[1].compareTo(srs2[1]);
+                                }
+                            } else {
+                                // compare authorities
+                                return srs1[0].compareToIgnoreCase(srs2[0]);
+                            }
+                        }
+                    };
+                }
+            };
+
+    static final List<Property<LayerInfo>> PROPERTIES =
+            Arrays.asList(TYPE, TITLE, NAME, STORE, ENABLED, SRS);
 
     @Override
     protected List<LayerInfo> getItems() {
         // forced to implement this method as its abstract in the super class
         throw new UnsupportedOperationException(
-                "This method should not be being called! "
-                        + "We use the catalog streaming API");
+                "This method should not be being called! " + "We use the catalog streaming API");
     }
 
     @Override
@@ -126,17 +117,18 @@ public class LayerProvider extends GeoServerDataProvider<LayerInfo> {
         return PROPERTIES;
     }
 
-    public IModel newModel(Object object) {
-        return new LayerDetachableModel((LayerInfo) object);
+    @Override
+    public IModel<LayerInfo> newModel(LayerInfo object) {
+        return new LayerDetachableModel(object);
     }
 
     @Override
-    protected Comparator<LayerInfo> getComparator(SortParam sort) {
+    protected Comparator<LayerInfo> getComparator(SortParam<?> sort) {
         return super.getComparator(sort);
     }
 
     @Override
-    public int size() {
+    public long size() {
         Filter filter = getFilter();
         int count = getCatalog().count(LayerInfo.class, filter);
         return count;
@@ -148,9 +140,9 @@ public class LayerProvider extends GeoServerDataProvider<LayerInfo> {
         int count = getCatalog().count(LayerInfo.class, filter);
         return count;
     }
-    
+
     @Override
-    public Iterator<LayerInfo> iterator(final int first, final int count) {
+    public Iterator<LayerInfo> iterator(final long first, final long count) {
         Iterator<LayerInfo> iterator = filteredItems(first, count);
         if (iterator instanceof CloseableIterator) {
             // don't know how to force wicket to close the iterator, lets return
@@ -166,47 +158,38 @@ public class LayerProvider extends GeoServerDataProvider<LayerInfo> {
     }
 
     /**
-     * Returns the requested page of layer objects after applying any keyword
-     * filtering set on the page
+     * Returns the requested page of layer objects after applying any keyword filtering set on the
+     * page
      */
-    private Iterator<LayerInfo> filteredItems(Integer first, Integer count) {
+    private Iterator<LayerInfo> filteredItems(Long first, Long count) {
         final Catalog catalog = getCatalog();
 
         // global sorting
-        final SortParam sort = getSort();
+        final SortParam<?> sort = getSort();
         final Property<LayerInfo> property = getProperty(sort);
 
         SortBy sortOrder = null;
         if (sort != null) {
-            if(property instanceof BeanProperty){
-                final String sortProperty = ((BeanProperty<LayerInfo>)property).getPropertyPath();
+            if (property instanceof BeanProperty) {
+                final String sortProperty = ((BeanProperty<LayerInfo>) property).getPropertyPath();
                 sortOrder = sortBy(sortProperty, sort.isAscending());
-            }else if(property == ENABLED){
+            } else if (property == ENABLED) {
                 sortOrder = sortBy("enabled", sort.isAscending());
             }
         }
+        if (first > Integer.MAX_VALUE
+                || first < Integer.MIN_VALUE
+                || count > Integer.MAX_VALUE
+                || count < Integer.MIN_VALUE) {
+            throw new IllegalArgumentException(); // TODO Possibly change catalog API to use long
+        }
 
         final Filter filter = getFilter();
-        //our already filtered and closeable iterator
-        Iterator<LayerInfo> items = catalog.list(LayerInfo.class, filter, first, count, sortOrder);
+        // our already filtered and closeable iterator
+        Iterator<LayerInfo> items =
+                catalog.list(
+                        LayerInfo.class, filter, first.intValue(), count.intValue(), sortOrder);
 
         return items;
-    }
-
-    private Filter getFilter() {
-        final String[] keywords = getKeywords();
-        Filter filter = acceptAll();
-        if (null != keywords) {
-            for (String keyword : keywords) {
-                Filter propContains = Predicates.fullTextSearch(keyword);
-                // chain the filters together
-                if (Filter.INCLUDE == filter) {
-                    filter = propContains;
-                } else {
-                    filter = or(filter, propContains);
-                }
-            }
-        }
-        return filter;
     }
 }

@@ -1,19 +1,18 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 package org.geoserver.jdbcconfig.internal;
 
+import com.google.common.collect.Maps;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.geotools.util.logging.Logging;
-
-import com.google.common.collect.Maps;
 
 public class DbUtils {
 
@@ -40,7 +39,7 @@ public class DbUtils {
                 if (value instanceof Collection) {
                     Collection<?> c = (Collection<?>) value;
                     StringBuilder cv = new StringBuilder();
-                    for (Iterator<?> it = c.iterator(); it.hasNext();) {
+                    for (Iterator<?> it = c.iterator(); it.hasNext(); ) {
                         Object v = it.next();
                         if (v == null) {
                             cv.append("null");
@@ -55,8 +54,12 @@ public class DbUtils {
                     }
                     sval = cv.toString();
                 } else {
-                    sval = value == null ? "null" : (value instanceof Number ? String
-                            .valueOf(value) : "'" + String.valueOf(value) + "'");
+                    sval =
+                            value == null
+                                    ? "null"
+                                    : (value instanceof Number
+                                            ? String.valueOf(value)
+                                            : "'" + String.valueOf(value) + "'");
                 }
                 String paramName = ":" + e.getKey();
                 int idx;
@@ -69,5 +72,4 @@ public class DbUtils {
             LOGGER.fine("querying " + sql + "\n with values: " + namedParameters);
         }
     }
-
 }

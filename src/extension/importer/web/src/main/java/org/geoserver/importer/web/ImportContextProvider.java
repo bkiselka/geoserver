@@ -1,4 +1,5 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 - 2016 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -6,11 +7,10 @@ package org.geoserver.importer.web;
 
 import java.util.Arrays;
 import java.util.List;
-
 import org.apache.commons.collections.IteratorUtils;
 import org.apache.wicket.model.IModel;
-import org.geoserver.web.wicket.GeoServerDataProvider;
 import org.geoserver.importer.ImportContext;
+import org.geoserver.web.wicket.GeoServerDataProvider;
 
 public class ImportContextProvider extends GeoServerDataProvider<ImportContext> {
     public static Property<ImportContext> ID = new BeanProperty("id", "id");
@@ -32,13 +32,14 @@ public class ImportContextProvider extends GeoServerDataProvider<ImportContext> 
     protected List<Property<ImportContext>> getProperties() {
         return Arrays.asList(ID, STATE, CREATED, UPDATED);
     }
+
     @Override
     protected List<ImportContext> getItems() {
-        return IteratorUtils.toList(ImporterWebUtils.importer().getAllContexts() );
+        return IteratorUtils.toList(ImporterWebUtils.importer().getAllContexts());
     }
 
     @Override
-    protected IModel newModel(Object object) {
+    protected IModel<ImportContext> newModel(ImportContext object) {
         return new ImportContextModel((ImportContext) object);
     }
 }

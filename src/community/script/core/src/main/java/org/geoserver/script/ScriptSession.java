@@ -1,16 +1,16 @@
-/* Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * (c) 2001 - 2013 OpenPlans
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 package org.geoserver.script;
 
 import java.util.concurrent.atomic.AtomicLong;
-
 import javax.script.ScriptEngine;
 
 /**
  * Maintains the state of a {@link ScriptEngine} instance under an identifier.
- * 
+ *
  * @author Justin Deoliveira, OpenGeo
  */
 public class ScriptSession {
@@ -42,5 +42,4 @@ public class ScriptSession {
     public ScriptEngine getEngine() {
         return engine;
     }
-
 }
