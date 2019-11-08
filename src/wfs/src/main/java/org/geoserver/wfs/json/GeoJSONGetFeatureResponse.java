@@ -18,6 +18,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.sf.json.JSONException;
 import org.geoserver.config.GeoServer;
+import org.geoserver.data.util.TemporalUtils;
 import org.geoserver.ows.Dispatcher;
 import org.geoserver.ows.Request;
 import org.geoserver.platform.GeoServerExtensions;
@@ -340,9 +341,15 @@ public class GeoJSONGetFeatureResponse extends WFSGetFeatureOutputFormat {
             GeoJSONBuilder jw, String title, String mimeType, String rel, String href) {
         if (href != null) {
             jw.object();
-            jw.key("title").value(title);
-            jw.key("type").value(mimeType);
-            jw.key("rel").value(rel);
+            if (title != null) {
+                jw.key("title").value(title);
+            }
+            if (mimeType != null) {
+                jw.key("type").value(mimeType);
+            }
+            if (rel != null) {
+                jw.key("rel").value(rel);
+            }
             jw.key("href").value(href);
             jw.endObject();
         }
@@ -460,18 +467,24 @@ public class GeoJSONGetFeatureResponse extends WFSGetFeatureOutputFormat {
                                     jsonWriter.writeGeom((Geometry) value);
                                 }
                             }
+                        } else if (Date.class.isAssignableFrom(ad.getType().getBinding())
+                                && TemporalUtils.isDateTimeFormatEnabled()) {
+                            // Temporal types print handling
+                            jsonWriter.key(ad.getLocalName());
+                            jsonWriter.value(TemporalUtils.printDate((Date) value));
                         } else {
                             jsonWriter.key(ad.getLocalName());
                             jsonWriter.value(value);
                         }
                     }
+                    jsonWriter.endObject(); // end the properties
+
                     // Bounding box for feature in properties
                     ReferencedEnvelope refenv =
                             ReferencedEnvelope.reference(simpleFeature.getBounds());
                     if (featureBounding && !refenv.isEmpty()) {
                         jsonWriter.writeBoundingBox(refenv);
                     }
-                    jsonWriter.endObject(); // end the properties
 
                     writeExtraFeatureProperties(simpleFeature, operation, jsonWriter);
 

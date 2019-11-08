@@ -83,7 +83,7 @@ The use of the ``Forwarded`` header is a tad more complex, as its components hav
 Multiple templates can be put into the "Proxy Base URL". These templates provide fall-backs, since only the first one that is fully matched is used. 
 For instance, a Proxy Base URL of ``http://${X-Forwarded-Host}/geoserver http://www.foo.org/geoserver`` (Templates are space-separated.) can result in either: ``http://www.example.com/geoserver`` (if ``X-Forwarded-Host`` is set to ``www.example.com``.)  or ``http://www.foo.org/geoserver``  (if ``X-Forwarded-Host`` is not set.)
 
-Header names in templates are case-insensitive.
+Both header names and the appended path (e.g. ``/geoserver``) in templates are case-insensitive.
 
 
 Logging Profile
@@ -157,6 +157,7 @@ There are three options:
 
 Note that a restart of GeoServer is necessary for a change in the setting to have effect.
 
+.. figure:: img/others.png
 
 REST Disable Resource not found Logging
 ----------------------------------------
@@ -168,4 +169,16 @@ REST PathMapper Root directory path
 This parameter is used by the RESTful API as the `Root Directory` for the newly uploaded files, following the structure::
 
 	${rootDirectory}/workspace/store[/<file>]
+
+Display creation timestamps on administration lists
+----------------------------------------------------------
+
+These check boxes can be used to toggle Date of Creation on Workspaces,Stores,Layers,Layer Groups and Styles administration list pages
+Time of can be seen by hovering mouse over the dates
+
+Display modification timestamps on administration lists
+----------------------------------------------------------
+
+These check boxes can be used to toggle Date of Modification on Workspaces,Stores,Layers,Layer Groups and Styles administration list pages
+Time of can be seen by hovering mouse over the dates
  

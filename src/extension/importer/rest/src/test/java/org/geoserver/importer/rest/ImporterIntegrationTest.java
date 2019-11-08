@@ -714,13 +714,16 @@ public class ImporterIntegrationTest extends ImporterTestSupport {
 
         MockHttpServletResponse resp =
                 postAsServletResponse(
-                        RestBaseController.ROOT_PATH + "/imports/0/tasks/0/transforms",
+                        RestBaseController.ROOT_PATH
+                                + "/imports/"
+                                + context.getId()
+                                + "/tasks/0/transforms",
                         json,
                         "application/json");
         assertEquals(HttpStatus.CREATED.value(), resp.getStatus());
 
         // run it
-        context = importer.getContext(0);
+        context = importer.getContext(context.getId());
         importer.run(context);
 
         // check created type, layer and database table
@@ -757,7 +760,7 @@ public class ImporterIntegrationTest extends ImporterTestSupport {
             importer.update(context, new SpatialFile(new File(dir, "archsites.shp")));
 
             // run it
-            context = importer.getContext(0);
+            context = importer.getContext(context.getId());
             importer.run(context);
 
             // check the layer has been created
@@ -817,13 +820,16 @@ public class ImporterIntegrationTest extends ImporterTestSupport {
 
         MockHttpServletResponse resp =
                 postAsServletResponse(
-                        RestBaseController.ROOT_PATH + "/imports/0/tasks/0/transforms",
+                        RestBaseController.ROOT_PATH
+                                + "/imports/"
+                                + context.getId()
+                                + "/tasks/0/transforms",
                         json,
                         "application/json");
         assertEquals(HttpStatus.CREATED.value(), resp.getStatus());
 
         // run it
-        context = importer.getContext(0);
+        context = importer.getContext(context.getId());
         importer.run(context);
 
         // check the layer has been created
@@ -868,13 +874,16 @@ public class ImporterIntegrationTest extends ImporterTestSupport {
 
         MockHttpServletResponse resp =
                 postAsServletResponse(
-                        RestBaseController.ROOT_PATH + "/imports/0/tasks/0/transforms",
+                        RestBaseController.ROOT_PATH
+                                + "/imports/"
+                                + context.getId()
+                                + "/tasks/0/transforms",
                         json,
                         "application/json");
         assertEquals(HttpStatus.CREATED.value(), resp.getStatus());
 
         // run it
-        context = importer.getContext(0);
+        context = importer.getContext(context.getId());
         importer.run(context);
 
         // check the layer has been created
@@ -886,7 +895,7 @@ public class ImporterIntegrationTest extends ImporterTestSupport {
     }
 
     @Test
-    public void testRunWithTimeDimention() throws Exception {
+    public void testRunWithTimeDimension() throws Exception {
         Catalog cat = getCatalog();
 
         DataStoreInfo ds = createH2DataStore(cat.getDefaultWorkspace().getName(), "ming");
@@ -915,13 +924,16 @@ public class ImporterIntegrationTest extends ImporterTestSupport {
 
         MockHttpServletResponse resp =
                 postAsServletResponse(
-                        RestBaseController.ROOT_PATH + "/imports/0/tasks/0/transforms",
+                        RestBaseController.ROOT_PATH
+                                + "/imports/"
+                                + context.getId()
+                                + "/tasks/0/transforms",
                         json,
                         "application/json");
         assertEquals(HttpStatus.CREATED.value(), resp.getStatus());
 
         // run it
-        context = importer.getContext(0);
+        context = importer.getContext(context.getId());
         ImportTask task = context.getTasks().get(0);
         task.setDirect(false);
         task.setStore(ds);
@@ -1119,5 +1131,62 @@ public class ImporterIntegrationTest extends ImporterTestSupport {
         assertEquals(
                 polygon.getId(),
                 catalog.getLayerByName(basicPolygonsName).getDefaultStyle().getId());
+    }
+    // GEOS-9073
+    @Test
+    public void testCharsetEncodingOption() throws Exception {
+        File dir = unpack("shape/bad_char_shp.zip");
+        String wsName = getCatalog().getDefaultWorkspace().getName();
+
+        File locations = new File(dir, "bad_char.shp");
+
+        // @formatter:off
+        String contextDefinition =
+                "{\n"
+                        + "   \"import\": {\n"
+                        + "      \"targetWorkspace\": {\n"
+                        + "         \"workspace\": {\n"
+                        + "            \"name\": \""
+                        + wsName
+                        + "\"\n"
+                        + "         }\n"
+                        + "      },\n"
+                        + "      \"data\": {\n"
+                        + "        \"type\": \"file\",\n"
+                        + "        \"file\": \""
+                        + jsonSafePath(locations)
+                        + "\",\n"
+                        + "    \"charsetEncoding\":\"UTF-8\"\n"
+                        + "      }\n"
+                        + "   }\n"
+                        + "}";
+
+        JSONObject json =
+                (JSONObject)
+                        json(
+                                postAsServletResponse(
+                                        "/rest/imports", contextDefinition, "application/json"));
+        int importId = json.getJSONObject("import").getInt("id");
+
+        ImportContext context = importer.getContext(importId);
+        assertEquals(ImportContext.State.PENDING, context.getState());
+
+        assertTrue(new File(context.getUploadDirectory().getFile(), ".locking").exists());
+
+        assertEquals(1, context.getTasks().size());
+        ImportTask task = context.getTasks().get(0);
+        LayerInfo layer = task.getLayer();
+        ResourceInfo resource = layer.getResource();
+        resource.setSRS("EPSG:4326");
+        importer.changed(task);
+        assertEquals(ImportTask.State.READY, task.getState());
+        context.updated();
+        assertEquals(ImportContext.State.PENDING, context.getState());
+        importer.run(context);
+        assertEquals(ImportContext.State.COMPLETE, context.getState());
+        assertTrue(context.getState() == ImportContext.State.COMPLETE);
+
+        assertTrue(new File(context.getUploadDirectory().getFile(), "bad_char.shp").exists());
+        assertTrue(new File(context.getUploadDirectory().getFile(), "bad_char.dbf").exists());
     }
 }

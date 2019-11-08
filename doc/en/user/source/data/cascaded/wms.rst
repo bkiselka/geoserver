@@ -62,6 +62,10 @@ Connecting a remote WMS allows for the following features:
 
 * Full **REST Configuration**. See the :ref:`rest` section for more information about the GeoServer REST interface.
 
+* **Scale Denominators**. It is possible to configure Min and Max scale denominators . These settings are available under **Publishing** Tab.
+
+* **Optimization**. It is possible to ignore remote WMS calls if requested map area is completely outside the native bounds as advertised by remote WMS layer. These settings are available under **Publishing** Tab.
+
 Limitations
 -----------
 
@@ -72,7 +76,5 @@ Layers served through an external WMS have some, but not all of the functionalit
 * Alternate (local) styles cannot be used.
 
 * Extra request parameters (``time``, ``elevation``, ``cql_filter``, etc.) cannot be used.
-
-* GetLegendGraphic requests aren't supported.
 
 * Image format cannot be specified.  GeoServer will attempt to request PNG images, and if that fails will use the remote server's default image format.

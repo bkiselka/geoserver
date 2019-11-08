@@ -20,6 +20,7 @@ function usage() {
   echo
   echo "Environment variables:"
   echo " SKIP_BUILD : Skips main release build"
+  echo " SKIP_COMMUNITY : Skips community release build"
   echo " SKIP_TAG : Skips tag on release branch"
   echo " SKIP_INSTALLERS : Skips building of mac and windows installers"
   echo " SKIP_GT : Skips the GeoTools build, as used to build revision"
@@ -97,7 +98,7 @@ fi
 # move to root of source tree
 pushd .. > /dev/null
 
-dist=`pwd`/release/$tag
+dist=`pwd`/distribution/$tag
 mkdir -p $dist/plugins
 
 echo "Building release with following parameters:"
@@ -142,7 +143,6 @@ fi
 # create a release branch
 git checkout -b rel_$tag $rev
 
-MAVEN_FLAGS="--batch-mode -Dfmt.skip=true"
 # setup geotools dependency
 if [ -z $SKIP_GT ]; then
   if [ ! -z $gt_ver ]; then
@@ -280,8 +280,20 @@ if [ -z $SKIP_BUILD ]; then
   ant developer -Dproject.version=$tag
 
   popd > /dev/null
-
+else
+   echo "Skipping mvn clean install $MAVEN_FLAGS -DskipTests -P release"
 fi
+
+if [ -z $SKIP_COMMUNITY ]; then
+   pushd community > /dev/null
+   set +e
+   mvn clean install -P communityRelease -DskipTests $MAVEN_FLAGS || true
+   set -e
+   popd > /dev/null
+else
+   echo "Skipping mvn clean install -P communityRelease -DskipTests"
+fi
+
 
 mvn assembly:attached $MAVEN_FLAGS
 
@@ -328,7 +340,7 @@ for a in `ls $artifacts/*.zip | grep -v plugin`; do
   cp $a $dist
 done
 
-#cp $artifacts/../../../doc/en/target/user/latex/*.pdf $dist
+cp $artifacts/../../../doc/en/target/user/latex/manual.pdf $dist/geoserver-$tag-user-manual.pdf || true
 
 echo "generated artifacts:"
 ls -la $dist
@@ -338,13 +350,16 @@ pushd .. > /dev/null
 
 init_git $git_user $git_email
 
-git add . 
+git add doc
+git add src
 git commit -m "updating version numbers and release notes for $tag" .
 
 # tag release branch
 if [ -z $SKIP_TAG ]; then
+    # fetch single tag, don't fail if its not there
+    git fetch origin refs/tags/$tag:refs/tags/$tag --no-tags || true
+
     # check to see if tag already exists
-    git fetch --tags
     if [ `git tag --list $tag | wc -l` == 1 ]; then
       echo "tag $tag exists, deleting it"
       git tag -d $tag
@@ -373,5 +388,5 @@ fi
 
 popd > /dev/null
 
-echo "build complete, artifacts available at $DIST_URL/$tag"
+echo "build complete, artifacts available at $DIST_URL/distribution/$tag"
 exit 0
